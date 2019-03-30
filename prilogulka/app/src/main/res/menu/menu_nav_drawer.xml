@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clickable="true"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_person"
+            android:icon="@drawable/ic_account_box_black_24dp"
+            android:title="@string/personal"
+            />
+        <!--<item-->
+            <!--android:id="@+id/nav_money"-->
+            <!--android:icon="@drawable/ic_account_balance_wallet_black_24dp"-->
+            <!--android:title="@string/money" />-->
+        <item
+            android:id="@+id/nav_video"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/video" />
+        <item
+            android:id="@+id/nav_gifts"
+            android:icon="@drawable/ic_account_balance_wallet_black_24dp"
+            android:title="@string/money" />
+        <!--<item-->
+            <!--android:id="@+id/nav_gifts"-->
+            <!--android:icon="@drawable/ic_card_giftcard_black_24dp"-->
+            <!--android:title="@string/gift_card" />-->
+        <item
+            android:id="@+id/nav_gifts_activated"
+            android:icon="@drawable/ic_card_giftcard_black_24dp"
+            android:title="@string/gift_card_activated" />
+    </group>
+
+    <item android:title="@string/about_us">
+        <menu>
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/nav_help"
+                    android:icon="@drawable/ic_menu_manage"
+                    android:title="@string/how_it_work" />
+                <item
+                    android:id="@+id/nav_connect_us"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/call_us" />
+            </group>
+        </menu>
+    </item>
+    <!--<item android:title="Базеночка">-->
+        <!--<menu>-->
+            <!--<group android:checkableBehavior="single">-->
+                <!--<item-->
+                    <!--android:id="@+id/list_of_users"-->
+                    <!--android:title="пользователи" />-->
+                <!--<item-->
+                    <!--android:id="@+id/list_of_user_actions"-->
+                    <!--android:title="действия пользователей" />-->
+            <!--</group>-->
+        <!--</menu>-->
+    <!--</item>-->
+
+</menu>

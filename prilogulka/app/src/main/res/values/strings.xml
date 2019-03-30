@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">YOBOBO</string>
+    <string name="myAlphaNumeric">абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ</string>
+    <string-array name="screen_array">
+        <item>Личные данные</item>
+        <item>Счет</item>
+        <item>Условия тарификации</item>
+    </string-array>
+    <string name="title_activity_two">Регистрация YOBOBO</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">YOBOBO</string>
+    <string name="nav_header_subtitle">prilogulka@example.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Состояние счета:</string>
+    <string name="title_activity_login">YOBOBO</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Вход</string>
+    <string name="action_sign_in_short">Проверка пароля</string>
+    <string name="error_invalid_email">Введен некорректный email</string>
+    <string name="error_invalid_password">Упс, что-то не так с паролем. Смотри подсказку внизу.</string><!--Пароль слишком короткий-->
+    <string name="invalid_password_hint"> Длина пароля не менее 4-х символов.</string>
+    <string name="error_incorrect_password">Неверный пароль</string>
+    <string name="error_field_required">Обязательное поле</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="user_exists_error">Пользователь с таким E-mail существует. Введен неверный пароль.</string>
+    <string name="has_empty_fields">Все поля, кроме ГОРОДА, должны быть Вами заполнены.</string>
+
+    <string name="confirm_registry">Email не найден.Вы хотите зарегистрироваться с этим email и паролем?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="updatingReport">Обновление Базы данных</string>
+    <string name="personal">Личные данные</string>
+    <string name="money">Мой счет/Вывод средств</string>
+    <string name="video">Рекламные ролики</string>
+    <string name="gift_card">Подарочные карты</string>
+    <string name="gift_card_activated">Активированные карты</string>
+    <string name="about_us">О нас</string>
+    <string name="how_it_work">Как это работает</string>
+    <string name="call_us">Обратиться к нам</string>
+    <string name="registration">Регистрация</string>
+    <string name="welcome_to_yobobo">Добро пожаловать в YOBOBO.</string>
+    <string name="please_enter_email_password">Пожалуйста, введите email и пароль.</string>
+    <string name="save">Сохранить</string>
+    <string name="Name">Имя</string>
+    <string name="Surname">Фамилия</string>
+    <string name="day">день</string>
+    <string name="month">месяц</string>
+    <string name="year">год</string>
+    <string name="birthday">Дата рождения:</string>
+    <string name="city">Город</string>
+    <string name="sex">пол</string>
+    <string name="next">Далее</string>
+    <string name="play">Play</string>
+    <string name="stop">Stop</string>
+    <string name="next_play">NEXT</string>
+    <string name="shown_video">Просмотренные видео:</string>
+    <string name="refresh_money">Обновить счет</string>
+    <string name="tarif">Описание тарифа</string>
+    <string name="how_much_money">У вас на счету:</string>
+    <string name="turn_back">Назад к просмотру</string>
+    <string-array name="пол">
+        <item>муж</item>
+        <item>жен</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- FACE DETECTING -->
+    <string name="ok">OK</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+
+
+    <string name="card_title">Gift Card</string>
+    <string name="card_tip">YOU ORDER WILL BE SHIPPED TO:</string>
+
+    <string name="button_buy">Buy</string>
+    <string name="button_check_test">ok</string>
+    <string name="giftsManagerHint">Ниже представлены карты наших партнеров.
+        Нажав на изображение карты вы можете открыть меню для её дальнейшей активации.
+        Обратите внимание на полосу прогресса под каждой из карт.
+        Если она полностью заполнена карта доступна для активации.</string>
+    <string name="activatedCardsHint">Здесь представлены все активированные Вами карты.</string>
+    <string name="connectUsHint">Здесь Вы можете связаться с нами, задать вопрос или оставить
+        пожелания, заполнив форму.</string>
+    <string name="helpWithAppHint">Здесь Вы можете найти краткую интрукцию по приложению.</string>
+    <string name="personalDataHint">Здесь Вы найдете введенную ранее информацию о себе.</string>
+    <string name="watchingVideoHint">Здесь Вы можете просматривать видео и зарабатывать WatchPoints.
+    Потом эти WP Вы можете потратить на покупку карточки в разделе "Мои деньги/Вывод средств". Видео
+        начинает свое проигрывание самостоятельно, нужно лишь направить переднюю камеру на себя!</string>
+    <string name="birsday">Выберите дату рождения</string>
+    <string name="choose_date">Выберите дату</string>
+    <string name="ready">Готово</string>
+    <string name="telephone_number">Телефон</string>
+    <string name="e_mail">E-mail</string>
+    <string name="message">Введите сообщение</string>
+    <string name="sent">Отправить</string>
+</resources>
