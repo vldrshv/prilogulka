@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity
         initLayoutFields();
         setListeners();
 
-        showHint("Мы обновляем ваше местоположение, чтобы Вы получили актуальный" +
-                "коэффициет. Подождите немного и приложение загрузится.");
+        showHint("Мы обновляем Ваше местоположение, чтобы Вы получили актуальный" +
+                " коэффициент. Подождите немного, и приложение загрузится.");
 
     }
     @Override
@@ -548,7 +548,7 @@ public class MainActivity extends AppCompatActivity
 
                     final Snackbar snackbar = Snackbar.make(
                             getCurrentFocus(),
-                            "Мы используем Геопозицию для определения коэффициентов при просмотре видео. Пожалуйста, разрешите геолокацию в настроках для перерасчета коэффициента.",
+                            "Мы используем геопозицию для определения коэффициентов при просмотре видео. Пожалуйста, разрешите геолокацию в настроках для перерасчета коэффициента.",
                             Snackbar.LENGTH_INDEFINITE);
                     View snackbarView = snackbar.getView();
                     TextView snackBarTextView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
