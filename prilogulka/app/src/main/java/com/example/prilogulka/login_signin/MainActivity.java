@@ -402,6 +402,7 @@ public class MainActivity extends AppCompatActivity
         try {
             user = service.getUser(email).execute().body();
             SerializeObject so = new SerializeObject(this);
+            Log.i(CLASS_TAG, user.toString());
             so.writeObject(user, user.getClass());
             spManager.setQuestionnaire(user.getUser().getUser_coeff() != 0);
 

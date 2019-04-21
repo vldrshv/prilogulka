@@ -76,7 +76,7 @@ public class CameraSourcePreview extends ViewGroup {
         if (mCameraSource != null) {
             mCameraSource.stop();
 //
-//            release();
+            //release();
 //
         }
     }
@@ -84,7 +84,7 @@ public class CameraSourcePreview extends ViewGroup {
     public void release() {
         if (mCameraSource != null) {
             mCameraSource.release();
-            //mCameraSource = null;
+            //mCameraSource = null; /** */
         }
     }
 
@@ -126,6 +126,7 @@ public class CameraSourcePreview extends ViewGroup {
         public void surfaceCreated(SurfaceHolder surface) {
             mSurfaceAvailable = true;
             try {
+//                mStartRequested = true;
                 startIfReady();
             } catch (IOException e) {
                 Log.e(CLASS_TAG, "Could not start camera source.", e);

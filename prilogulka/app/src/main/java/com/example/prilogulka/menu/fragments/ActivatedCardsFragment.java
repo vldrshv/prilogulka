@@ -51,6 +51,7 @@ public class ActivatedCardsFragment  extends Fragment {
         spM = new SharedPreferencesManager(getContext());
         email = spM.getActiveUser();
 
+
         initRecycleView();
         setHasOptionsMenu(true);
 
@@ -117,4 +118,5 @@ public class ActivatedCardsFragment  extends Fragment {
 
         return false;
     }
+
 }

@@ -1,7 +1,6 @@
 package com.example.prilogulka.menu.fragments;
 
-import android.content.Context;
-import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -17,18 +16,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.prilogulka.R;
-import com.example.prilogulka.TEST_INSERTION_CLASS;
-import com.example.prilogulka.data.GiftCard;
+import com.example.prilogulka.data.GiftCardK;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data_base.GiftCardsDataBaseImpl;
+import com.example.prilogulka.data.service.GiftCardService;
+import com.example.prilogulka.data_base.GiftCardDAO;
 import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
 import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
-import com.example.prilogulka.menu.CardShop;
 import com.example.prilogulka.recycle_view_adapters.RVGiftCardsAdapter;
-import com.example.prilogulka.recycle_view_adapters.RecyclerItemClickListener;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 // здесь должны быть реализованы подарочные карты
 
 public class GiftsManagerFragment extends Fragment {
@@ -40,6 +42,7 @@ public class GiftsManagerFragment extends Fragment {
     SharedPreferencesManager spM;
     String email;
     Menu menu;
+    GiftCardService service;
 
     String CLASS_TAG = "GiftsManagerFragment";
     final String CLASS_TITLE = "Мой счет/Вывод средств";
@@ -58,10 +61,9 @@ public class GiftsManagerFragment extends Fragment {
         /**
          * TODO: заменить битом синхронизации
          */
-        Log.i(CLASS_TAG, "TEST_INSERTION_CLASS.resetDataBase(GiftCard.class).makeInsertion(GiftCard.class)");
-        TEST_INSERTION_CLASS t = new TEST_INSERTION_CLASS(email, getContext());
-        //t.resetDataBase(GiftCard.class);
-        t.makeInsertion(GiftCard.class);
+
+        GiftCardsGetter task = new GiftCardsGetter();
+        task.doInBackground();
 
         initRecycleView();
         setHasOptionsMenu(true);
@@ -86,34 +88,33 @@ public class GiftsManagerFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.giftCardsRecycleView);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
-        final GiftCardsDataBaseImpl giftCardsDataBase = new GiftCardsDataBaseImpl(getContext());
+        GiftCardDAO giftCardDAO = new GiftCardDAO(getContext());
 
-        adapter = new RVGiftCardsAdapter(
-                giftCardsDataBase.selectAll(email), getContext());
+        adapter = new RVGiftCardsAdapter(giftCardDAO.selectAll(), getContext());
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getContext(), recyclerView,
-                        new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        List<GiftCard> list = giftCardsDataBase.selectAll(email);
-
-                        Context context = view.getContext();
-                        Intent intent = new Intent(context, CardShop.class);
-                        intent.putExtra("giftCardName", list.get(position).getName());
-
-                        context.startActivity(intent);
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        /**
-                         * TODO: кнопка не интересно, повысить приоритет.
-                         */
-                    }
-                })
-        );
+//        recyclerView.addOnItemTouchListener(
+//                new RecyclerItemClickListener(getContext(), recyclerView,
+//                        new RecyclerItemClickListener.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(View view, int position) {
+//                        List<GiftCard> list = giftCardsDataBase.selectAll(email);
+//
+//                        Context context = view.getContext();
+//                        Intent intent = new Intent(context, CardShop.class);
+//                        intent.putExtra("giftCardName", list.get(position).getName());
+//
+//                        context.startActivity(intent);
+//                    }
+//
+//                    @Override
+//                    public void onLongItemClick(View view, int position) {
+//                        /**
+//                         * TODO: кнопка не интересно, повысить приоритет.
+//                         */
+//                    }
+//                })
+//        );
 
     }
 
@@ -140,6 +141,35 @@ public class GiftsManagerFragment extends Fragment {
         return false;
     }
 
+    class GiftCardsGetter extends AsyncTask<Void, Void, Void> {
+
+        private GiftCardDAO giftCardDAO = new GiftCardDAO(getContext());
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://92.53.65.46:3000")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            service = retrofit.create(GiftCardService.class);
+            List<GiftCardK> giftCardsList = new ArrayList<>();
+            try {
+                giftCardsList = service.getAllGiftCards().execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (!giftCardsList.isEmpty())
+                giftCardDAO.insert(giftCardsList);
+
+            giftCardsList.clear();
+            giftCardsList.addAll(giftCardDAO.selectAll());
+
+            return null;
+        }
+
+    }
+
 
     @Override
     public void onResume(){
@@ -149,11 +179,5 @@ public class GiftsManagerFragment extends Fragment {
             menu.getItem(0).setTitle("Состояние счета: " +
                 new UserActionsDataBaseImpl(getContext()).getUserMoney(email));
         moneyTextView.setText("Состояние счета: " + getMoney());
-//        тупое решение, но  notifyDataSetChanged() не работает
-//        adapter.notifyDataSetChanged();
-        adapter = new RVGiftCardsAdapter(
-                new GiftCardsDataBaseImpl(getContext()).selectAll(email), getContext());
-        recyclerView.setAdapter(adapter);
-
     }
 }

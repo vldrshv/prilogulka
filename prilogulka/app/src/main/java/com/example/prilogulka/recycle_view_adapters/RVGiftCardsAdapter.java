@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.prilogulka.R;
-import com.example.prilogulka.data.GiftCard;
+import com.example.prilogulka.data.GiftCardK;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
 import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
@@ -19,12 +19,12 @@ import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
 import java.util.List;
 
 public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.GiftCardsHolder> {
-    List<GiftCard> giftCardsList;
+    List<GiftCardK> giftCardsList;
     UserActionsDataBase userActionsDB;
     String email;
     int progress;
 
-    public RVGiftCardsAdapter(List<GiftCard> giftCardsList, Context context) {
+    public RVGiftCardsAdapter(List<GiftCardK> giftCardsList, Context context) {
         this.giftCardsList = giftCardsList;
 
         SharedPreferencesManager spManager = new SharedPreferencesManager(context);
@@ -53,10 +53,14 @@ public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.
 
     @Override
     public void onBindViewHolder(RVGiftCardsAdapter.GiftCardsHolder personViewHolder, int i) {
-        personViewHolder.cardDescription.setText(giftCardsList.get(i).getDescription());
-        personViewHolder.cardPrice.setText(giftCardsList.get(i).getCoastBronze() + "");
-        personViewHolder.cardImage.setImageResource(giftCardsList.get(i).getDestination());
-        personViewHolder.giftCardProgressBar.setMax(giftCardsList.get(i).getCoastBronze());
+        personViewHolder.cardDescription.setText(giftCardsList.get(i).getCard().getDescription());
+        String bronze = "0";
+        if (!giftCardsList.get(i).getCard().getPriceArray().isEmpty())
+            if (!giftCardsList.get(i).getCard().getPriceArray().get(0).equals(""))
+                bronze = giftCardsList.get(i).getCard().getPriceArray().get(0);
+        personViewHolder.cardPrice.setText(bronze);
+//        personViewHolder.cardImage.setImageResource(giftCardsList.get(i).getDestination());
+        personViewHolder.giftCardProgressBar.setMax(Integer.parseInt(bronze));
         personViewHolder.giftCardProgressBar.setProgress(progress);
         /**
          * TODO: описать функцию проверки статуса карточки

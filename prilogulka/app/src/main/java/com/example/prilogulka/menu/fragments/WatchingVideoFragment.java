@@ -43,7 +43,6 @@ import android.widget.VideoView;
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Time;
 import com.example.prilogulka.data.Video;
-import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
 import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
@@ -78,7 +77,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     Button btnNext;
     VideoView videoView;
-    TextView textViewVideoCounter, textViewTimeNow, textViewTimeFull;
+    TextView textViewVideoCounter;
     Menu menu;
 
     int money = 0;
@@ -134,8 +133,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     private void initUIReference(ViewGroup rootView) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
         textViewVideoCounter = rootView.findViewById(R.id.textViewVideoCounter);
-        textViewTimeNow = rootView.findViewById(R.id.tvTimeNow);
-        textViewTimeFull = rootView.findViewById(R.id.tvTimeFull);
 
         videoView = rootView.findViewById(R.id.videoPlayer);
         videoView.stopPlayback();
@@ -184,8 +181,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
         stopVideo();
         videoView.setVideoURI(uriList[playingVideoIndex]);
-        textViewTimeNow.setText(videoView.getCurrentPosition()+"");
-        textViewTimeFull.setText(videoView.getDuration() + "");
         menu.getItem(0).setTitle("Состояние счета: " + getMoney());
     }
 
@@ -209,10 +204,10 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             case R.id.action_settings:
                 item.setTitle("Состояние счета: " + getMoney());
                 return true;
-            case R.id.action_help:
-                HintDialogs hd = new HintDialogs(getContext());
-                hd.showHint(getString(R.string.watchingVideoHint), CLASS_TITLE);
-                return true;
+//            case R.id.action_help:
+//                HintDialogs hd = new HintDialogs(getContext());
+//                hd.showHint(getString(R.string.watchingVideoHint), CLASS_TITLE);
+//                return true;
             default:
                 break;
         }
@@ -307,7 +302,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     public void onResume() {
         super.onResume();
         startCameraSource();
-        videoView.resume();
     }
 
     /**
@@ -317,7 +311,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     public void onPause() {
         super.onPause();
         mPreview.stop();
-        Log.i(CLASS_TAG, "onPause");
     }
 
     /**
@@ -329,19 +322,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         super.onDestroy();
         if (mCameraSource != null) {
             mCameraSource.release();
-//
-            //mPreview.release();
-//
         }
-        Log.i(CLASS_TAG, "onDestroy");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mPreview.stop();
-        videoView.pause();
-        Log.i(CLASS_TAG, "onStop");
     }
 
     /**
@@ -410,9 +391,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                     GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), code, RC_HANDLE_GMS);
             dlg.show();
         }
-
-        Log.i(CLASS_TAG, (mCameraSource == null) + "");
-        Log.i(CLASS_TAG, (mGraphicOverlay == null) + "");
 
         if (mCameraSource != null) {
             try {
