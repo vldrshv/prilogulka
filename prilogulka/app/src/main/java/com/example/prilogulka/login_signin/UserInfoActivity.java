@@ -30,8 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.prilogulka.R;
-import com.example.prilogulka.TEST_INSERTION_CLASS;
-import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.android.interraction.DatePicker;
 import com.example.prilogulka.data.managers.CoefficientManager;
 import com.example.prilogulka.data.managers.GeofenceManager;
@@ -40,7 +38,6 @@ import com.example.prilogulka.data.service.UserService;
 import com.example.prilogulka.data.userData.Auth;
 import com.example.prilogulka.data.userData.User;
 import com.example.prilogulka.data.userData.UserInfo;
-import com.example.prilogulka.data_base.GiftCardsDataBaseImpl;
 
 import java.io.IOException;
 
@@ -199,15 +196,12 @@ public class UserInfoActivity extends AppCompatActivity
         coefficient = (float) (district_coef * age_coef);
     }
     private void uploadGiftCards() {
-        GiftCardsDataBaseImpl giftCardsDataBase = new GiftCardsDataBaseImpl(this);
-        giftCardsDataBase.createTable();
+//        GiftCardsDataBaseImpl giftCardsDataBase = new GiftCardsDataBaseImpl(this);
+//        giftCardsDataBase.createTable();
         /**
          * TODO: connect to server, download GiftCards.
          */
-        Log.i(CLASS_TAG, "TEST_INSERTION_CLASS.resetDataBase(GiftCard.class).makeInsertion(GiftCard.class)");
-        TEST_INSERTION_CLASS t = new TEST_INSERTION_CLASS(email, this);
-        t.resetDataBase(GiftCard.class);
-        t.makeInsertion(GiftCard.class);
+
     }
 
     private Auth getUserFromServer(UserService service) throws IOException {

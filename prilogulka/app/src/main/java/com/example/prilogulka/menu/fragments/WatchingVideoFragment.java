@@ -41,11 +41,10 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.example.prilogulka.R;
-import com.example.prilogulka.data.Time;
 import com.example.prilogulka.data.Video;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
+import com.example.prilogulka.data.service.VideoService;
 import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
 import com.example.prilogulka.facetracker.FaceGraphic;
 import com.example.prilogulka.facetracker.ui.camera.CameraSourcePreview;
 import com.example.prilogulka.facetracker.ui.camera.GraphicOverlay;
@@ -58,6 +57,11 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
@@ -66,8 +70,8 @@ import java.io.IOException;
 public final class WatchingVideoFragment extends Fragment implements View.OnClickListener,
         MediaPlayer.OnCompletionListener {
 
+    // CAMERA VARS
     private CameraSource mCameraSource = null;
-
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
 
@@ -75,21 +79,23 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
 
+    // ACTIVITY VARS
     Button btnNext;
     VideoView videoView;
     TextView textViewVideoCounter;
     Menu menu;
 
     int money = 0;
-    Uri uriList[];
+    ArrayList<Uri> uriList;
     String email;
     float WP = 51.12f;
     float COEF = 1.0f;
 
     int playingVideoIndex = 0;
 
-    UserActionsDataBase actionsDB;
+//    UserActionsDataBase actionsDB;
     SharedPreferencesManager spManager;
+    VideoService service;
 
     private static final String CLASS_TAG = "WatchingVideoFragment";
     final String CLASS_TITLE = "Рекламные ролики";
@@ -111,17 +117,21 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         initUIReference(rootView);
 
         textViewVideoCounter.setText(money + "");
+        initServices(); //todo get from db
+        uriList = new ArrayList<>();
+        try {
+            List<Video> videoList = service.getAllVideos().execute().body();
+            for (Video v : videoList) {
+                Log.i(CLASS_TAG, v.toString());
+                uriList.add(Uri.parse("http://92.53.65.46:3000/" + v.getVideoItem().getUrl()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        Uri myUri1 = Uri.parse("http://ec2-18-194-207-144.eu-central-1.compute.amazonaws.com/1/video1.mp4");
-        Uri myUri2 = Uri.parse("http://ec2-18-194-207-144.eu-central-1.compute.amazonaws.com/1/video2.mp4");
-        Uri myUri3 = Uri.parse("http://ec2-18-194-207-144.eu-central-1.compute.amazonaws.com/1/video3.mp4");
-        Uri myUri4 = Uri.parse("http://ec2-18-194-207-144.eu-central-1.compute.amazonaws.com/1/video4.mp4");
-        Uri myUri5 = Uri.parse("http://ec2-18-194-207-144.eu-central-1.compute.amazonaws.com/1/video5.mp4");
-        Uri myUri6 = Uri.parse("http://ec2-18-194-207-144.eu-central-1.compute.amazonaws.com/1/video6.mp4");
+        //uriList = new Uri[]{myUri1, myUri2, myUri3, myUri4, myUri5, myUri6};
 
-        uriList = new Uri[]{myUri1, myUri2, myUri3, myUri4, myUri5, myUri6};
-
-        videoView.setVideoURI(uriList[0]);
+        videoView.setVideoURI(uriList.get(0));
 
         checkCameraPermission();
 
@@ -145,13 +155,25 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         mPreview = (CameraSourcePreview) rootView.findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) rootView.findViewById(R.id.faceOverlay);
 
+    }
+    // todo async in MENU_ACTIVITY
+    private void initServices() {
+
         spManager = new SharedPreferencesManager(getContext());
         email = spManager.getActiveUser();
         COEF = spManager.getWPCoefficient();
         System.out.println("COEF = " + COEF);
-        actionsDB = new UserActionsDataBaseImpl(getContext());
-    }
 
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://92.53.65.46:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        service = retrofit.create(VideoService.class);
+    }
+//    private void initDB() {
+//        actionsDB = new UserActionsDataBaseImpl(getContext());
+//    }
     public void checkCameraPermission() {
         int rc = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
@@ -174,13 +196,13 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     }
 
     private void nextVideo() {
-        if (playingVideoIndex == uriList.length - 1)
+        if (playingVideoIndex == uriList.size() - 1)
             playingVideoIndex = 0;
         else
             playingVideoIndex++;
 
         stopVideo();
-        videoView.setVideoURI(uriList[playingVideoIndex]);
+        videoView.setVideoURI(uriList.get(playingVideoIndex));
         menu.getItem(0).setTitle("Состояние счета: " + getMoney());
     }
 
@@ -220,10 +242,11 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         Log.i(CLASS_TAG, "VIDEO #" + playingVideoIndex + " was over, STARTING new video");
         money++;
 
-        actionsDB.insertUserActions(new Video(1, email,
-                playingVideoIndex + "", (int)(WP * COEF),
-                Time.getTodayTime() + " " + Time.getToday()));
-        textViewVideoCounter.setText(money + "");
+        //todo insert user actions
+//        actionsDB.insertUserActions(new Video(1, email,
+//                playingVideoIndex + "", (int)(WP * COEF),
+//                Time.getTodayTime() + " " + Time.getToday()));
+//        textViewVideoCounter.setText(money + "");
         nextVideo();
     }
 

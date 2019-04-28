@@ -7,11 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.prilogulka.data.Time;
-import com.example.prilogulka.data.Video;
 import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserActionsDataBaseImpl extends SQLiteOpenHelper implements UserActionsDataBase {
     public UserActionsDataBaseImpl(Context context) {
@@ -43,28 +39,6 @@ public class UserActionsDataBaseImpl extends SQLiteOpenHelper implements UserAct
         System.out.println("DOWNGRADE DB oldVersion=" + oldVersion + " - newVersion=" + newVersion);
     }
 
-    public void insertUserActions(Video video) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        Log.i(CLASS_TAG, INSERT_QUERY);
-        String query = String.format(INSERT_QUERY, video.getUserWatched(), video.getVideoId(),
-                video.getWatchPoints(), Time.getTodayTime() + " " + Time.getToday());
-        Log.i(CLASS_TAG, query);
-
-        database.execSQL(query);
-        database.close();
-    }
-
-    public void insertUserActions(Video video, boolean mine) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        Log.i(CLASS_TAG, INSERT_QUERY);
-        String query = String.format(INSERT_QUERY, video.getUserWatched(), video.getVideoId(),
-                video.getWatchPoints(), video.getWatchDate());
-        Log.i(CLASS_TAG, query);
-
-        database.execSQL(query);
-        database.close();
-    }
-
     public void insertOutCome(String email, int watchpoints) {
         SQLiteDatabase database = this.getWritableDatabase();
         Log.i(CLASS_TAG, INSERT_QUERY);
@@ -74,58 +48,6 @@ public class UserActionsDataBaseImpl extends SQLiteOpenHelper implements UserAct
 
         database.execSQL(query);
         database.close();
-    }
-
-    /**
-     * TODO: WHERE user = '-------'
-     */
-    @Override
-    public int getUsersActionsCount() {
-        SQLiteDatabase database = this.getReadableDatabase();
-        String query = "SELECT COUNT(*) FROM " + DATA_BASE_NAME + ";";
-
-        Log.i(CLASS_TAG, query);
-
-        Cursor cursor = database.rawQuery(query, null);
-        cursor.moveToFirst();
-        return cursor.getInt(0);
-    }
-
-    /**
-     * TODO: WHERE user = '-------'
-     */
-    @Override
-    public List<Video> selectAll() {
-        return findUserActions(null, null);
-    }
-
-    /**
-     * TODO: WHERE user = '-------'
-     */
-    @Override
-    public List<Video> findUserActions(String column, String filter) {
-        String query;
-        if (column == null || filter == null)
-            query = SELECT_ALL_QUERY;
-        else
-            query = "SELECT * FROM " + DATA_BASE_NAME + " WHERE " + column + " LIKE " + "'" + filter + "';";
-
-        Log.i(CLASS_TAG, query);
-
-        List<Video> videoList = new ArrayList<>();
-
-        SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery(query, null);
-        while (cursor.moveToNext()) {
-            videoList.add( new Video(
-               cursor.getInt(0), // id
-               cursor.getString(1), // email
-               cursor.getString(2), // watched_video_id
-               cursor.getInt(3), // watch_points
-               cursor.getString(4) // watch_date
-            ));
-        }
-        return videoList;
     }
 
     @Override
@@ -154,21 +76,6 @@ public class UserActionsDataBaseImpl extends SQLiteOpenHelper implements UserAct
         String query = "UPDATE " + DATA_BASE_NAME + " SET " + column + " = " + newData
                 + " WHERE email = '" + userEmail + "';";
 
-        SQLiteDatabase database = this.getWritableDatabase();
-        database.execSQL(query);
-    }
-
-    /**
-     * TODO: WHERE user = '-------'
-     */
-    @Override
-    public void updateUserActions(Video video) {
-        String query = "UPDATE " + DATA_BASE_NAME + " SET "
-                + COLUMN_WATCHED_VIDEO_ID + " = '" + video.getVideoId() + "', "
-                + COLUMN_WATCH_POINTS + " = '" + video.getWatchPoints() + "', "
-                + COLUMN_WATCH_DATE + " = '" + video.getWatchDate() + "';";
-
-        Log.i(CLASS_TAG, query);
         SQLiteDatabase database = this.getWritableDatabase();
         database.execSQL(query);
     }

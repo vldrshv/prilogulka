@@ -43,10 +43,10 @@ public class RVActivatedCardsAdapter extends RecyclerView.Adapter<RVActivatedCar
 
     @Override
     public void onBindViewHolder(RVActivatedCardsAdapter.ActivatedCardsHolder personViewHolder, int i) {
-        personViewHolder.cardDescription.setText(giftCardsList.get(i).getDescription());
-        personViewHolder.cardPrice.setText(giftCardsList.get(i).getCoastBronze() + "");
-        personViewHolder.cardImage.setImageResource(giftCardsList.get(i).getDestination());
-        personViewHolder.giftCardProgressBar.setVisibility(View.GONE);
+//        personViewHolder.cardDescription.setText(giftCardsList.get(i).getDescription());
+//        personViewHolder.cardPrice.setText(giftCardsList.get(i).getCoastBronze() + "");
+//        personViewHolder.cardImage.setImageResource(giftCardsList.get(i).getDestination());
+//        personViewHolder.giftCardProgressBar.setVisibility(View.GONE);
         /**
          * TODO: описать функцию проверки статуса карточки
          */
@@ -70,5 +70,7 @@ public class RVActivatedCardsAdapter extends RecyclerView.Adapter<RVActivatedCar
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
+
+
 }
 

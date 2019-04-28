@@ -18,58 +18,63 @@
     <ImageView
         android:id="@+id/giftCardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@color/colorPrimary"
         android:padding="8dp"
         app:srcCompat="@drawable/ozon" />
 
-    <TextView
-        android:id="@+id/infoAboutCard"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text=""
-        android:textColor="@android:color/black"
-        android:textSize="18sp" />
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <Button
-            android:id="@+id/buyBronzeCard"
-            android:layout_margin="8dp"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/background_light"
-            android:background="@color/colorPrimaryDark"
-            android:layout_weight="1"
-            android:text="Активировать карту на 500 Р" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/buySilverCard"
-            android:layout_margin="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@android:color/background_light"
-            android:background="@color/colorPrimaryDark"
-            android:text="Активировать карту на 1000 Р" />
+            <TextView
+                android:id="@+id/infoAboutCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
 
-        <Button
-            android:id="@+id/buyGoldenCard"
-            android:layout_margin="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@android:color/background_light"
-            android:background="@color/colorPrimaryDark"
-            android:text="Активировать карту на 1500 Р" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/buySilverCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:text="Активировать карту на 1000 Р"
+                android:textColor="@android:color/background_light" />
+
+            <Button
+                android:id="@+id/buyBronzeCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:text="Активировать карту на 500 Р"
+                android:textColor="@android:color/background_light" />
+
+            <Button
+                android:id="@+id/buyGoldenCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:text="Активировать карту на 1500 Р"
+                android:textColor="@android:color/background_light" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

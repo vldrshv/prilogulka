@@ -1,3 +1,4 @@
+
 package com.example.prilogulka.menu;
 
 import android.content.Intent;
@@ -13,8 +14,6 @@ import android.widget.TextView;
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data_base.ActivatedCardsDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.ActivatedCardsDataBase;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -22,7 +21,8 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 public class ActivatedCardActivity extends AppCompatActivity {
-    ActivatedCardsDataBase activatedCardsDB;
+    // TODO: 27.04.2019 activated gift cards
+    //    ActivatedCardsDataBase activatedCardsDB;
     GiftCard giftCard;
 
     SharedPreferencesManager spM;
@@ -52,15 +52,17 @@ public class ActivatedCardActivity extends AppCompatActivity {
         barcodeImage = findViewById(R.id.barcode);
         activatedCardNumber = findViewById(R.id.activatedCardNumber);
 
-        activatedCardsDB = new ActivatedCardsDataBaseImpl(this);
+//        activatedCardsDB = new ActivatedCardsDataBaseImpl(this);
     }
+
     public void setValuesToLayout(){
         giftCard = findCardInDataBase();
 
         if (giftCard != null) {
-            giftCardView.setImageResource(giftCard.getDestination());
-            barcodeImage.setImageBitmap(createBarCode(giftCard.getBronzeCode()));
-            activatedCardNumber.setText(giftCard.getBronzeCode() + "");
+            //todo giftcard image recourse
+            giftCardView.setImageResource(R.drawable.hsm);//giftCard.getDestination());
+            barcodeImage.setImageBitmap(createBarCode(giftCard.getCard().getSerialNumber()));
+            activatedCardNumber.setText(giftCard.getCard().getSerialNumber() + "");
         }
 
     }
@@ -68,7 +70,7 @@ public class ActivatedCardActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String code = intent.getStringExtra("code");
 
-        return activatedCardsDB.findCard(code, email);
+        return null;//activatedCardsDB.findCard(code, email);
     }
     public void setToolbar(){
         Toolbar toolbar = findViewById(R.id.toolbar);

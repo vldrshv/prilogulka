@@ -3,6 +3,7 @@ package com.example.prilogulka.recycle_view_adapters;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,20 +12,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.prilogulka.R;
-import com.example.prilogulka.data.GiftCardK;
+import com.example.prilogulka.data.Card;
+import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
 import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.GiftCardsHolder> {
-    List<GiftCardK> giftCardsList;
+    List<GiftCard> giftCardsList;
     UserActionsDataBase userActionsDB;
     String email;
     int progress;
 
-    public RVGiftCardsAdapter(List<GiftCardK> giftCardsList, Context context) {
+    public RVGiftCardsAdapter(List<GiftCard> giftCardsList, Context context) {
         this.giftCardsList = giftCardsList;
 
         SharedPreferencesManager spManager = new SharedPreferencesManager(context);
@@ -53,18 +56,21 @@ public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.
 
     @Override
     public void onBindViewHolder(RVGiftCardsAdapter.GiftCardsHolder personViewHolder, int i) {
-        personViewHolder.cardDescription.setText(giftCardsList.get(i).getCard().getDescription());
-        String bronze = "0";
-        if (!giftCardsList.get(i).getCard().getPriceArray().isEmpty())
-            if (!giftCardsList.get(i).getCard().getPriceArray().get(0).equals(""))
-                bronze = giftCardsList.get(i).getCard().getPriceArray().get(0);
-        personViewHolder.cardPrice.setText(bronze);
+        Card giftCard = giftCardsList.get(i).getCard();
+        personViewHolder.cardDescription.setText(giftCard.getDescription());
+        giftCard.setPrices();
+
+        Log.i("ADAPTER", i+"");
+        personViewHolder.cardPrice.setText(giftCard.getPriceBronze()+"");
 //        personViewHolder.cardImage.setImageResource(giftCardsList.get(i).getDestination());
-        personViewHolder.giftCardProgressBar.setMax(Integer.parseInt(bronze));
+        personViewHolder.giftCardProgressBar.setMax(giftCard.getPriceBronze());
         personViewHolder.giftCardProgressBar.setProgress(progress);
         /**
          * TODO: описать функцию проверки статуса карточки
          */
+        Picasso.get()
+                .load("http://92.53.65.46:3000/" + giftCard.getImageUrl())
+                .into(personViewHolder.cardImage);
 
     }
 

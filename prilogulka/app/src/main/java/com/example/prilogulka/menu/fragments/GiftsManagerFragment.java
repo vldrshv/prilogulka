@@ -1,5 +1,8 @@
 package com.example.prilogulka.menu.fragments;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,17 +19,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.prilogulka.R;
-import com.example.prilogulka.data.GiftCardK;
+import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.GiftCardService;
 import com.example.prilogulka.data_base.GiftCardDAO;
 import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
 import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
+import com.example.prilogulka.menu.CardShop;
 import com.example.prilogulka.recycle_view_adapters.RVGiftCardsAdapter;
+import com.example.prilogulka.recycle_view_adapters.RecyclerItemClickListener;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Retrofit;
@@ -43,6 +47,8 @@ public class GiftsManagerFragment extends Fragment {
     String email;
     Menu menu;
     GiftCardService service;
+    List<GiftCard> giftCardList;
+    GiftCardDAO giftCardDAO;
 
     String CLASS_TAG = "GiftsManagerFragment";
     final String CLASS_TITLE = "Мой счет/Вывод средств";
@@ -52,15 +58,16 @@ public class GiftsManagerFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_gifts_manager, container, false);
 
+        checkDataBase();
+
+
         spM = new SharedPreferencesManager(getContext());
         email = spM.getActiveUser();
 
         moneyTextView = rootView.findViewById(R.id.money_giftsManager);
         moneyTextView.setText("Состояние счета: " + getMoney());
 
-        /**
-         * TODO: заменить битом синхронизации
-         */
+        checkDataBase();
 
         GiftCardsGetter task = new GiftCardsGetter();
         task.doInBackground();
@@ -68,10 +75,20 @@ public class GiftsManagerFragment extends Fragment {
         initRecycleView();
         setHasOptionsMenu(true);
 
+        if (!giftCardList.isEmpty())
+            giftCardDAO.insert(giftCardList);
+
+        giftCardList.clear();
+        giftCardList.addAll(giftCardDAO.selectAll());
+
         Log.i(CLASS_TAG, email);
         return rootView;
     }
 
+    private void checkDataBase() {
+        giftCardDAO = new GiftCardDAO(getContext());
+        giftCardList = giftCardDAO.selectAll();
+    }
     private float getMoney(){
         UserActionsDataBase userActionsDB = new UserActionsDataBaseImpl(getContext());
         return userActionsDB.getUserMoney(email);
@@ -88,33 +105,35 @@ public class GiftsManagerFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.giftCardsRecycleView);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
-        GiftCardDAO giftCardDAO = new GiftCardDAO(getContext());
 
-        adapter = new RVGiftCardsAdapter(giftCardDAO.selectAll(), getContext());
+        adapter = new RVGiftCardsAdapter(giftCardList, getContext());
         recyclerView.setAdapter(adapter);
 
-//        recyclerView.addOnItemTouchListener(
-//                new RecyclerItemClickListener(getContext(), recyclerView,
-//                        new RecyclerItemClickListener.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(View view, int position) {
-//                        List<GiftCard> list = giftCardsDataBase.selectAll(email);
-//
-//                        Context context = view.getContext();
-//                        Intent intent = new Intent(context, CardShop.class);
-//                        intent.putExtra("giftCardName", list.get(position).getName());
-//
-//                        context.startActivity(intent);
-//                    }
-//
-//                    @Override
-//                    public void onLongItemClick(View view, int position) {
-//                        /**
-//                         * TODO: кнопка не интересно, повысить приоритет.
-//                         */
-//                    }
-//                })
-//        );
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(), recyclerView,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        /**
+                         * TODO: заменить битом синхронизации
+                         */
+
+                        Context context = view.getContext();
+                        Intent intent = new Intent(context, CardShop.class);
+                        intent.putExtra("giftCardId", giftCardList.get(position).getCard().getId());
+                        Log.i(CLASS_TAG, "SELECTED_CARD: " + giftCardList.get(position).getCard().getId());
+
+                        context.startActivity(intent);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        /**
+                         * TODO: кнопка не интересно, повысить приоритет.
+                         */
+                    }
+                })
+        );
 
     }
 
@@ -143,7 +162,7 @@ public class GiftsManagerFragment extends Fragment {
 
     class GiftCardsGetter extends AsyncTask<Void, Void, Void> {
 
-        private GiftCardDAO giftCardDAO = new GiftCardDAO(getContext());
+        @SuppressLint("WrongThread")
         @Override
         protected Void doInBackground(Void... voids) {
             Retrofit retrofit = new Retrofit.Builder()
@@ -152,18 +171,13 @@ public class GiftsManagerFragment extends Fragment {
                     .build();
 
             service = retrofit.create(GiftCardService.class);
-            List<GiftCardK> giftCardsList = new ArrayList<>();
             try {
-                giftCardsList = service.getAllGiftCards().execute().body();
+                giftCardList = service.getAllGiftCards().execute().body();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            if (!giftCardsList.isEmpty())
-                giftCardDAO.insert(giftCardsList);
-
-            giftCardsList.clear();
-            giftCardsList.addAll(giftCardDAO.selectAll());
+            Log.i(CLASS_TAG, "DOWNLOADED " + giftCardList.size());
 
             return null;
         }
@@ -179,5 +193,7 @@ public class GiftsManagerFragment extends Fragment {
             menu.getItem(0).setTitle("Состояние счета: " +
                 new UserActionsDataBaseImpl(getContext()).getUserMoney(email));
         moneyTextView.setText("Состояние счета: " + getMoney());
+
+//
     }
 }

@@ -401,14 +401,18 @@ public class MainActivity extends AppCompatActivity
     private void serializeUser() {
         try {
             user = service.getUser(email).execute().body();
-            SerializeObject so = new SerializeObject(this);
-            Log.i(CLASS_TAG, user.toString());
-            so.writeObject(user, user.getClass());
-            spManager.setQuestionnaire(user.getUser().getUser_coeff() != 0);
+            if (user.getUser() != null) {
+                SerializeObject so = new SerializeObject(this);
+                Log.i(CLASS_TAG, user.toString());
+                so.writeObject(user, user.getClass());
+                spManager.setQuestionnaire(user.getUser().getUser_coeff() != 0);
 
-            userId = user.getUser().getId();
+                userId = user.getUser().getId();
 
-            Log.i(CLASS_TAG, user.toString());
+                Log.i(CLASS_TAG, user.toString());
+            } else {
+                showHint("Вы не зарегистрированны. Пожалуйста, пройдите регистрацию!");
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -483,8 +487,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDestroy() {
         super.onDestroy();
-        locationManager.removeUpdates(this);
-        locationManager=null;
+        if (locationManager != null) {
+            locationManager.removeUpdates(this);
+            locationManager = null;
+        }
     }
 
     /**

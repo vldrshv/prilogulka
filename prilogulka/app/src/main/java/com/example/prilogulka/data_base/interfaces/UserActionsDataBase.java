@@ -1,9 +1,5 @@
 package com.example.prilogulka.data_base.interfaces;
 
-import com.example.prilogulka.data.Video;
-
-import java.util.List;
-
 public interface UserActionsDataBase {
     String CLASS_TAG = "DATA_BASE_USER_ACTIONS";
     String DATA_BASE_NAME = "user_actions";
@@ -27,22 +23,16 @@ public interface UserActionsDataBase {
     String COLUMN_WATCH_POINTS = "watch_points";
     String COLUMN_WATCH_DATE = "watch_date";
 
-
-    public int getUsersActionsCount();
-
-    public List<Video> selectAll();
-    public List<Video> findUserActions (String column, String filter);
-
     public void insertOutCome(String email, int watchpoints);
-    public void insertUserActions (Video video);
-    public void insertUserActions (Video video, boolean mine);
+//    public void insertUserActions (Video video);
+//    public void insertUserActions (Video video, boolean mine);
 
     public void dropTable();
     public void createTable();
 
     public void updateUserActions(String userEmail, String column, String newData);
     public void updateUserActions(String userEmail, String column, float newData);
-    public void updateUserActions(Video video);
+//    public void updateUserActions(Video video);
 
     public float getUserMoney(String email);
     public float getUserByDate(String email, String filter);
