@@ -1,0 +1,146 @@
+package com.example.prilogulka.data_base
+
+import android.content.ContentValues
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+import android.provider.BaseColumns
+import com.example.prilogulka.data.GiftCard
+
+
+class ActivatedCardsDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    object GiftCardEntery : BaseColumns {
+        const val TABLE_NAME = "activated_cards"
+        const val _ID = "_id"
+        const val _CARD_ID = "card_id"
+        const val _SERIAL_NUMBER = "serial_number"
+        const val _DUE_DATE = "due_date"
+        const val _DAY_BOUGHT = "day_bought"
+        const val _IMAGE_URL = "image_url"
+        const val _DESCRIPTION = "description"
+        const val _PRICE = "price"
+    }
+
+    private val SQL_CREATE_ENTRIES =
+            "CREATE TABLE ${GiftCardEntery.TABLE_NAME} (" +
+                    "${GiftCardEntery._ID} INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE," +
+                    "${GiftCardEntery._CARD_ID} INTEGER," +
+                    "${GiftCardEntery._SERIAL_NUMBER} TEXT," +
+                    "${GiftCardEntery._DUE_DATE} TEXT," +
+                    "${GiftCardEntery._DAY_BOUGHT} TEXT," +
+                    "${GiftCardEntery._IMAGE_URL} TEXT," +
+                    "${GiftCardEntery._DESCRIPTION} TEXT," +
+                    "${GiftCardEntery._PRICE} INTEGER)"
+
+    private val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${GiftCardEntery.TABLE_NAME}"
+
+    override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL(SQL_CREATE_ENTRIES)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL(SQL_DELETE_ENTRIES)
+        onCreate(db)
+    }
+
+    override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        onUpgrade(db, oldVersion, newVersion)
+    }
+
+    companion object {
+        const val DATABASE_VERSION = 1
+        const val DATABASE_NAME = "LocationDataSource.db"
+    }
+
+    fun insert(giftCard: GiftCard, price: Int) {
+        println(giftCard)
+        val db = this.writableDatabase
+        val values = setContentValues(giftCard, price)
+
+        db?.insert(GiftCardEntery.TABLE_NAME, null, values)
+    }
+
+    fun selectAll(): List<GiftCard> {
+        val db = this.readableDatabase
+
+        val cursor = db.query(
+                GiftCardEntery.TABLE_NAME,    // The table to query
+                null,//projection,    // The array of columns to return (pass null to get all)
+                null,//selection,               // The columns for the WHERE clause
+                null,                       // The values for the WHERE clause
+                null,                          // don't group the rows
+                null,                           // don't filter by row groups
+                null                           // The sort order
+        )
+        val items = arrayListOf<GiftCard>()
+        with(cursor) {
+            while (moveToNext()) {
+                val giftCard = GiftCard()
+                giftCard.card.id = getInt(getColumnIndexOrThrow(GiftCardEntery._ID))
+                giftCard.card.cardId = getInt(getColumnIndexOrThrow(GiftCardEntery._CARD_ID))
+                giftCard.card.serialNumber = getString(getColumnIndexOrThrow(GiftCardEntery._SERIAL_NUMBER))
+                giftCard.card.dueDate = getString(getColumnIndexOrThrow(GiftCardEntery._DUE_DATE))
+                giftCard.card.dayBought = getString(getColumnIndexOrThrow(GiftCardEntery._DAY_BOUGHT))
+                giftCard.card.imageUrl = getString(getColumnIndexOrThrow(GiftCardEntery._IMAGE_URL))
+                giftCard.card.description = getString(getColumnIndexOrThrow(GiftCardEntery._DESCRIPTION))
+                val price = getString(getColumnIndexOrThrow(GiftCardEntery._PRICE))
+                giftCard.card.priceArray = price.split(", ")
+                items.add(giftCard)
+            }
+        }
+        return items
+    }
+    fun select(id: Int): List<GiftCard> {
+        val db = this.writableDatabase
+        val cursor = db.query(
+                GiftCardEntery.TABLE_NAME,    // The table to query
+                null,//projection,    // The array of columns to return (pass null to get all)
+                "${GiftCardEntery._ID} = ?",//selection,               // The columns for the WHERE clause
+                arrayOf(id.toString()),                       // The values for the WHERE clause
+                null,                          // don't group the rows
+                null,                           // don't filter by row groups
+                null                           // The sort order
+        )
+        val items = arrayListOf<GiftCard>()
+        with(cursor) {
+            while (moveToNext()) {
+                val giftCard = GiftCard()
+                giftCard.card.id = getInt(getColumnIndexOrThrow(GiftCardEntery._ID))
+                giftCard.card.cardId = getInt(getColumnIndexOrThrow(GiftCardEntery._CARD_ID))
+                giftCard.card.serialNumber = getString(getColumnIndexOrThrow(GiftCardEntery._SERIAL_NUMBER))
+                giftCard.card.dueDate = getString(getColumnIndexOrThrow(GiftCardEntery._DUE_DATE))
+                giftCard.card.imageUrl = getString(getColumnIndexOrThrow(GiftCardEntery._IMAGE_URL))
+                giftCard.card.description = getString(getColumnIndexOrThrow(GiftCardEntery._DESCRIPTION))
+                val price = getString(getColumnIndexOrThrow(GiftCardEntery._PRICE))
+                giftCard.card.priceArray = price.split(", ")
+                items.add(giftCard)
+            }
+        }
+        return items
+    }
+    private fun deleteAll() {
+        val db = this.writableDatabase
+        db?.delete(GiftCardEntery.TABLE_NAME, null, null)
+    }
+
+    fun update(giftCard: GiftCard, price: Int = 0) {
+        val db = this.writableDatabase
+        val values = setContentValues(giftCard)
+
+        db?.update(GiftCardEntery.TABLE_NAME, values, "${GiftCardEntery._ID} = ?", arrayOf(giftCard.card.id.toString()))
+    }
+
+    private fun setContentValues(giftCard: GiftCard, price: Int = 0) : ContentValues {
+        val values = ContentValues().apply {
+            put(GiftCardEntery._ID, giftCard.card.id)
+            put(GiftCardEntery._CARD_ID, giftCard.card.cardId)
+            put(GiftCardEntery._SERIAL_NUMBER, giftCard.card.serialNumber)
+            put(GiftCardEntery._DUE_DATE, giftCard.card.dueDate)
+            put(GiftCardEntery._DAY_BOUGHT, giftCard.card.dayBought)
+            put(GiftCardEntery._IMAGE_URL, giftCard.card.imageUrl)
+            put(GiftCardEntery._DESCRIPTION, giftCard.card.description)
+            put(GiftCardEntery._PRICE, price.toString())
+        }
+        return values
+    }
+}

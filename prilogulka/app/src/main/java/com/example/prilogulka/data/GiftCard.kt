@@ -14,12 +14,14 @@ class GiftCard {
 class Card {
     @SerializedName("id")
     var id: Int = 0
+    var cardId: Int = 0
     @SerializedName("serial_number")
     var serialNumber: String = ""
     @SerializedName("ad_compaing_id")
     var companyAdvertisementId: Int = 0
     @SerializedName("due_date")
     var dueDate: String = ""
+    var dayBought: String = ""
     @SerializedName("image_url")
     var imageUrl: String = ""
     @SerializedName("brand")
@@ -50,7 +52,7 @@ class Card {
         return "Card(id=$id, serialNumber='$serialNumber', " +
                 "companyAdvertisementId=$companyAdvertisementId, dueDate='$dueDate', " +
                 "imageUrl='$imageUrl', brand='$brand', vendor='$vendor', " +
-                "description='$description', priceArray=$priceArray)"
+                "description='$description', priceArray=$priceArray, dayBought=$dayBought)"
     }
     
     

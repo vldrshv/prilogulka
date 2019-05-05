@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
+import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data_base.GiftCardDAO;
 import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
@@ -22,7 +23,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 // TODO: 27.04.2019 BUY CARDS
-public class CardShop extends AppCompatActivity {// implements Button.OnClickListener {
+public class CardShop extends AppCompatActivity implements Button.OnClickListener {
 
     String CLASS_TAG = "CardShop";
 
@@ -57,13 +58,13 @@ public class CardShop extends AppCompatActivity {// implements Button.OnClickLis
 
     public void initUIReference() {
         buyBronzeCard = findViewById(R.id.buyBronzeCard);
-//        buyBronzeCard.setOnClickListener(this);
+        buyBronzeCard.setOnClickListener(this);
 
         buySilverCard = findViewById(R.id.buySilverCard);
-//        buySilverCard.setOnClickListener(this);
+        buySilverCard.setOnClickListener(this);
 
         buyGoldenCard = findViewById(R.id.buyGoldenCard);
-//        buyGoldenCard.setOnClickListener(this);
+        buyGoldenCard.setOnClickListener(this);
 
         giftCardView = findViewById(R.id.giftCardView);
         infoAboutCard = findViewById(R.id.infoAboutCard);
@@ -79,7 +80,6 @@ public class CardShop extends AppCompatActivity {// implements Button.OnClickLis
         Log.i(CLASS_TAG, userMoney + " " + giftCard.getPriceBronze() + " " +
                 (userMoney > giftCard.getPriceSilver()));
         if (giftCard != null) {
-//            giftCardView.setImageResource(R.drawable.hsm);//giftCard.getDestination());
             infoAboutCard.setText(CARD_INFO + giftCard.getDueDate());
 
             buyBronzeCard.setText("Активировать карту на " + giftCard.getPriceBronze());
@@ -134,20 +134,22 @@ public class CardShop extends AppCompatActivity {// implements Button.OnClickLis
         super.onBackPressed();
     }
 
-//    @Override
-//    public void onClick(View v) {
-//        HintDialogs hd = new HintDialogs(this);
-//        hd.showWarning("Вы действительно хотите активировать карту? После нажатия" +
-//                        " \"Активировать\" отменить активацию будет НЕВОЗМОЖНО. Она переместится в раздел активированные карты",
-//                "Использование карты", v.getId(), giftCard);
-//
-//        Log.i(CLASS_TAG, "Active check - " + hd.wasActivated());
-//
-//        /**
-//         * TODO: выделение строчки меню
-//         */
-//
-//    }
+    @Override
+    public void onClick(View v) {
+        HintDialogs hd = new HintDialogs(this);
+        GiftCard gcard = new GiftCard();
+        gcard.setCard(giftCard);
+        hd.showWarning("Вы действительно хотите активировать карту? После нажатия" +
+                        " \"Активировать\" отменить активацию будет НЕВОЗМОЖНО. Она переместится в раздел активированные карты",
+                "Использование карты", v.getId(), gcard);
+
+        Log.i(CLASS_TAG, "Active check - " + hd.wasActivated());
+
+        /**
+         * TODO: выделение строчки меню
+         */
+
+    }
 
     @Override
     public void onResume(){

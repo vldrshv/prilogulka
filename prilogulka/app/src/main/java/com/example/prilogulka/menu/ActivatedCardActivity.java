@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
+import com.example.prilogulka.data_base.ActivatedCardsDAO;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -23,6 +24,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 public class ActivatedCardActivity extends AppCompatActivity {
     // TODO: 27.04.2019 activated gift cards
     //    ActivatedCardsDataBase activatedCardsDB;
+    ActivatedCardsDAO activatedCardsDAO;
     GiftCard giftCard;
 
     SharedPreferencesManager spM;
@@ -47,12 +49,11 @@ public class ActivatedCardActivity extends AppCompatActivity {
     }
 
     public void initUIReference(){
-
         giftCardView = findViewById(R.id.activatedCard);
         barcodeImage = findViewById(R.id.barcode);
         activatedCardNumber = findViewById(R.id.activatedCardNumber);
 
-//        activatedCardsDB = new ActivatedCardsDataBaseImpl(this);
+        activatedCardsDAO = new ActivatedCardsDAO(this);
     }
 
     public void setValuesToLayout(){
