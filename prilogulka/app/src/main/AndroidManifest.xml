@@ -35,7 +35,6 @@
         <activity
             android:name=".login_signin.MainActivity"
             android:screenOrientation="portrait"
-            android:noHistory="true"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

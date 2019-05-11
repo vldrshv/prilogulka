@@ -9,7 +9,7 @@ import com.example.prilogulka.data.GiftCard
 
 
 class ActivatedCardsDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-    object GiftCardEntery : BaseColumns {
+    object ActivatedCardEntery : BaseColumns {
         const val TABLE_NAME = "activated_cards"
         const val _ID = "_id"
         const val _CARD_ID = "card_id"
@@ -19,20 +19,22 @@ class ActivatedCardsDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_N
         const val _IMAGE_URL = "image_url"
         const val _DESCRIPTION = "description"
         const val _PRICE = "price"
+        const val _EMAIL = "email"
     }
 
     private val SQL_CREATE_ENTRIES =
-            "CREATE TABLE ${GiftCardEntery.TABLE_NAME} (" +
-                    "${GiftCardEntery._ID} INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE," +
-                    "${GiftCardEntery._CARD_ID} INTEGER," +
-                    "${GiftCardEntery._SERIAL_NUMBER} TEXT," +
-                    "${GiftCardEntery._DUE_DATE} TEXT," +
-                    "${GiftCardEntery._DAY_BOUGHT} TEXT," +
-                    "${GiftCardEntery._IMAGE_URL} TEXT," +
-                    "${GiftCardEntery._DESCRIPTION} TEXT," +
-                    "${GiftCardEntery._PRICE} INTEGER)"
+            "CREATE TABLE ${ActivatedCardEntery.TABLE_NAME} (" +
+                    "${ActivatedCardEntery._ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "${ActivatedCardEntery._CARD_ID} INTEGER," +
+                    "${ActivatedCardEntery._SERIAL_NUMBER} TEXT," + //todo UNIQUE
+                    "${ActivatedCardEntery._DUE_DATE} TEXT," +
+                    "${ActivatedCardEntery._DAY_BOUGHT} TEXT," +
+                    "${ActivatedCardEntery._IMAGE_URL} TEXT," +
+                    "${ActivatedCardEntery._DESCRIPTION} TEXT," +
+                    "${ActivatedCardEntery._EMAIL} TEXT," +
+                    "${ActivatedCardEntery._PRICE} INTEGER)"
 
-    private val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${GiftCardEntery.TABLE_NAME}"
+    private val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${ActivatedCardEntery.TABLE_NAME}"
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(SQL_CREATE_ENTRIES)
@@ -49,25 +51,25 @@ class ActivatedCardsDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_N
 
     companion object {
         const val DATABASE_VERSION = 1
-        const val DATABASE_NAME = "LocationDataSource.db"
+        const val DATABASE_NAME = "CardsDataSource.db"
     }
 
-    fun insert(giftCard: GiftCard, price: Int) {
+    fun insert(giftCard: GiftCard, price: Int, email: String) {
         println(giftCard)
         val db = this.writableDatabase
-        val values = setContentValues(giftCard, price)
+        val values = setContentValues(giftCard, price, email)
 
-        db?.insert(GiftCardEntery.TABLE_NAME, null, values)
+        db?.insert(ActivatedCardEntery.TABLE_NAME, null, values)
     }
 
-    fun selectAll(): List<GiftCard> {
+    fun selectAll(email: String): List<GiftCard> {
         val db = this.readableDatabase
 
         val cursor = db.query(
-                GiftCardEntery.TABLE_NAME,    // The table to query
+                ActivatedCardEntery.TABLE_NAME,    // The table to query
                 null,//projection,    // The array of columns to return (pass null to get all)
-                null,//selection,               // The columns for the WHERE clause
-                null,                       // The values for the WHERE clause
+                "${ActivatedCardEntery._EMAIL} = ?",//selection,               // The columns for the WHERE clause
+                arrayOf(email),                       // The values for the WHERE clause
                 null,                          // don't group the rows
                 null,                           // don't filter by row groups
                 null                           // The sort order
@@ -76,27 +78,26 @@ class ActivatedCardsDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_N
         with(cursor) {
             while (moveToNext()) {
                 val giftCard = GiftCard()
-                giftCard.card.id = getInt(getColumnIndexOrThrow(GiftCardEntery._ID))
-                giftCard.card.cardId = getInt(getColumnIndexOrThrow(GiftCardEntery._CARD_ID))
-                giftCard.card.serialNumber = getString(getColumnIndexOrThrow(GiftCardEntery._SERIAL_NUMBER))
-                giftCard.card.dueDate = getString(getColumnIndexOrThrow(GiftCardEntery._DUE_DATE))
-                giftCard.card.dayBought = getString(getColumnIndexOrThrow(GiftCardEntery._DAY_BOUGHT))
-                giftCard.card.imageUrl = getString(getColumnIndexOrThrow(GiftCardEntery._IMAGE_URL))
-                giftCard.card.description = getString(getColumnIndexOrThrow(GiftCardEntery._DESCRIPTION))
-                val price = getString(getColumnIndexOrThrow(GiftCardEntery._PRICE))
+                giftCard.card.cardId = getInt(getColumnIndexOrThrow(ActivatedCardEntery._CARD_ID))
+                giftCard.card.serialNumber = getString(getColumnIndexOrThrow(ActivatedCardEntery._SERIAL_NUMBER))
+                giftCard.card.dueDate = getString(getColumnIndexOrThrow(ActivatedCardEntery._DUE_DATE))
+                giftCard.card.dayBought = getString(getColumnIndexOrThrow(ActivatedCardEntery._DAY_BOUGHT))
+                giftCard.card.imageUrl = getString(getColumnIndexOrThrow(ActivatedCardEntery._IMAGE_URL))
+                giftCard.card.description = getString(getColumnIndexOrThrow(ActivatedCardEntery._DESCRIPTION))
+                val price = getString(getColumnIndexOrThrow(ActivatedCardEntery._PRICE))
                 giftCard.card.priceArray = price.split(", ")
                 items.add(giftCard)
             }
         }
         return items
     }
-    fun select(id: Int): List<GiftCard> {
-        val db = this.writableDatabase
+    fun select(id: Int, email: String): GiftCard {
+        val db = this.readableDatabase
         val cursor = db.query(
-                GiftCardEntery.TABLE_NAME,    // The table to query
+                ActivatedCardEntery.TABLE_NAME,    // The table to query
                 null,//projection,    // The array of columns to return (pass null to get all)
-                "${GiftCardEntery._ID} = ?",//selection,               // The columns for the WHERE clause
-                arrayOf(id.toString()),                       // The values for the WHERE clause
+                "${ActivatedCardEntery._CARD_ID} = ? AND ${ActivatedCardEntery._EMAIL} = ?",//selection,               // The columns for the WHERE clause
+                arrayOf(id.toString(), email),                       // The values for the WHERE clause
                 null,                          // don't group the rows
                 null,                           // don't filter by row groups
                 null                           // The sort order
@@ -105,41 +106,44 @@ class ActivatedCardsDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_N
         with(cursor) {
             while (moveToNext()) {
                 val giftCard = GiftCard()
-                giftCard.card.id = getInt(getColumnIndexOrThrow(GiftCardEntery._ID))
-                giftCard.card.cardId = getInt(getColumnIndexOrThrow(GiftCardEntery._CARD_ID))
-                giftCard.card.serialNumber = getString(getColumnIndexOrThrow(GiftCardEntery._SERIAL_NUMBER))
-                giftCard.card.dueDate = getString(getColumnIndexOrThrow(GiftCardEntery._DUE_DATE))
-                giftCard.card.imageUrl = getString(getColumnIndexOrThrow(GiftCardEntery._IMAGE_URL))
-                giftCard.card.description = getString(getColumnIndexOrThrow(GiftCardEntery._DESCRIPTION))
-                val price = getString(getColumnIndexOrThrow(GiftCardEntery._PRICE))
+                giftCard.card.cardId = getInt(getColumnIndexOrThrow(ActivatedCardEntery._CARD_ID))
+                giftCard.card.serialNumber = getString(getColumnIndexOrThrow(ActivatedCardEntery._SERIAL_NUMBER))
+                giftCard.card.dueDate = getString(getColumnIndexOrThrow(ActivatedCardEntery._DUE_DATE))
+                giftCard.card.imageUrl = getString(getColumnIndexOrThrow(ActivatedCardEntery._IMAGE_URL))
+                giftCard.card.description = getString(getColumnIndexOrThrow(ActivatedCardEntery._DESCRIPTION))
+                val price = getString(getColumnIndexOrThrow(ActivatedCardEntery._PRICE))
                 giftCard.card.priceArray = price.split(", ")
                 items.add(giftCard)
             }
         }
-        return items
+        return items[0]
     }
-    private fun deleteAll() {
+    private fun deleteAll(email: String) {
         val db = this.writableDatabase
-        db?.delete(GiftCardEntery.TABLE_NAME, null, null)
+        db?.delete(ActivatedCardEntery.TABLE_NAME,
+                "${ActionsDAO.ActionsEntery._EMAIL} = ?",
+                arrayOf(email))
     }
 
-    fun update(giftCard: GiftCard, price: Int = 0) {
+    fun update(giftCard: GiftCard, price: Int = 0, email: String) {
         val db = this.writableDatabase
-        val values = setContentValues(giftCard)
+        val values = setContentValues(giftCard, price, email)
 
-        db?.update(GiftCardEntery.TABLE_NAME, values, "${GiftCardEntery._ID} = ?", arrayOf(giftCard.card.id.toString()))
+        db?.update(ActivatedCardEntery.TABLE_NAME, values,
+                "${ActivatedCardEntery._ID} = ?",
+                arrayOf(giftCard.card.cardId.toString()))
     }
 
-    private fun setContentValues(giftCard: GiftCard, price: Int = 0) : ContentValues {
+    private fun setContentValues(giftCard: GiftCard, price: Int = 0, email: String) : ContentValues {
         val values = ContentValues().apply {
-            put(GiftCardEntery._ID, giftCard.card.id)
-            put(GiftCardEntery._CARD_ID, giftCard.card.cardId)
-            put(GiftCardEntery._SERIAL_NUMBER, giftCard.card.serialNumber)
-            put(GiftCardEntery._DUE_DATE, giftCard.card.dueDate)
-            put(GiftCardEntery._DAY_BOUGHT, giftCard.card.dayBought)
-            put(GiftCardEntery._IMAGE_URL, giftCard.card.imageUrl)
-            put(GiftCardEntery._DESCRIPTION, giftCard.card.description)
-            put(GiftCardEntery._PRICE, price.toString())
+            put(ActivatedCardEntery._CARD_ID, giftCard.card.cardId)
+            put(ActivatedCardEntery._SERIAL_NUMBER, giftCard.card.serialNumber)
+            put(ActivatedCardEntery._DUE_DATE, giftCard.card.dueDate)
+            put(ActivatedCardEntery._DAY_BOUGHT, giftCard.card.dayBought)
+            put(ActivatedCardEntery._IMAGE_URL, giftCard.card.imageUrl)
+            put(ActivatedCardEntery._DESCRIPTION, giftCard.card.description)
+            put(ActivatedCardEntery._EMAIL, email)
+            put(ActivatedCardEntery._PRICE, price.toString())
         }
         return values
     }

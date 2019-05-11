@@ -7,13 +7,13 @@ class GiftCard {
     var card: Card = Card()
     
     override fun toString(): String {
-        return "GiftCardK(card=$card)"
+        return "GiftCard(card=$card)"
     }
 }
 
 class Card {
+    
     @SerializedName("id")
-    var id: Int = 0
     var cardId: Int = 0
     @SerializedName("serial_number")
     var serialNumber: String = ""
@@ -42,17 +42,18 @@ class Card {
         var price = arrayOf(0, 0, 0)
         for (i in 0 until priceArray.size)
             price[i] = if (priceArray[i] == "") 0 else Integer.parseInt(priceArray[i])
-    
+        price.sort()
         priceBronze = price[0]
         priceSilver = price[1]
         priceGold = price[2]
     }
     
     override fun toString(): String {
-        return "Card(id=$id, serialNumber='$serialNumber', " +
-                "companyAdvertisementId=$companyAdvertisementId, dueDate='$dueDate', " +
-                "imageUrl='$imageUrl', brand='$brand', vendor='$vendor', " +
-                "description='$description', priceArray=$priceArray, dayBought=$dayBought)"
+        return "Card(cardId=$cardId, serialNumber='$serialNumber', " +
+                "companyAdvertisementId=$companyAdvertisementId, dueDate='$dueDate'," +
+                "dayBought='$dayBought', imageUrl='$imageUrl', " +
+                "brand='$brand', vendor='$vendor', description='$description', " +
+                "priceArray=$priceArray, priceBronze=$priceBronze, priceSilver=$priceSilver, priceGold=$priceGold)"
     }
     
     

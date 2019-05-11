@@ -13,8 +13,6 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         const val _ID = "id"
         const val _NAME = "name"
         const val _URL = "url"
-//        const val _PRICE = "price"
-//        const val _AD_COMPANIES_IDS = "ad_companies_ids"
         const val _B2B_CLIENT_ID = "b2b_client_id"
         const val _CREATED_AT = "created_at"
         const val _WATCH_COUNTER = "watch_counter"
@@ -25,9 +23,7 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                     "${VideoEntery._ID} INTEGER PRIMARY KEY UNIQUE," +
                     "${VideoEntery._NAME} TEXT," +
                     "${VideoEntery._URL} TEXT," +
-//                    "${VideoEntery._PRICE} INTEGER," +
                     "${VideoEntery._WATCH_COUNTER} INTEGER," +
-//                    "${VideoEntery._AD_COMPANIES_IDS} TEXT," +
                     "${VideoEntery._B2B_CLIENT_ID} TEXT," +
                     "${VideoEntery._CREATED_AT} TEXT)"
     
@@ -47,7 +43,7 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     }
     
     companion object {
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "LocationDataSource.db"
     }
     

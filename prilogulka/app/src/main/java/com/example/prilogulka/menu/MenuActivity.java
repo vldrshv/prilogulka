@@ -20,8 +20,10 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.userData.SerializeObject;
 import com.example.prilogulka.data.userData.UserInfo;
-import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
+import com.example.prilogulka.data_base.ActionsDAO;
+import com.example.prilogulka.data_base.ActivatedCardsDAO;
+import com.example.prilogulka.data_base.GiftCardDAO;
+import com.example.prilogulka.data_base.VideoDAO;
 import com.example.prilogulka.menu.fragments.ActivatedCardsFragment;
 import com.example.prilogulka.menu.fragments.ConnectUsFragment;
 import com.example.prilogulka.menu.fragments.GiftsManagerFragment;
@@ -37,7 +39,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private String CLASS_TAG = "MenuActivity";
 
     private SharedPreferencesManager spManager;
-    private UserActionsDataBase userActionsDB;
+    private ActionsDAO actionsDAO;
     private String email;
     private UserInfo user;
 
@@ -49,6 +51,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         initGlobalVars();
         initToolbarAndMenu();
         initMenuHeader();
+        initDataBases();
 
         /*  Задаем начальный фрагмент    */
         setFragment(new HelpWithAppFragment());
@@ -58,7 +61,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private void initGlobalVars() {
         spManager = new SharedPreferencesManager(this);
 
-        userActionsDB = new UserActionsDataBaseImpl(this);
+//        actionsDAO = new ActionsDAO(this);
         email = spManager.getActiveUser();
 
         SerializeObject<UserInfo> so = new SerializeObject<UserInfo>(this);
@@ -102,6 +105,12 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         /* начальное значение выделленой строки меню    */
         navigationView.setCheckedItem(R.id.nav_help);
     }
+    private void initDataBases() {
+        actionsDAO = new ActionsDAO(this);
+        ActivatedCardsDAO activatedCardsDAO = new ActivatedCardsDAO(this);
+        GiftCardDAO giftCardDAO = new GiftCardDAO(this);
+        VideoDAO videoDAO = new VideoDAO(this);
+    }
 
     private void setFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -126,8 +135,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_right_corner, menu);
-        menu.getItem(0).setTitle("Состояние счета: " + (userActionsDB.getUserMoney(email)));
-        Log.i("MENU_ACTIVITY", (userActionsDB.getUserMoney(email)) + "");
+        menu.getItem(0).setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
+        Log.i("MENU_ACTIVITY", (actionsDAO.getUserMoney(email)) + "");
 
         return true;
     }

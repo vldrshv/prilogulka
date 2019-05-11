@@ -13,11 +13,11 @@ import android.widget.TextView;
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
+import com.example.prilogulka.data.Time;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
+import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.data_base.GiftCardDAO;
-import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
     // TODO: 27.04.2019 gift cards
     GiftCardDAO giftCardDAO;
     Card giftCard;
-    int userMoney;
+    float userMoney;
     String email;
     SharedPreferencesManager spM;
 
@@ -77,10 +77,10 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
         giftCard = findCardInDataBase().getCard();
         giftCard.setPrices();
 
-        Log.i(CLASS_TAG, userMoney + " " + giftCard.getPriceBronze() + " " +
-                (userMoney > giftCard.getPriceSilver()));
+        Log.i(CLASS_TAG, giftCard.toString());
+
         if (giftCard != null) {
-            infoAboutCard.setText(CARD_INFO + giftCard.getDueDate());
+            infoAboutCard.setText(CARD_INFO + Time.parseServerTime(giftCard.getDueDate()));
 
             buyBronzeCard.setText("Активировать карту на " + giftCard.getPriceBronze());
             buySilverCard.setText("Активировать карту на " + giftCard.getPriceSilver());
@@ -95,10 +95,9 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
     }
 
     private void checkButtons() {
-        // TODO: 27.04.2019 activated gift cards
-        buyBronzeCard.setEnabled(userMoney > giftCard.getPriceBronze());
-        buySilverCard.setEnabled(userMoney > giftCard.getPriceSilver());
-        buyGoldenCard.setEnabled(userMoney > giftCard.getPriceGold());
+        buyBronzeCard.setEnabled(userMoney >= giftCard.getPriceBronze());
+        buySilverCard.setEnabled(userMoney >= giftCard.getPriceSilver());
+        buyGoldenCard.setEnabled(userMoney >= giftCard.getPriceGold());
         buyBronzeCard.setVisibility((giftCard.getPriceBronze() == 0) ? View.GONE : View.VISIBLE);
         buySilverCard.setVisibility((giftCard.getPriceSilver() == 0) ? View.GONE : View.VISIBLE);
         buyGoldenCard.setVisibility((giftCard.getPriceGold() == 0) ? View.GONE : View.VISIBLE);
@@ -112,8 +111,8 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
     }
 
     public void getUsersMoney() {
-        UserActionsDataBase userActionsDB = new UserActionsDataBaseImpl(this);
-        userMoney = (int) userActionsDB.getUserMoney(email);
+        ActionsDAO actionsDAO = new ActionsDAO(this);
+        userMoney = actionsDAO.getUserMoney(email);
     }
 
     public void setToolbar() {
@@ -134,6 +133,8 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
         super.onBackPressed();
     }
 
+
+    // TODO: 27.04.2019 activated gift cards
     @Override
     public void onClick(View v) {
         HintDialogs hd = new HintDialogs(this);
@@ -144,11 +145,6 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
                 "Использование карты", v.getId(), gcard);
 
         Log.i(CLASS_TAG, "Active check - " + hd.wasActivated());
-
-        /**
-         * TODO: выделение строчки меню
-         */
-
     }
 
     @Override

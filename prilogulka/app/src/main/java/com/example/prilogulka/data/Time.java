@@ -29,4 +29,12 @@ public class Time {
 
         return toString(date);
     }
+    public static String parseServerTime(String serverTime) {
+        // yyyy-mm-ddThh:mm:ss.ZONE
+        String dateTime[] = serverTime.split("T");
+        String date[] = dateTime[0].split("-");
+        String time[] = dateTime[1].split("\\.");
+
+        return String.format("%s-%s-%s %s", date[2], date[1], date[0], time[0]);
+    }
 }

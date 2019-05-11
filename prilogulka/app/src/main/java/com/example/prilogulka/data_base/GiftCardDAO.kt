@@ -12,6 +12,7 @@ class GiftCardDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
     object GiftCardEntery : BaseColumns {
         const val TABLE_NAME = "giftcards"
         const val _ID = "id"
+        const val _CARD_ID = "card_id"
         const val _SERIAL_NUMBER = "serial_number"
         const val _AD_COMPANY_ID = "ad_company_id"
         const val _DUE_DATE = "due_date"
@@ -24,7 +25,8 @@ class GiftCardDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
     
     private val SQL_CREATE_ENTRIES =
             "CREATE TABLE ${GiftCardEntery.TABLE_NAME} (" +
-                    "${GiftCardEntery._ID} INTEGER PRIMARY KEY UNIQUE," +
+                    "${GiftCardEntery._ID} INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE," +
+                    "${GiftCardEntery._CARD_ID} INTEGER UNIQUE," +
                     "${GiftCardEntery._SERIAL_NUMBER} TEXT," +
                     "${GiftCardEntery._AD_COMPANY_ID} INTEGER," +
                     "${GiftCardEntery._DUE_DATE} TEXT," +
@@ -51,7 +53,7 @@ class GiftCardDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
     
     companion object {
         const val DATABASE_VERSION = 1
-        const val DATABASE_NAME = "LocationDataSource.db"
+        const val DATABASE_NAME = "CardDataSource.db"
     }
     
     fun insert(giftCardList: List<GiftCard>) = giftCardList.forEach { insert(it) }
@@ -80,7 +82,7 @@ class GiftCardDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
         with(cursor) {
             while (moveToNext()) {
                 val giftCard = GiftCard()
-                giftCard.card.id = getInt(getColumnIndexOrThrow(GiftCardEntery._ID))
+                giftCard.card.cardId = getInt(getColumnIndexOrThrow(GiftCardEntery._CARD_ID))
                 giftCard.card.serialNumber = getString(getColumnIndexOrThrow(GiftCardEntery._SERIAL_NUMBER))
                 giftCard.card.companyAdvertisementId = getInt(getColumnIndexOrThrow(GiftCardEntery._AD_COMPANY_ID))
                 giftCard.card.dueDate = getString(getColumnIndexOrThrow(GiftCardEntery._DUE_DATE))
@@ -110,7 +112,7 @@ class GiftCardDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
         with(cursor) {
             while (moveToNext()) {
                 val giftCard = GiftCard()
-                giftCard.card.id = getInt(getColumnIndexOrThrow(GiftCardEntery._ID))
+                giftCard.card.cardId = getInt(getColumnIndexOrThrow(GiftCardEntery._CARD_ID))
                 giftCard.card.serialNumber = getString(getColumnIndexOrThrow(GiftCardEntery._SERIAL_NUMBER))
                 giftCard.card.companyAdvertisementId = getInt(getColumnIndexOrThrow(GiftCardEntery._AD_COMPANY_ID))
                 giftCard.card.dueDate = getString(getColumnIndexOrThrow(GiftCardEntery._DUE_DATE))
@@ -134,12 +136,12 @@ class GiftCardDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
         val db = this.writableDatabase
         val values = setContentValues(giftCard)
         
-        db?.update(GiftCardEntery.TABLE_NAME, values, "${GiftCardEntery._ID} = ?", arrayOf(giftCard.card.id.toString()))
+        db?.update(GiftCardEntery.TABLE_NAME, values, "${GiftCardEntery._CARD_ID} = ?", arrayOf(giftCard.card.cardId.toString()))
     }
     
     private fun setContentValues(giftCard: GiftCard) : ContentValues {
         val values = ContentValues().apply {
-            put(GiftCardEntery._ID, giftCard.card.id)
+            put(GiftCardEntery._CARD_ID, giftCard.card.cardId)
             put(GiftCardEntery._SERIAL_NUMBER, giftCard.card.serialNumber)
             put(GiftCardEntery._AD_COMPANY_ID, giftCard.card.companyAdvertisementId)
             put(GiftCardEntery._DUE_DATE, giftCard.card.dueDate)

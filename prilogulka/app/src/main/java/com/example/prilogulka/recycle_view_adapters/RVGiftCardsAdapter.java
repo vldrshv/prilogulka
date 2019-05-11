@@ -15,15 +15,14 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
+import com.example.prilogulka.data_base.ActionsDAO;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.GiftCardsHolder> {
     List<GiftCard> giftCardsList;
-    UserActionsDataBase userActionsDB;
+    ActionsDAO actionsDAO;
     String email;
     int progress;
 
@@ -33,8 +32,8 @@ public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.
         SharedPreferencesManager spManager = new SharedPreferencesManager(context);
         email = spManager.getActiveUser();
 
-        userActionsDB = new UserActionsDataBaseImpl(context);
-        progress = (int)userActionsDB.getUserMoney(email);
+        actionsDAO = new ActionsDAO(context);
+        progress = (int)actionsDAO.getUserMoney(email);
     }
 
     public static class GiftCardsHolder extends RecyclerView.ViewHolder {

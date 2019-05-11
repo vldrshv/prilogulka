@@ -10,12 +10,13 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
+import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.data_base.ActivatedCardsDAO;
-import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
 import com.example.prilogulka.menu.ActivatedCardActivity;
 
 public class HintDialogs {
+    private String CLASS_TAG = "HintDialogs";
+
     private Context context;
     String email;
     Activity activity;
@@ -53,7 +54,7 @@ public class HintDialogs {
         builder.setPositiveButton("Активировать", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
-                UserActionsDataBase userActionsDB = new UserActionsDataBaseImpl(context);
+                ActionsDAO actionsDAO = new ActionsDAO(context);
                 // TODO: 27.04.2019 activated gift cards
                 ActivatedCardsDAO activatedCardsDAO = new ActivatedCardsDAO(context);
                 String code = "";
@@ -61,25 +62,25 @@ public class HintDialogs {
                 // TODO: 27.04.2019 cards hint
                 switch (cardId) {
                     case R.id.buyBronzeCard:
-                        userActionsDB.insertOutCome(email, -card.getPriceBronze());
-                        activatedCardsDAO.insert(giftCard, card.getPriceBronze());
-                        code = card.getSerialNumber();
+                        actionsDAO.insertOutcome(email, -card.getPriceBronze());
+                        activatedCardsDAO.insert(giftCard, card.getPriceBronze(), email);
+//                        code = card.getSerialNumber();
                         break;
                     case R.id.buySilverCard:
-                        userActionsDB.insertOutCome(email, -card.getPriceSilver());
-                        activatedCardsDAO.insert(giftCard, card.getPriceSilver());
-                        code = card.getSerialNumber();
+                        actionsDAO.insertOutcome(email, -card.getPriceSilver());
+                        activatedCardsDAO.insert(giftCard, card.getPriceSilver(), email);
+//                        code = card.getSerialNumber();
                         break;
                     case R.id.buyGoldenCard:
-                        userActionsDB.insertOutCome(email, -card.getPriceGold());
-                        activatedCardsDAO.insert(giftCard, card.getPriceGold());
-                        code = card.getSerialNumber();
+                        actionsDAO.insertOutcome(email, -card.getPriceGold());
+                        activatedCardsDAO.insert(giftCard, card.getPriceGold(), email);
+//                        code = card.getSerialNumber();
                         break;
                 }
                 dialog.dismiss();
 
                 Intent intent = new Intent (activity, ActivatedCardActivity.class);
-                intent.putExtra("code", code);
+                intent.putExtra("cardId", card.getCardId());
                 activity.startActivity(intent);
 
                 isActivated = true;

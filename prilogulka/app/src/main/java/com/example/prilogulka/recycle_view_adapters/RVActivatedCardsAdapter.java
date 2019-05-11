@@ -11,7 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.prilogulka.R;
+import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -43,10 +45,14 @@ public class RVActivatedCardsAdapter extends RecyclerView.Adapter<RVActivatedCar
 
     @Override
     public void onBindViewHolder(RVActivatedCardsAdapter.ActivatedCardsHolder personViewHolder, int i) {
-//        personViewHolder.cardDescription.setText(giftCardsList.get(i).getDescription());
-//        personViewHolder.cardPrice.setText(giftCardsList.get(i).getCoastBronze() + "");
+        Card giftCard = giftCardsList.get(i).getCard();
+        personViewHolder.cardDescription.setText(giftCard.getDescription());
+        personViewHolder.cardPrice.setText(giftCard.getPriceArray().get(0) + "");
 //        personViewHolder.cardImage.setImageResource(giftCardsList.get(i).getDestination());
-//        personViewHolder.giftCardProgressBar.setVisibility(View.GONE);
+        personViewHolder.giftCardProgressBar.setVisibility(View.GONE);
+        Picasso.get()
+                .load("http://92.53.65.46:3000/" + giftCard.getImageUrl())
+                .into(personViewHolder.cardImage);
         /**
          * TODO: описать функцию проверки статуса карточки
          */

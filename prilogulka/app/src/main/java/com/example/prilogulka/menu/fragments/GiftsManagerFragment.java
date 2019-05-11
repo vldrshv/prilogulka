@@ -23,9 +23,8 @@ import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.GiftCardService;
+import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.data_base.GiftCardDAO;
-import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
 import com.example.prilogulka.menu.CardShop;
 import com.example.prilogulka.recycle_view_adapters.RVGiftCardsAdapter;
 import com.example.prilogulka.recycle_view_adapters.RecyclerItemClickListener;
@@ -90,8 +89,8 @@ public class GiftsManagerFragment extends Fragment {
         giftCardList = giftCardDAO.selectAll();
     }
     private float getMoney(){
-        UserActionsDataBase userActionsDB = new UserActionsDataBaseImpl(getContext());
-        return userActionsDB.getUserMoney(email);
+        ActionsDAO actionsDAO = new ActionsDAO(getContext());
+        return actionsDAO.getUserMoney(email);
     }
 
     /**
@@ -112,27 +111,27 @@ public class GiftsManagerFragment extends Fragment {
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(), recyclerView,
                         new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        /**
-                         * TODO: заменить битом синхронизации
-                         */
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                /**
+                                 * TODO: заменить битом синхронизации
+                                 */
 
-                        Context context = view.getContext();
-                        Intent intent = new Intent(context, CardShop.class);
-                        intent.putExtra("giftCardId", giftCardList.get(position).getCard().getId());
-                        Log.i(CLASS_TAG, "SELECTED_CARD: " + giftCardList.get(position).getCard().getId());
+                                Context context = view.getContext();
+                                Intent intent = new Intent(context, CardShop.class);
+                                intent.putExtra("giftCardId", giftCardList.get(position).getCard().getCardId());
+                                Log.i(CLASS_TAG, "SELECTED_CARD: " + giftCardList.get(position).getCard().getCardId());
 
-                        context.startActivity(intent);
-                    }
+                                context.startActivity(intent);
+                            }
 
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        /**
-                         * TODO: кнопка не интересно, повысить приоритет.
-                         */
-                    }
-                })
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+                                /**
+                                 * TODO: кнопка не интересно, повысить приоритет.
+                                 */
+                            }
+                        })
         );
 
     }
@@ -190,8 +189,7 @@ public class GiftsManagerFragment extends Fragment {
         super.onResume();
         Log.i(CLASS_TAG, "onResume");
         if (menu != null)
-            menu.getItem(0).setTitle("Состояние счета: " +
-                new UserActionsDataBaseImpl(getContext()).getUserMoney(email));
+            menu.getItem(0).setTitle("Состояние счета: " + getMoney());
         moneyTextView.setText("Состояние счета: " + getMoney());
 
 //

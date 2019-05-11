@@ -42,9 +42,10 @@ import android.widget.VideoView;
 
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Video;
+import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.VideoService;
-import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
+import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.facetracker.FaceGraphic;
 import com.example.prilogulka.facetracker.ui.camera.CameraSourcePreview;
 import com.example.prilogulka.facetracker.ui.camera.GraphicOverlay;
@@ -82,11 +83,13 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     // ACTIVITY VARS
     Button btnNext;
     VideoView videoView;
+    Video currentVideo;
     TextView textViewVideoCounter;
     Menu menu;
 
     int money = 0;
     ArrayList<Uri> uriList;
+    List<Video> videoList;
     String email;
     float WP = 51.12f;
     float COEF = 1.0f;
@@ -94,6 +97,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     int playingVideoIndex = 0;
 
 //    UserActionsDataBase actionsDB;
+    ActionsDAO actionsDAO;
     SharedPreferencesManager spManager;
     VideoService service;
 
@@ -115,12 +119,16 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_watching_video, container, false);
 
         initUIReference(rootView);
+        initDB();
 
         textViewVideoCounter.setText(money + "");
         initServices(); //todo get from db
         uriList = new ArrayList<>();
         try {
-            List<Video> videoList = service.getAllVideos().execute().body();
+            videoList = service.getAllVideos().execute().body();
+            if (videoList != null)
+                currentVideo = videoList.get(0);
+
             for (Video v : videoList) {
                 Log.i(CLASS_TAG, v.toString());
                 uriList.add(Uri.parse("http://92.53.65.46:3000/" + v.getVideoItem().getUrl()));
@@ -129,12 +137,9 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             e.printStackTrace();
         }
 
-        //uriList = new Uri[]{myUri1, myUri2, myUri3, myUri4, myUri5, myUri6};
-
         videoView.setVideoURI(uriList.get(0));
 
         checkCameraPermission();
-
         setHasOptionsMenu(true);
 
         return rootView;
@@ -171,9 +176,11 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
         service = retrofit.create(VideoService.class);
     }
-//    private void initDB() {
+    private void initDB() {
 //        actionsDB = new UserActionsDataBaseImpl(getContext());
-//    }
+        actionsDAO = new ActionsDAO(getContext());
+        Log.i(CLASS_TAG, "ActionsDAO created");
+    }
     public void checkCameraPermission() {
         int rc = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
@@ -203,6 +210,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
         stopVideo();
         videoView.setVideoURI(uriList.get(playingVideoIndex));
+        currentVideo = videoList.get(playingVideoIndex);
+
         menu.getItem(0).setTitle("Состояние счета: " + getMoney());
     }
 
@@ -217,7 +226,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     }
 
     public float getMoney(){
-        return new UserActionsDataBaseImpl(getContext()).getUserMoney(email);
+        Log.i(CLASS_TAG, email);
+        return actionsDAO.getUserMoney(email);
     }
 
     @Override
@@ -226,10 +236,10 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             case R.id.action_settings:
                 item.setTitle("Состояние счета: " + getMoney());
                 return true;
-//            case R.id.action_help:
-//                HintDialogs hd = new HintDialogs(getContext());
-//                hd.showHint(getString(R.string.watchingVideoHint), CLASS_TITLE);
-//                return true;
+            case R.id.action_help:
+                HintDialogs hd = new HintDialogs(getContext());
+                hd.showHint(getString(R.string.watchingVideoHint), CLASS_TITLE);
+                return true;
             default:
                 break;
         }
@@ -246,7 +256,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 //        actionsDB.insertUserActions(new Video(1, email,
 //                playingVideoIndex + "", (int)(WP * COEF),
 //                Time.getTodayTime() + " " + Time.getToday()));
-//        textViewVideoCounter.setText(money + "");
+        actionsDAO.insert(email, currentVideo, 10000); // todo POINTS
+        textViewVideoCounter.setText(money + "");
         nextVideo();
     }
 

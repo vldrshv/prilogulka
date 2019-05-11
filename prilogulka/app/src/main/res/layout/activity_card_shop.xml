@@ -47,16 +47,6 @@
                 android:textSize="18sp" />
 
             <Button
-                android:id="@+id/buySilverCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:background="@color/colorPrimaryDark"
-                android:text="Активировать карту на 1000 Р"
-                android:textColor="@android:color/background_light" />
-
-            <Button
                 android:id="@+id/buyBronzeCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,6 +54,16 @@
                 android:layout_weight="1"
                 android:background="@color/colorPrimaryDark"
                 android:text="Активировать карту на 500 Р"
+                android:textColor="@android:color/background_light" />
+
+            <Button
+                android:id="@+id/buySilverCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:text="Активировать карту на 1000 Р"
                 android:textColor="@android:color/background_light" />
 
             <Button

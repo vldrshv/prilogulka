@@ -78,16 +78,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkLocationPermission(); // чтобы перерасчитать коэф и локацию
-
         initServices();
 
         initLayoutFields();
         setListeners();
 
         showHint("Мы обновляем Ваше местоположение, чтобы Вы получили актуальный" +
-                " коэффициент. Подождите немного, и приложение загрузится.");
-
+                " коэффициент. Еще чуть-чуть и можно будет ввести пин-код.");
+        checkLocationPermission(); // чтобы перерасчитать коэф и локацию
     }
     @Override
     public void onClick(View v){
@@ -426,7 +424,11 @@ public class MainActivity extends AppCompatActivity
         float coefficient = makeCoefficients();
         spManager.setWPCoefficient(coefficient);
 
-        startActivity(new Intent(this, MenuActivity.class));
+
+        Intent intent = new Intent(this, MenuActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        startActivity(intent);
+        this.finish();
     }
 
     private void showHint(String hintText){
@@ -486,11 +488,20 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onDestroy() {
+        Log.i(CLASS_TAG, "onDestroy()");
         super.onDestroy();
         if (locationManager != null) {
             locationManager.removeUpdates(this);
             locationManager = null;
         }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     /**
@@ -525,7 +536,6 @@ public class MainActivity extends AppCompatActivity
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             ActivityCompat.requestPermissions(this, permissions, MY_PERMISSIONS_REQUEST_LOCATION);
         }
-
 
     }
 

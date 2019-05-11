@@ -16,12 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.prilogulka.R;
+import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
+import com.example.prilogulka.data_base.ActionsDAO;
+import com.example.prilogulka.data_base.ActivatedCardsDAO;
 import com.example.prilogulka.menu.ActivatedCardActivity;
+import com.example.prilogulka.recycle_view_adapters.RVActivatedCardsAdapter;
 import com.example.prilogulka.recycle_view_adapters.RecyclerItemClickListener;
+
+import java.util.List;
 
 public class ActivatedCardsFragment  extends Fragment {
 
@@ -60,22 +64,25 @@ public class ActivatedCardsFragment  extends Fragment {
         recyclerView.setLayoutManager(llm);
 
         // TODO: 27.04.2019 activated gift cards
-//        final ActivatedCardsDataBase activatedCardsDataBase = new ActivatedCardsDataBaseImpl(getContext());
+        final ActivatedCardsDAO activatedCardsDAO = new ActivatedCardsDAO(getContext());
+        List<GiftCard> list = activatedCardsDAO.selectAll(email);
 
-//        RVActivatedCardsAdapter adapter = new RVActivatedCardsAdapter(
-//                activatedCardsDataBase.selectAll(email), getContext());
-//        recyclerView.setAdapter(adapter);
+        Log.i(CLASS_TAG, email);
+        for (GiftCard gc : list)
+            Log.i(CLASS_TAG, gc.toString());
+
+        RVActivatedCardsAdapter adapter = new RVActivatedCardsAdapter(list, getContext());
+        recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-//                        List<GiftCard> list = activatedCardsDataBase.selectAll(email);
+                        List<GiftCard> list = activatedCardsDAO.selectAll(email);
 
                         Context context = view.getContext();
                         Intent intent = new Intent(context, ActivatedCardActivity.class);
-//                        intent.putExtra("code", list.get(position).getBronzeCode());
-
+                        intent.putExtra("cardId", list.get(position).getCard().getCardId());
                         context.startActivity(intent);
                     }
 
@@ -99,9 +106,8 @@ public class ActivatedCardsFragment  extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                UserActionsDataBase userActionsDB = new UserActionsDataBaseImpl(getContext());
-
-                item.setTitle("Состояние счета: " + (userActionsDB.getUserMoney(email)));
+                ActionsDAO actionsDAO = new ActionsDAO(getContext());
+                item.setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
                 return true;
             case R.id.action_help:
                 HintDialogs hd = new HintDialogs(getContext());

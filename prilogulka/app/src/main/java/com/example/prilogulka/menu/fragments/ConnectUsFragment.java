@@ -17,9 +17,8 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.userData.User;
-import com.example.prilogulka.data_base.UserActionsDataBaseImpl;
+import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.data_base.UserInfoDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.UserActionsDataBase;
 import com.example.prilogulka.data_base.interfaces.UserInfoDataBase;
 
 import java.util.List;
@@ -115,8 +114,8 @@ public class ConnectUsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                UserActionsDataBase userActionsDB = new UserActionsDataBaseImpl(getContext());
-                item.setTitle("Состояние счета: " + (userActionsDB.getUserMoney(email)));
+                ActionsDAO actionsDAO = new ActionsDAO(getContext());
+                item.setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
                 return true;
             case R.id.action_help:
                 HintDialogs hd = new HintDialogs(getContext());
