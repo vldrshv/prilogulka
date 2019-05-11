@@ -97,7 +97,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     ArrayList<Uri> uriList;
     List<Video> videoList;
     String email;
-    float WP = 51.12f;
+    int WATCH_ROW = 1;
     float COEF = 1.0f;
 
     int playingVideoIndex = 0;
@@ -178,8 +178,10 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         else
             videoList.addAll(dbVideos);
 
-        if (videoList != null)
+        if (videoList != null) {
             currentVideo = videoList.get(0);
+            //WATCH_ROW = currentVideo.getVideoItem().getWatchCounterInRow();
+        }
 //        else  // нечего смотреть
         //showHint();
         for (Video v : videoList) {
@@ -258,23 +260,49 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     }
 
     private void nextVideo() {
-        if (currentVideo != null && currentVideo.getVideoItem().getWatchCounter() == 0) {
+        /**
+         * WATCH_COUNTER - количество всех просмотров, WATCH_ROW - просмотры подряд
+         *
+         * если WATCH_ROW = 0 (то юзер посмотрел видос подряд сколько нужно) {
+         *      если WATCH_COUNTER = 0, значит больше видео смотреть не надо
+         *          удалить из БД
+         *      иначе
+         *          WATCH_COUNTER --
+         *
+         *      смотри следующий видос
+         *
+         * }
+         * иначе
+         *      смотри еще тот же
+         */
+        // todo убрать гавнокод
+        if (currentVideo == null)
+            return;
+
+        if (WATCH_ROW == 0) { // просмотров к ряду
+            if (currentVideo.getVideoItem().getWatchCounter() == 0) { // всего просмотров
+                // больше смотреть не надо, удаляем
+                videoDAO.delete(currentVideo);
+            } else { // уменьшаем кол-во просмотров
+                videoList.get(playingVideoIndex).getVideoItem().setWatchCounter(
+                        currentVideo.getVideoItem().getWatchCounter() - 1);
+                videoDAO.update(currentVideo);
+            }
             if (playingVideoIndex == uriList.size() - 1)
                 playingVideoIndex = 0;
             else
                 playingVideoIndex++;
-
             videoView.setVideoURI(uriList.get(playingVideoIndex));
             currentVideo = videoList.get(playingVideoIndex);
-
         } else {
-            currentVideo.getVideoItem().setWatchCounter(currentVideo.getVideoItem().getWatchCounter() - 1);
+            WATCH_ROW--;
         }
+
         // todo TEST
-        stopVideo();
+
 //        videoView.setVideoURI(uriList.get(playingVideoIndex));
 //        currentVideo = videoList.get(playingVideoIndex);
-        videoDAO.delete(currentVideo);
+        stopVideo();
         menu.getItem(0).setTitle("Состояние счета: " + getMoney());
     }
 
@@ -316,10 +344,9 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         money++;
 
         //todo insert user actions
-//        actionsDB.insertUserActions(new Video(1, email,
-//                playingVideoIndex + "", (int)(WP * COEF),
-//                Time.getTodayTime() + " " + Time.getToday()));
-        actionsDAO.insert(email, currentVideo, 10000); // todo POINTS
+        float points = (float) (COEF * ((spManager.getQuestionnaire()) ? 1.2 : 1.0) * currentVideo.getVideoItem().getPrice());
+        // todo send statistics
+        actionsDAO.insert(email, currentVideo, points); // todo POINTS
         textViewVideoCounter.setText(money + "");
         nextVideo();
     }

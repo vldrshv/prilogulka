@@ -29,12 +29,12 @@ class VideoItem {
     var url: String = ""
     @SerializedName("watch_counter")
     var watchCounter: Int = 0
+    @SerializedName("price")
+    var price: Int = 0
     
     override fun toString(): String {
-        return "VideoItem(b2bClientId=$b2bClientId, createdAt='$createdAt', id=$id, name='$name', url='$url', watchCounter=$watchCounter)"
+        return "VideoItem(b2bClientId=$b2bClientId, createdAt='$createdAt', id=$id, name='$name', url='$url', watchCounter=$watchCounter, price=$price)"
     }
-//    @SerializedName("price")
-//    var price: Int = 0
-
-
+    
+    
 }

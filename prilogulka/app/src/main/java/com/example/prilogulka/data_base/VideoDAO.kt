@@ -16,6 +16,7 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         const val _B2B_CLIENT_ID = "b2b_client_id"
         const val _CREATED_AT = "created_at"
         const val _WATCH_COUNTER = "watch_counter"
+        const val _PRICE = "price"
     }
     
     private val SQL_CREATE_ENTRIES =
@@ -24,6 +25,7 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                     "${VideoEntery._NAME} TEXT," +
                     "${VideoEntery._URL} TEXT," +
                     "${VideoEntery._WATCH_COUNTER} INTEGER," +
+                    "${VideoEntery._PRICE} INTEGER," +
                     "${VideoEntery._B2B_CLIENT_ID} TEXT," +
                     "${VideoEntery._CREATED_AT} TEXT)"
     
@@ -43,8 +45,8 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     }
     
     companion object {
-        const val DATABASE_VERSION = 2
-        const val DATABASE_NAME = "LocationDataSource.db"
+        const val DATABASE_VERSION = 1
+        const val DATABASE_NAME = "VideoDataSource.db"
     }
     
     fun insert(videoList: List<Video>) = videoList.forEach { insert(it) }
@@ -75,21 +77,10 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 video.videoItem.id = getInt(getColumnIndexOrThrow(VideoEntery._ID))
                 video.videoItem.name = getString(getColumnIndexOrThrow(VideoEntery._NAME))
                 video.videoItem.url = getString(getColumnIndexOrThrow(VideoEntery._URL))
-//                video.videoItem.price = getInt(getColumnIndexOrThrow(VideoEntery._PRICE))
-//                video.videoItem.watchCounter = getInt(getColumnIndexOrThrow(VideoEntery._PRICE))
+                video.videoItem.price = getInt(getColumnIndexOrThrow(VideoEntery._PRICE))
                 video.videoItem.createdAt = getString(getColumnIndexOrThrow(VideoEntery._CREATED_AT))
                 video.videoItem.b2bClientId = getInt(getColumnIndexOrThrow(VideoEntery._B2B_CLIENT_ID))
                 
-//                val adCompId = getString(getColumnIndexOrThrow(VideoEntery._PRICE))
-//                val list = adCompId.split(", ")
-//                var adCompList: ArrayList<Int> = arrayListOf()
-//                list.forEach { it -> try {
-//                        adCompList.add(Integer.parseInt(it))
-//                    } catch (e: Exception) {
-//                        e.printStackTrace()
-//                    }
-//                }
-//                video.videoItem.adCompaniesIdList = adCompList
                 items.add(video)
             }
         }
@@ -117,14 +108,9 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
             put(VideoEntery._ID, video.videoItem.id)
             put(VideoEntery._NAME, video.videoItem.name)
             put(VideoEntery._URL, video.videoItem.url)
-//            put(VideoEntery._PRICE, video.videoItem.price)
+            put(VideoEntery._PRICE, video.videoItem.price)
             put(VideoEntery._B2B_CLIENT_ID, video.videoItem.b2bClientId)
             put(VideoEntery._CREATED_AT, video.videoItem.createdAt)
-            
-//            var adCompIds: String = video.videoItem.adCompaniesIdList.toString()
-//            adCompIds = adCompIds.replace("[", "")
-//            adCompIds = adCompIds.replace("]", "")
-//            put(VideoEntery._PRICE, adCompIds)
         }
         return values
     }
