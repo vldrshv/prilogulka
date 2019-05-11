@@ -96,9 +96,13 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return items
     }
     
-    private fun deleteAll() {
+    fun deleteAll() {
         val db = this.writableDatabase
         db?.delete(VideoEntery.TABLE_NAME, null, null)
+    }
+    fun delete(video: Video){
+        val db = this.writableDatabase
+        db?.delete(VideoEntery.TABLE_NAME, "${VideoEntery._ID} = ?", arrayOf(video.videoItem.id.toString()))
     }
     
     fun update(video: Video) {

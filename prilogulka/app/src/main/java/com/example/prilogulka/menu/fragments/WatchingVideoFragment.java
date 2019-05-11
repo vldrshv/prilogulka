@@ -50,6 +50,7 @@ import com.example.prilogulka.data.service.VideoService;
 import com.example.prilogulka.data.userData.SerializeObject;
 import com.example.prilogulka.data.userData.UserInfo;
 import com.example.prilogulka.data_base.ActionsDAO;
+import com.example.prilogulka.data_base.VideoDAO;
 import com.example.prilogulka.facetracker.FaceGraphic;
 import com.example.prilogulka.facetracker.ui.camera.CameraSourcePreview;
 import com.example.prilogulka.facetracker.ui.camera.GraphicOverlay;
@@ -102,6 +103,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     int playingVideoIndex = 0;
 
     ActionsDAO actionsDAO;
+    VideoDAO videoDAO;
     SharedPreferencesManager spManager;
     VideoService service;
 
@@ -130,6 +132,29 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         textViewVideoCounter.setText(money + "");
 
         uriList = new ArrayList<>();
+        setVideoURIList(); // todo TEST
+        videoView.setVideoURI(uriList.get(0));
+
+        checkCameraPermission();
+        setHasOptionsMenu(true);
+
+        return rootView;
+    }
+    // todo TEST
+    private void parseVideos(Video video) {
+        for (VideoItem videoItem : video.getVideoItemList()) {
+            Video v = new Video();
+            v.getVideoItem().setId(videoItem.getId());
+            v.getVideoItem().setUrl(videoItem.getName());
+            videoList.add(v);
+        }
+    }
+    // todo TEST
+    private List<Video> checkVideosExistInDB() {
+        return videoDAO.selectAll();
+    }
+    // todo TEST
+    private void getVideosFromServer() {
         try {
             if (spManager.getQuestionnaire()) {
                 Video video = service.getVideosByQuestionnaire(user.getUser().getId()).execute().body(); // ответил на анкету
@@ -141,33 +166,28 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 videoList = service.getAllVideos().execute().body(); // не ответил
                 Toast.makeText(getContext(), "НЕ (!!!) ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
             }
-
-            if (videoList != null)
-                currentVideo = videoList.get(0);
-
-            for (Video v : videoList) {
-                Log.i(CLASS_TAG, v.toString());
-                uriList.add(Uri.parse("http://92.53.65.46:3000/" + v.getVideoItem().getUrl()));
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        videoView.setVideoURI(uriList.get(0));
-
-        checkCameraPermission();
-        setHasOptionsMenu(true);
-
-        return rootView;
     }
-    private void parseVideos(Video video) {
-        for (VideoItem videoItem : video.getVideoItemList()) {
-            Video v = new Video();
-            v.getVideoItem().setId(videoItem.getId());
-            v.getVideoItem().setUrl(videoItem.getName());
-            videoList.add(v);
+    // todo TEST
+    private void setVideoURIList() {
+        List<Video> dbVideos = checkVideosExistInDB();
+        if (dbVideos.size() == 0)
+            getVideosFromServer();
+        else
+            videoList.addAll(dbVideos);
+
+        if (videoList != null)
+            currentVideo = videoList.get(0);
+//        else  // нечего смотреть
+        //showHint();
+        for (Video v : videoList) {
+            Log.i(CLASS_TAG, v.toString());
+            uriList.add(Uri.parse("http://92.53.65.46:3000/" + v.getVideoItem().getUrl()));
         }
     }
+    // todo TEST
     private void initUIReference(ViewGroup rootView) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
         textViewVideoCounter = rootView.findViewById(R.id.textViewVideoCounter);
@@ -200,6 +220,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         service = retrofit.create(VideoService.class);
     }
     private void initDB() {
+        videoDAO = new VideoDAO(getContext());
         actionsDAO = new ActionsDAO(getContext());
         Log.i(CLASS_TAG, "ActionsDAO created");
     }
@@ -214,8 +235,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         if (user != null)
             Log.i(CLASS_TAG, user.toString());
     }
-
-
 
     public void checkCameraPermission() {
         int rc = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
@@ -239,15 +258,23 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     }
 
     private void nextVideo() {
-        if (playingVideoIndex == uriList.size() - 1)
-            playingVideoIndex = 0;
-        else
-            playingVideoIndex++;
+        if (currentVideo != null && currentVideo.getVideoItem().getWatchCounter() == 0) {
+            if (playingVideoIndex == uriList.size() - 1)
+                playingVideoIndex = 0;
+            else
+                playingVideoIndex++;
 
+            videoView.setVideoURI(uriList.get(playingVideoIndex));
+            currentVideo = videoList.get(playingVideoIndex);
+
+        } else {
+            currentVideo.getVideoItem().setWatchCounter(currentVideo.getVideoItem().getWatchCounter() - 1);
+        }
+        // todo TEST
         stopVideo();
-        videoView.setVideoURI(uriList.get(playingVideoIndex));
-        currentVideo = videoList.get(playingVideoIndex);
-
+//        videoView.setVideoURI(uriList.get(playingVideoIndex));
+//        currentVideo = videoList.get(playingVideoIndex);
+        videoDAO.delete(currentVideo);
         menu.getItem(0).setTitle("Состояние счета: " + getMoney());
     }
 
