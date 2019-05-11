@@ -361,6 +361,8 @@ public class QuestionnaireActivity extends AppCompatActivity
                     updateCurrentUser();
                     serializeUserWrite();
                     onBackPressed();
+//                    startActivity(new Intent(this, MenuActivity.class));
+//                    this.finish();
                 } else {
                     showHint("Какая-то ошибка :(\nПопробуйте позже, нам важны Ваши ответы.");
                 }

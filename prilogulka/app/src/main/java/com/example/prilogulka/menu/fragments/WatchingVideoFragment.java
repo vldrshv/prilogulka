@@ -38,13 +38,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Video;
+import com.example.prilogulka.data.VideoItem;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.VideoService;
+import com.example.prilogulka.data.userData.SerializeObject;
+import com.example.prilogulka.data.userData.UserInfo;
 import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.facetracker.FaceGraphic;
 import com.example.prilogulka.facetracker.ui.camera.CameraSourcePreview;
@@ -87,6 +91,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     TextView textViewVideoCounter;
     Menu menu;
 
+    UserInfo user;
     int money = 0;
     ArrayList<Uri> uriList;
     List<Video> videoList;
@@ -96,7 +101,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     int playingVideoIndex = 0;
 
-//    UserActionsDataBase actionsDB;
     ActionsDAO actionsDAO;
     SharedPreferencesManager spManager;
     VideoService service;
@@ -120,12 +124,24 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
         initUIReference(rootView);
         initDB();
+        serializeUser();
+        initServices(); //todo get from db
 
         textViewVideoCounter.setText(money + "");
-        initServices(); //todo get from db
+
         uriList = new ArrayList<>();
         try {
-            videoList = service.getAllVideos().execute().body();
+            if (spManager.getQuestionnaire()) {
+                Video video = service.getVideosByQuestionnaire(user.getUser().getId()).execute().body(); // ответил на анкету
+                parseVideos(video);
+                System.out.println(videoList);
+                Toast.makeText(getContext(), "ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                videoList = service.getAllVideos().execute().body(); // не ответил
+                Toast.makeText(getContext(), "НЕ (!!!) ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
+            }
+
             if (videoList != null)
                 currentVideo = videoList.get(0);
 
@@ -144,7 +160,14 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
         return rootView;
     }
-
+    private void parseVideos(Video video) {
+        for (VideoItem videoItem : video.getVideoItemList()) {
+            Video v = new Video();
+            v.getVideoItem().setId(videoItem.getId());
+            v.getVideoItem().setUrl(videoItem.getName());
+            videoList.add(v);
+        }
+    }
     private void initUIReference(ViewGroup rootView) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
         textViewVideoCounter = rootView.findViewById(R.id.textViewVideoCounter);
@@ -177,10 +200,23 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         service = retrofit.create(VideoService.class);
     }
     private void initDB() {
-//        actionsDB = new UserActionsDataBaseImpl(getContext());
         actionsDAO = new ActionsDAO(getContext());
         Log.i(CLASS_TAG, "ActionsDAO created");
     }
+    private void serializeUser() {
+        SerializeObject<UserInfo> so = new SerializeObject<UserInfo>(getContext());
+        user = new UserInfo();
+        try {
+            user = so.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            e.getStackTrace();
+        }
+        if (user != null)
+            Log.i(CLASS_TAG, user.toString());
+    }
+
+
+
     public void checkCameraPermission() {
         int rc = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {

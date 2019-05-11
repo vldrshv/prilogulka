@@ -164,18 +164,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_connect_us:
                 fragment = new ConnectUsFragment();
                 break;
-
-            /**
-             * TODO: Добавить сачивание данных с хероку.
-             */
-//            case R.id.list_of_users:
-//                fragment = new ListOfUsersFragment();
-//                tag = "ListOfUsersFragment";
-//                break;
-//            case R.id.list_of_user_actions:
-//                fragment = new ListOfUserActionsFragment();
-//                tag = "ListOfUserActionsFragment";
-//                break;
         }
 
         setFragment(fragment);

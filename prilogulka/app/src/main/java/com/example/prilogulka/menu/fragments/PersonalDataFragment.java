@@ -139,7 +139,6 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
         switch (id) {
             case R.id.buttonQuestionnaire : {
                 startActivity(new Intent(getContext(), QuestionnaireActivity.class));
-
                 break;
             }
         }
@@ -158,6 +157,7 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
         super.onResume();
         Log.i(CLASS_TAG, "onResume");
         updateHeader();
+        showQuestionnaire();
     }
 
 }

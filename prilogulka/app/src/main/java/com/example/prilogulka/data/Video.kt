@@ -3,11 +3,13 @@ package com.example.prilogulka.data
 import com.google.gson.annotations.SerializedName
 
 class Video {
-    @SerializedName("video", alternate=["videos"])
+    @SerializedName("video")
     val videoItem: VideoItem = VideoItem()
+    @SerializedName("videos")
+    val videoItemList: Array<VideoItem> = arrayOf()
     
     override fun toString(): String {
-        return "Video(videoItem=$videoItem)"
+        return "Video(videoItem=$videoItem, videoItemList.size=${videoItemList.size})"
     }
     
 }
