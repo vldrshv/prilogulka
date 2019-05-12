@@ -309,6 +309,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             return;
 
         stopVideo();
+        WATCH_ROW--;
         if (WATCH_ROW == 0) { // просмотров к ряду
             if (currentVideo.getVideoItem().getWatchCounter() == 0) { // всего просмотров
                 // больше смотреть не надо, удаляем
@@ -322,9 +323,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 playingVideoIndex = 0;
             else
                 playingVideoIndex++;
-        } else {
-            WATCH_ROW--;
         }
+
 
         videoView.setVideoURI(uriList.get(playingVideoIndex));
         currentVideo = videoList.get(playingVideoIndex);
