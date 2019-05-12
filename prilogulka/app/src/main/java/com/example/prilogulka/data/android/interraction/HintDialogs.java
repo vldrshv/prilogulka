@@ -55,26 +55,20 @@ public class HintDialogs {
             public void onClick(DialogInterface dialog, int id) {
 
                 ActionsDAO actionsDAO = new ActionsDAO(context);
-                // TODO: 27.04.2019 activated gift cards
                 ActivatedCardsDAO activatedCardsDAO = new ActivatedCardsDAO(context);
-                String code = "";
 
-                // TODO: 27.04.2019 cards hint
                 switch (cardId) {
                     case R.id.buyBronzeCard:
                         actionsDAO.insertOutcome(email, -card.getPriceBronze());
                         activatedCardsDAO.insert(giftCard, card.getPriceBronze(), email);
-//                        code = card.getSerialNumber();
                         break;
                     case R.id.buySilverCard:
                         actionsDAO.insertOutcome(email, -card.getPriceSilver());
                         activatedCardsDAO.insert(giftCard, card.getPriceSilver(), email);
-//                        code = card.getSerialNumber();
                         break;
                     case R.id.buyGoldenCard:
                         actionsDAO.insertOutcome(email, -card.getPriceGold());
                         activatedCardsDAO.insert(giftCard, card.getPriceGold(), email);
-//                        code = card.getSerialNumber();
                         break;
                 }
                 dialog.dismiss();

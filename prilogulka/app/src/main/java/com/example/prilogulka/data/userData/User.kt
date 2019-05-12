@@ -14,14 +14,6 @@ open class User : Serializable {
     var location_coeff: Double
     var user_coeff: Double
     
-    /**
-        TODO: добавить данные соответсвующие схеме йобобо.хмл
-        current_video_coeff: Double     -- текущий коэффициент видео (коэф_меняющийся * коэф_анкеты)
-        current_balance: Double         -- текущий балланс
-        location_coeff: Int             -- число, представляющее предпочтения пользователя по локации
-        user_coeff: Int                 -- коэффициент предпочтений юзера
-     */
-    
     constructor(_email: String?, _name: String?, _lastname: String?, _location: String?,
                 _birthday: String?, _sex: String?, _current_video_coeff: Double,
                 _current_balance: Double, _location_coeff: Double, _user_coeff: Double){

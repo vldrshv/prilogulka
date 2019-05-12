@@ -21,10 +21,10 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.GiftCardsHolder> {
-    List<GiftCard> giftCardsList;
-    ActionsDAO actionsDAO;
-    String email;
-    int progress;
+    private List<GiftCard> giftCardsList;
+    private ActionsDAO actionsDAO;
+    private String email;
+    private int progress;
 
     public RVGiftCardsAdapter(List<GiftCard> giftCardsList, Context context) {
         this.giftCardsList = giftCardsList;
@@ -61,12 +61,9 @@ public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.
 
         Log.i("ADAPTER", i+"");
         personViewHolder.cardPrice.setText(giftCard.getPriceBronze()+"");
-//        personViewHolder.cardImage.setImageResource(giftCardsList.get(i).getDestination());
         personViewHolder.giftCardProgressBar.setMax(giftCard.getPriceBronze());
         personViewHolder.giftCardProgressBar.setProgress(progress);
-        /**
-         * TODO: описать функцию проверки статуса карточки
-         */
+
         Picasso.get()
                 .load("http://92.53.65.46:3000/" + giftCard.getImageUrl())
                 .into(personViewHolder.cardImage);

@@ -48,13 +48,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserInfoActivity extends AppCompatActivity
         implements LocationListener {
-    /**
-     * TODO: Нужен ли onBackPressed?
-     */
+
 
     String CLASS_TAG = "UserInfoActivity";
     private LocationManager locationManager;
-//    private LocationService locationService;
 
     private String city = "";
     float coefficient = 1;
@@ -126,17 +123,19 @@ public class UserInfoActivity extends AppCompatActivity
         email = editEmail.getText().toString();
         if (isEmailValid()) {
             saveInfo();
-            // TODO: 21.01.2019 connect to server, send new user info
 
-            uploadGiftCards();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-            //onBackPressed();
+            this.finish();
         }
 
     }
     private void saveInfo() {
-        // SAVE INFO TO SHARED_PREFERENCES
+        saveAppContext();
+        User user = fillNewUserInfo();
+        postUserToServer(user);
+    }
+    private void saveAppContext() {
         SharedPreferencesManager spManager = new SharedPreferencesManager(this);
         email = editEmail.getText().toString();
         spManager.setActiveUser(email);
@@ -144,7 +143,8 @@ public class UserInfoActivity extends AppCompatActivity
         spManager.setWPCoefficient(coefficient);
         spManager.setQuestionnaire(false);
         Log.i(CLASS_TAG, coefficient + "");
-
+    }
+    private User fillNewUserInfo() {
         User user = new User();
         user.setName(editName.getText().toString());
         user.setLastname(editSurname.getText().toString());
@@ -157,7 +157,9 @@ public class UserInfoActivity extends AppCompatActivity
         user.setLocation_coeff(location_coeff);
         user.setUser_coeff(0);
 
-        // TODO: 24.01.2019 POST User to Server
+        return user;
+    }
+    private void postUserToServer(User user) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://92.53.65.46:3000")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -179,7 +181,6 @@ public class UserInfoActivity extends AppCompatActivity
         } catch (IOException e) {
             Toast.makeText(this, "network failure :( ", Toast.LENGTH_SHORT).show();
         }
-
     }
     private void makeCoefficients() {
         TextView tv = findViewById(R.id.birthday);
@@ -194,14 +195,6 @@ public class UserInfoActivity extends AppCompatActivity
         System.out.println("age_coef = " + age_coef);
 
         coefficient = (float) (district_coef * age_coef);
-    }
-    private void uploadGiftCards() {
-//        GiftCardsDataBaseImpl giftCardsDataBase = new GiftCardsDataBaseImpl(this);
-//        giftCardsDataBase.createTable();
-        /**
-         * TODO: connect to server, download GiftCards.
-         */
-
     }
 
     private Auth getUserFromServer(UserService service) throws IOException {

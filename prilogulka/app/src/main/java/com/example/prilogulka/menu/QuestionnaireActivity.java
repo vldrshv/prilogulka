@@ -25,6 +25,7 @@ import com.example.prilogulka.data.userData.Questionnaire;
 import com.example.prilogulka.data.userData.QuestionnaireInfo;
 import com.example.prilogulka.data.userData.SerializeObject;
 import com.example.prilogulka.data.userData.UserInfo;
+import com.example.prilogulka.data_base.VideoDAO;
 
 import java.io.IOException;
 
@@ -360,6 +361,8 @@ public class QuestionnaireActivity extends AppCompatActivity
                     updateUserLocationCoefficient();
                     updateCurrentUser();
                     serializeUserWrite();
+                    VideoDAO videoDAO = new VideoDAO(this);
+                    videoDAO.deleteAll();
                     onBackPressed();
 //                    startActivity(new Intent(this, MenuActivity.class));
 //                    this.finish();

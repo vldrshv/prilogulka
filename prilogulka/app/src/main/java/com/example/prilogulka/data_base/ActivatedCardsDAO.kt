@@ -26,7 +26,7 @@ class ActivatedCardsDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_N
             "CREATE TABLE ${ActivatedCardEntery.TABLE_NAME} (" +
                     "${ActivatedCardEntery._ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "${ActivatedCardEntery._CARD_ID} INTEGER," +
-                    "${ActivatedCardEntery._SERIAL_NUMBER} TEXT," + //todo UNIQUE
+                    "${ActivatedCardEntery._SERIAL_NUMBER} TEXT UNIQUE," +
                     "${ActivatedCardEntery._DUE_DATE} TEXT," +
                     "${ActivatedCardEntery._DAY_BOUGHT} TEXT," +
                     "${ActivatedCardEntery._IMAGE_URL} TEXT," +
@@ -50,7 +50,7 @@ class ActivatedCardsDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_N
     }
 
     companion object {
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "CardsDataSource.db"
     }
 

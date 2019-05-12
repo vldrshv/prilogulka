@@ -1,10 +1,9 @@
 package com.example.prilogulka.data.service
 
 import com.example.prilogulka.data.Video
+import com.example.prilogulka.data.VideoAction
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface VideoService {
     /**
@@ -24,4 +23,10 @@ interface VideoService {
      */
     @GET("/api/v1/videos/{id}")
     fun getVideoById(@Path("id") videoId: Int) : Call<Video>
+    
+    /**
+     * отправка статистики о просмотре
+     */
+    @POST("/api/v1/user_video_actions")
+    fun postUserVideoAction(@Body videoAction: VideoAction) : Call<Unit>
 }

@@ -69,12 +69,9 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
         giftCard = findCardInDataBase();
 
         if (giftCard != null) {
-            //todo giftcard image recourse
             giftCardView.setImageResource(R.drawable.hsm);//giftCard.getDestination());
             Picasso.get().load("http://92.53.65.46:3000/" + giftCard.getCard().getImageUrl())
                     .into(giftCardView);
-//            barcodeImage.setImageBitmap(createBarCode(giftCard.getCard().getSerialNumber()));
-//            barcodeImage.setImageBitmap(createQRcode(giftCard.getCard().getSerialNumber()));
             activatedCardNumber.setText(giftCard.getCard().getSerialNumber() + "");
         }
 

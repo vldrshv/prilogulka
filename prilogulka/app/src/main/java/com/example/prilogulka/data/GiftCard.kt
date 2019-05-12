@@ -37,7 +37,6 @@ class Card {
     var priceSilver: Int = 0
     var priceGold: Int = 0
     
-    //todo НУЖНА ЛИ СОРТИРОВКА
     fun setPrices() {
         var price = arrayOf(0, 0, 0)
         for (i in 0 until priceArray.size)
