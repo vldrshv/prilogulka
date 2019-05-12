@@ -329,7 +329,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         videoView.setVideoURI(uriList.get(playingVideoIndex));
         currentVideo = videoList.get(playingVideoIndex);
 
-        videoView.start();
     }
     private void stopVideo() {
         videoView.stopPlayback();
@@ -340,7 +339,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         money++;
 
         //todo insert user actions
-        float points = (float) (COEF * ((spManager.getQuestionnaire()) ? 1.2 : 1.0) * currentVideo.getVideoItem().getPrice());
+//        float points = (float) (COEF * ((spManager.getQuestionnaire()) ? 1.2 : 1.0) * currentVideo.getVideoItem().getPrice());
         sendStatistic();
         updateUser();
         menu.getItem(0).setTitle("Состояние счета: " + getMoney());
