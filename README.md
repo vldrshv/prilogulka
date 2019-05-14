@@ -1,7 +1,15 @@
+**CONTENT**
+
+------------
+
+[TOCM]
+
+[TOC]
 # PRILOGULKA
 - [X] сделано
 - [ ] не сделано
 
+# Задачи
 ## Видео
 - [X] запрос в соответствии с анкетой
 - [x] локальное бд видосов
@@ -11,7 +19,7 @@
 	или заполнять бд видосами на день) (п.с я сохраняю, но пока номинально,
 	т.е. обновляя просто при каждом входе)
 - [X] дата синхронизации с сервером (если делаем заполнение видосами на день)
-	_загружаем данные в локальный стор, когда он обнуляется, закачиваем новые_
+	* _загружаем данные в локальный стор, когда он обнуляется, закачиваем новые_
 - [X] кол-во воспроизведений всего
 - [X] кол-во воспроизведений подряд
 - [X] удаление просмотренного видоса из бд
@@ -41,3 +49,52 @@
 ## Пользователь
 - [ ] загружать купленные гифткарты
 - [ ] загружать заработанные деньги
+# Описание пакетов
+## data
+### android.interraction
+#### DatePicker.java
+Описывает класс по взаимодействию с выбором даты на пользовательском экране. Возвращает дату в отформатированном виде.
+#### HintDialogs.java
+Описывает класс по взаимодействию с диалоговым окном. Вызывается при покупке гифт-карты.
+### managers
+#### CoefficientManager.java
+Менеджер коэффициентов.
+* `public double getAgeCoefficient(String date)`
+Выдает возрастной коэффициент соглассно вводимой дате в формате "dd.mm.yyyy"
+* `public double getAgeCoefficient(int age)`
+Выдает возрастной коэффициент соглассно вводимому возрасту
+* `private void parseCoefs()`
+Парсит коэффициенты в список коэффициентов
+* `private void parseCoefsFromJson(String s) throws JSONException`
+Парсит коэффициенты в список коэффициентов из строки JSON
+* `private int parseStringDateToAge(String date) throws ParseException`
+Парсит строку в формате "dd.mm.yyyy" в число (возраст)
+* `private boolean contains(int age, ArrayList<Coefficient.Category> list)`
+Проверка на то, что возраст содержится в листе возрастных категорий
+---
+#### GeofenceManager.java
+#### SharedPreferencesManager.java
+### service
+#### GiftCardService.kt
+#### QuestionnaireService.k
+#### UserService.kt
+#### VideoService.kt
+### userData
+#### Auth.kt
+#### Questionnaire.kt
+#### QuestionnaireInfo.kt
+#### SerializeObject.java
+#### User.kt
+#### UserInfo.kt
+### Coefficient.kt
+### Districts.java
+### GiftCard.kt
+### Time.java
+### Video.kt
+### VideoAction.kt
+## data_base
+## facetracker
+## login_signin
+## menu
+## recycle_view_adapters
+
