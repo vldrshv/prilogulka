@@ -1,5 +1,6 @@
 **CONTENT**
 ------------
+[Обычная ссылка в строке](https://github.com/vldrshv/prilogulka/edit/master/README.md##Гифткарты)
 # PRILOGULKA
 - [X] сделано
 - [ ] не сделано
