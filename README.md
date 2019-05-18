@@ -99,7 +99,7 @@
 - Пользователь
 	1. `GET /api/v1/user?email={email}`
 	Ответ:
-	``` 
+	``` JSON
 	{
 		"user":{
 			"id":8,
@@ -123,7 +123,7 @@
 	} 
 	```
 	2. `POST /api/v1/users + Body(user)`
-	```
+	``` JSON
 	@Body
 	{
 		"user":{
@@ -141,7 +141,7 @@
 	} 
 	```
 	3. `PATCH /api/v1/users/{id} + Body(user)`
-	``` 
+	``` JSON
 	@Body
 	{
 		"user":{
@@ -151,7 +151,7 @@
 	} 
 	```
 	Ответ:
-	```
+	``` JSON
 	{
 		"user":{
 			"email":"mail@gmail.com",
@@ -184,7 +184,7 @@
 - Все видео
 	* `GET /api/v1/videos`
 	Ответ:
-	```
+	``` JSON
 	[
 		{
 			"video":{
@@ -217,7 +217,7 @@
 - Видео по анкете
 	* `GET /api/v1/videos/videos_pool?user_id={id}`
 	Ответ:
-	```
+	``` JSON
 	{
 		"videos":[
 			{
@@ -238,7 +238,7 @@
 - Все гифткарты
 	* `GET /api/v1/gift_cards`
 	Ответ:
-	```
+	``` JSON
 	[
 		{
 			"giftcard":{
@@ -286,7 +286,7 @@
 	* Конкретной
 	`GET /api/v1/gift_cards/{card_id}`
 	Ответ:
-	```
+	``` JSON
 	{
 		"giftcard": {
 			"id":2,
@@ -308,7 +308,7 @@
 - Покупка гифткарты
 	* `GET /api/v1/users_gift_cards/get_gift_card?user_id={user_id}&giftcard_id={card_id}&price={price}`
 	Ответ:
-	```
+	``` JSON
 	{
 		"users_gift_card":{
 			"user_id":7,
