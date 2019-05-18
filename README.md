@@ -1,10 +1,5 @@
 **CONTENT**
-
 ------------
-
-[TOCM]
-
-[TOC]
 # PRILOGULKA
 - [X] сделано
 - [ ] не сделано
@@ -98,3 +93,237 @@
 ## menu
 ## recycle_view_adapters
 
+# API
+---
+## Приложение (контекст)
+- Пользователь
+	1. `GET /api/v1/user?email={email}`
+	Ответ:
+	``` 
+	{
+		"user":{
+			"id":8,
+			"email":"mail@gmail.com",
+			"created_at":"2019-04-27T17:18:03.921Z",
+			"updated_at":"2019-05-11T14:41:42.904Z",
+			"name":"Name",
+			"lastname":"Lastname",
+			"location":"location",
+			"birthday":"dd.mm.yyyy",
+			"sex":0,
+			"pin":12345,
+			"emailChecked":false,
+			"confirm_token":"KK6nBfeZ45FSnh0ioRUrLw",
+			"lastDateOnline":null,
+			"current_video_coeff":1.20000004768372,
+			"current_balance":0.0,
+			"location_coeff":6,
+			"user_coeff":113
+		}
+	} 
+	```
+	2. `POST /api/v1/users + Body(user)`
+	```
+	@Body
+	{
+		"user":{
+			"email":"mail@gmail.com",
+			"name":"Name",
+			"lastname":"Lastname",
+			"location":"location",
+			"birthday":"dd.mm.yyyy",
+			"sex":0,
+			"current_video_coeff":1.20000004768372,
+			"current_balance":0.0,
+			"location_coeff":6,
+			"user_coeff":0
+		}
+	} 
+	```
+	3. `PATCH /api/v1/users/{id} + Body(user)`
+	``` 
+	@Body
+	{
+		"user":{
+			"id": 1,
+			"user_coeff": 1
+		}
+	} 
+	```
+	Ответ:
+	```
+	{
+		"user":{
+			"email":"mail@gmail.com",
+			"name":"Name",
+			"lastname":"Lastname",
+			"location":"location",
+			"birthday":"dd.mm.yyyy",
+			"sex":0,
+			"current_video_coeff":1.20000004768372,
+			"current_balance":0.0,
+			"location_coeff":6,
+			**"user_coeff":1**
+		}
+	} 
+	```
+- Пользовательские покупки
+	* Купленные гифткарты
+	> !!!!
+---
+## Пользователь
+- Данные пользователя
+	* Контекст -> пользователь -> 1
+- Баланс пользователя 
+	* Контекст -> пользователь -> 1
+- Анкета
+	1. `GET` Контекст -> пользователь -> 1
+	2. `POST /api/v1/questionnaires + Body(questionnaire)`
+---
+## Видео
+- Все видео
+	* `GET /api/v1/videos`
+	Ответ:
+	```
+	[
+		{
+			"video":{
+				"id":4,
+				"b2b_client_id":3,
+				"name":"death",
+				"url":"death.mp4",
+				"watch_counter":null,
+				"ad_compaing_ids":null,
+				"created_at":"2019-04-25T10:47:27.575Z",
+				"updated_at":"2019-04-25T10:47:27.575Z",
+				"price":null
+			}
+		},
+		{
+			"video":{
+				"id":5,
+				"b2b_client_id":3,
+				"name":"demix",
+				"url":"demix.mp4",
+				"watch_counter":null,
+				"ad_compaing_ids":null,
+				"created_at":"2019-04-25T10:47:42.251Z",
+				"updated_at":"2019-04-25T10:47:42.251Z",
+				"price":null
+			}
+		}, ...
+	]
+	```
+- Видео по анкете
+	* `GET /api/v1/videos/videos_pool?user_id={id}`
+	Ответ:
+	```
+	{
+		"videos":[
+			{
+				"id": 5,
+				"name": "demix.mp4",
+				"watch_count": 1
+			}, 
+			{
+				"id": 13,
+				"name": "whiskas.mp4",
+				"watch_count": 3
+			}
+		]
+	}
+	```
+---
+## Гифткарты
+- Все гифткарты
+	* `GET /api/v1/gift_cards`
+	Ответ:
+	```
+	[
+		{
+			"giftcard":{
+				"id":1,
+				"ad_compaing_id":1,
+				"due_date":"2019-04-21T00:00:00.000Z",
+				"image_url":"7580623554058001.jpg",
+				"brand":"",
+				"vendor":"","
+				description":"",
+				"price":[100],
+				"created_at":"2019-04-21T16:31:07.276Z",
+				"updated_at":"2019-04-21T16:31:07.276Z",
+				"quantity":null
+			}
+		}, {
+			"giftcard": {
+				"id":2,
+				"ad_compaing_id":1,
+				"due_date":"2019-04-21T00:00:00.000Z",
+				"image_url":"11410.jpg",
+				"brand":"ебобо",
+				"vendor":"ебобоша",
+				"description":"тестовая",
+				"price":["100","200","300"],
+				"created_at":"2019-04-21T16:54:28.432Z",
+				"updated_at":"2019-04-21T16:54:28.432Z",
+				"quantity":null
+			}
+		}, ...
+	]
+	```
+- Купленные гифткарты
+> !!!!!
+---
+## Действия пользователя
+- Регистрация
+	* Приложение -> Пользователь (2)
+- Вход
+	* Приложение -> Пользователь (1)
+- Ответ на анкету
+	* Пользователь -> Анкета (2)
+- Получение гифткарт
+	* Всех (Гифткарты -> Все гифткарты)
+	* Конкретной
+	`GET /api/v1/gift_cards/{card_id}`
+	Ответ:
+	```
+	{
+		"giftcard": {
+			"id":2,
+			"ad_compaing_id":1,
+			"due_date":"2019-04-21T00:00:00.000Z",
+			"image_url":"11410.jpg",
+			"brand":"ебобо",
+			"vendor":"ебобоша",
+			"description":"тестовая",
+			"price":["100","200","300"],
+			"created_at":"2019-04-21T16:54:28.432Z",
+			"updated_at":"2019-04-21T16:54:28.432Z",
+			"quantity":null
+	}
+	```
+- Получение видео
+	* Всех видео (Видео -> Все видео)
+	* Видео по анкете (Видео -> Видео по анкете)
+- Покупка гифткарты
+	* `GET /api/v1/users_gift_cards/get_gift_card?user_id={user_id}&giftcard_id={card_id}&price={price}`
+	Ответ:
+	```
+	{
+		"users_gift_card":{
+			"user_id":7,
+			"id":1,
+			"giftcard_id":24,
+			"image_url":"11410.jpg", **ЭТОГО НЕТ!!!!**
+			"price":"300",
+			"serial_number":"12321432453",
+			"day_bought":null,
+			"is_activated":true, **НЕВЕРНО!!!**
+			"created_at":"2019-05-12T14:06:59.613Z",
+			"updated_at":"2019-05-12T14:10:38.464Z",
+			"paid":true
+		}
+	}
+	```
+- Активация гифткарты
+> !!!!!
