@@ -89,6 +89,7 @@ public class GiftsManagerFragment extends Fragment {
         giftCardList = giftCardDAO.selectAll();
     }
     private float getMoney(){
+        // todo USER MONEY FROM SERVER
         ActionsDAO actionsDAO = new ActionsDAO(getContext());
         return actionsDAO.getUserMoney(email);
     }

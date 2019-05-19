@@ -14,13 +14,18 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.Time;
+import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
+import com.example.prilogulka.data.service.GiftCardService;
+import com.example.prilogulka.data.service.UserService;
 import com.example.prilogulka.data_base.ActionsDAO;
-import com.example.prilogulka.data_base.GiftCardDAO;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.io.IOException;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 // TODO: 27.04.2019 BUY CARDS
 public class CardShop extends AppCompatActivity implements Button.OnClickListener {
@@ -28,12 +33,14 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
     String CLASS_TAG = "CardShop";
 
     // TODO: 27.04.2019 gift cards
-    GiftCardDAO giftCardDAO;
+    //GiftCardDAO giftCardDAO;
     Card giftCard;
     float userMoney;
     String email;
     SharedPreferencesManager spM;
-
+    UserService userService;
+    GiftCardService giftCardService;
+    UserIO userIO;
 
     Button buyBronzeCard, buySilverCard, buyGoldenCard;
     ImageView giftCardView;
@@ -49,6 +56,7 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
         spM = new SharedPreferencesManager(this);
         email = spM.getActiveUser();
 
+        initServices();
         initUIReference();
         setToolbar();
 
@@ -70,11 +78,20 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
         infoAboutCard = findViewById(R.id.infoAboutCard);
 
         // TODO: 27.04.2019 gift cards
-        giftCardDAO = new GiftCardDAO(this);
+        //giftCardDAO = new GiftCardDAO(this);
     }
+    private void initServices() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://92.53.65.46:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        giftCardService = retrofit.create(GiftCardService.class);
+        userService = retrofit.create(UserService.class);
+        userIO = new UserIO(this);
+    }
     public void setValuesToLayout() {
-        giftCard = findCardInDataBase().getCard();
+        getGiftCard();
         giftCard.setPrices();
 
         Log.i(CLASS_TAG, giftCard.toString());
@@ -103,11 +120,16 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
         buyGoldenCard.setVisibility((giftCard.getPriceGold() == 0) ? View.GONE : View.VISIBLE);
     }
 
-    public GiftCard findCardInDataBase() {
+    public void getGiftCard() {
         Intent intent = getIntent();
         int cardId = intent.getIntExtra("giftCardId", 0);
-        List<GiftCard> list = giftCardDAO.select(cardId);
-        return (list.size() == 1) ? list.get(0) : null;
+        try {
+            GiftCard gC = giftCardService.getGiftCard(cardId).execute().body();
+            if (gC != null)
+                giftCard = gC.getCard();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getUsersMoney() {

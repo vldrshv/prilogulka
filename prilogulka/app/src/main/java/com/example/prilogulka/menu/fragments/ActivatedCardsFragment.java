@@ -19,13 +19,20 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
+import com.example.prilogulka.data.service.GiftCardService;
+import com.example.prilogulka.data.userData.SerializeObject;
+import com.example.prilogulka.data.userData.UserInfo;
 import com.example.prilogulka.data_base.ActionsDAO;
-import com.example.prilogulka.data_base.ActivatedCardsDAO;
 import com.example.prilogulka.menu.ActivatedCardActivity;
 import com.example.prilogulka.recycle_view_adapters.RVActivatedCardsAdapter;
 import com.example.prilogulka.recycle_view_adapters.RecyclerItemClickListener;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ActivatedCardsFragment  extends Fragment {
 
@@ -38,6 +45,9 @@ public class ActivatedCardsFragment  extends Fragment {
     String CLASS_TAG = "ActivatedCardsFragment";
     final String CLASS_TITLE = "Активированные карты";
 
+    GiftCardService service;
+    List<GiftCard> cardsList;
+
     /**
      * TODO: удаление карточки из списка после истечения срока действия
      */
@@ -49,8 +59,10 @@ public class ActivatedCardsFragment  extends Fragment {
         spM = new SharedPreferencesManager(getContext());
         email = spM.getActiveUser();
 
-
+        initService();
+        getBoughtCards();
         initRecycleView();
+
         setHasOptionsMenu(true);
 
         Log.i(CLASS_TAG, email);
@@ -58,31 +70,26 @@ public class ActivatedCardsFragment  extends Fragment {
         return rootView;
     }
 
-    public void initRecycleView() {
+    private void initRecycleView() {
         recyclerView = rootView.findViewById(R.id.activatedCardsRecycleView);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(llm);
 
         // TODO: 27.04.2019 activated gift cards
-        final ActivatedCardsDAO activatedCardsDAO = new ActivatedCardsDAO(getContext());
-        List<GiftCard> list = activatedCardsDAO.selectAll(email);
-
         Log.i(CLASS_TAG, email);
-        for (GiftCard gc : list)
+        for (GiftCard gc : cardsList)
             Log.i(CLASS_TAG, gc.toString());
 
-        RVActivatedCardsAdapter adapter = new RVActivatedCardsAdapter(list, getContext());
+        RVActivatedCardsAdapter adapter = new RVActivatedCardsAdapter(cardsList, getContext());
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        List<GiftCard> list = activatedCardsDAO.selectAll(email);
-
                         Context context = view.getContext();
                         Intent intent = new Intent(context, ActivatedCardActivity.class);
-                        intent.putExtra("cardId", list.get(position).getCard().getCardId());
+                        intent.putExtra("cardId", cardsList.get(position).getCard().getCardId());
                         context.startActivity(intent);
                     }
 
@@ -95,6 +102,26 @@ public class ActivatedCardsFragment  extends Fragment {
                 })
         );
 
+    }
+    private void initService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://92.53.65.46:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        service = retrofit.create(GiftCardService.class);
+    }
+    /**
+     * Скачиваем карточки, купленные пользователем
+     */
+    private void getBoughtCards() {
+        UserInfo user = readUser();
+        try {
+            cardsList = new ArrayList<>();
+            cardsList.addAll(service.getBoughtGiftCards(user.getUser().getId()).execute().body());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -118,6 +145,20 @@ public class ActivatedCardsFragment  extends Fragment {
         }
 
         return false;
+    }
+
+    private UserInfo readUser() {
+        SerializeObject<UserInfo> so = new SerializeObject<UserInfo>(getContext());
+        UserInfo user = new UserInfo();
+        try {
+            user = so.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            e.getStackTrace();
+        }
+        if (user != null)
+            Log.i(CLASS_TAG, user.toString());
+
+        return user;
     }
 
 }

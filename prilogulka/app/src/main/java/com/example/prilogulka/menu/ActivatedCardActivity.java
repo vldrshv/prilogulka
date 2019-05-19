@@ -16,9 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.prilogulka.R;
-import com.example.prilogulka.data.GiftCard;
+import com.example.prilogulka.data.UserGiftCard;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data_base.ActivatedCardsDAO;
+import com.example.prilogulka.data.service.GiftCardService;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -26,12 +26,18 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class ActivatedCardActivity extends AppCompatActivity implements Button.OnClickListener{
     private String CLASS_TAG = "ActivatedCardActivity";
 
     // TODO: 27.04.2019 activated gift cards
-    ActivatedCardsDAO activatedCardsDAO;
-    GiftCard giftCard;
+    GiftCardService service;
+    //ActivatedCardsDAO activatedCardsDAO;
+    UserGiftCard giftCard;
 
     SharedPreferencesManager spM;
     String email;
@@ -62,26 +68,39 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
         btnActivate = findViewById(R.id.btnActivate);
         btnActivate.setOnClickListener(this);
 
-        activatedCardsDAO = new ActivatedCardsDAO(this);
+        //activatedCardsDAO = new ActivatedCardsDAO(this);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://92.53.65.46:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        service = retrofit.create(GiftCardService.class);
     }
 
     public void setValuesToLayout(){
-        giftCard = findCardInDataBase();
-
-        if (giftCard != null) {
-            giftCardView.setImageResource(R.drawable.hsm);//giftCard.getDestination());
-            Picasso.get().load("http://92.53.65.46:3000/" + giftCard.getCard().getImageUrl())
-                    .into(giftCardView);
-            activatedCardNumber.setText(giftCard.getCard().getSerialNumber() + "");
+        int cardId = findCardInDataBase();
+        try {
+            giftCard = service.getUsersGiftCard(cardId).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+        if (giftCard != null) {
+//            giftCardView.setImageResource(R.drawable.hsm);//giftCard.getDestination());
+            Picasso.get().load("http://92.53.65.46:3000/" + giftCard.getCard().getImageUrl())
+                    .into(giftCardView);
+            activatedCardNumber.setText(
+                    giftCard.getCard().getSerialNumber() + "\n" +
+                            giftCard.getCard().getDescription() + "\n" +
+                            giftCard.getCard().getDueDate());
+        }
     }
-    public GiftCard findCardInDataBase(){
+    public int findCardInDataBase(){
         Intent intent = getIntent();
         Log.i(CLASS_TAG, intent.getIntExtra("cardId", 0) + "");
         int cardId = intent.getIntExtra("cardId", 0);
 
-        return activatedCardsDAO.select(cardId, email);//.findCard(code, email);
+        return cardId;
     }
     public void setToolbar(){
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -113,8 +132,12 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
                 showHint("Если Вы нажмете \"активировать\" еще раз, Вам будет показан QR код " +
                         "данной карточки. После этого карточка будет считаться ИСПОЛЬЗОВАННОЙ и " +
                         "удалится из списка активированных карт! Если Вы СОГЛАСНЫ, нажмите ПОНЯТНО и АКТИВИРОВАТЬ.");
-            else // todo delete from activated
+            else {
+                // set card activated, show QR
                 barcodeImage.setImageBitmap(createQRcode(giftCard.getCard().getSerialNumber()));
+                giftCard.getCard().setActivated(true);
+                service.makeCardUsed(giftCard, giftCard.getCard().getCardId());
+            }
         }
     }
 

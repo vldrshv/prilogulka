@@ -32,6 +32,8 @@ class Card {
     var description: String = ""
     @SerializedName("price")
     var priceArray: List<String> = arrayListOf()
+    @SerializedName("is_activated")
+    var isActivated: Boolean = false
     
     var priceBronze: Int = 0
     var priceSilver: Int = 0
