@@ -20,9 +20,12 @@ import android.widget.TextView;
 
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.GiftCard;
+import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.GiftCardService;
+import com.example.prilogulka.data.service.UserService;
+import com.example.prilogulka.data.userData.UserInfo;
 import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.data_base.GiftCardDAO;
 import com.example.prilogulka.menu.CardShop;
@@ -47,7 +50,8 @@ public class GiftsManagerFragment extends Fragment {
     Menu menu;
     GiftCardService service;
     List<GiftCard> giftCardList;
-    GiftCardDAO giftCardDAO;
+
+    UserIO USER_IO;
 
     String CLASS_TAG = "GiftsManagerFragment";
     final String CLASS_TITLE = "Мой счет/Вывод средств";
@@ -57,8 +61,7 @@ public class GiftsManagerFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_gifts_manager, container, false);
 
-        checkDataBase();
-
+        USER_IO = new UserIO(getContext());
 
         spM = new SharedPreferencesManager(getContext());
         email = spM.getActiveUser();
@@ -66,39 +69,21 @@ public class GiftsManagerFragment extends Fragment {
         moneyTextView = rootView.findViewById(R.id.money_giftsManager);
         moneyTextView.setText("Состояние счета: " + getMoney());
 
-        checkDataBase();
-
         GiftCardsGetter task = new GiftCardsGetter();
         task.doInBackground();
 
         initRecycleView();
         setHasOptionsMenu(true);
 
-        if (!giftCardList.isEmpty())
-            giftCardDAO.insert(giftCardList);
-
-        giftCardList.clear();
-        giftCardList.addAll(giftCardDAO.selectAll());
 
         Log.i(CLASS_TAG, email);
         return rootView;
     }
 
-    private void checkDataBase() {
-        giftCardDAO = new GiftCardDAO(getContext());
-        giftCardList = giftCardDAO.selectAll();
+    private double getMoney() {
+        UserInfo user = USER_IO.readUser();
+        return user != null ? user.getUser().getCurrent_balance() : 0;
     }
-    private float getMoney(){
-        // todo USER MONEY FROM SERVER
-        ActionsDAO actionsDAO = new ActionsDAO(getContext());
-        return actionsDAO.getUserMoney(email);
-    }
-
-    /**
-     * TODO: подгрузка данных с сервера
-     * TODO: кеширование данных
-     * TODO: отображение у пользователя на экране
-     */
 
     public void initRecycleView() {
 
@@ -141,14 +126,12 @@ public class GiftsManagerFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
+        menu.getItem(0).setVisible(false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                item.setTitle("Состояние счета: " + getMoney());
-                return true;
             case R.id.action_help:
                 HintDialogs hd = new HintDialogs(getContext());
                 hd.showHint(getString(R.string.giftsManagerHint), CLASS_TITLE);

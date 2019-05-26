@@ -42,6 +42,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.example.prilogulka.R;
+import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.Video;
 import com.example.prilogulka.data.VideoAction;
 import com.example.prilogulka.data.VideoItem;
@@ -91,11 +92,10 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     Button btnNext;
     VideoView videoView;
     Video currentVideo;
-    TextView textViewVideoCounter;
     Menu menu;
 
     UserInfo user;
-    int money = 0;
+    UserIO USER_IO;
     ArrayList<Uri> uriList;
     List<Video> videoList;
     String email;
@@ -104,7 +104,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     int playingVideoIndex = 0;
 
-    ActionsDAO actionsDAO;
+    //ActionsDAO actionsDAO;
     VideoDAO videoDAO;
     SharedPreferencesManager spManager;
     VideoService videoService;
@@ -122,12 +122,13 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         super.onCreate(icicle);
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_watching_video, container, false);
 
+        USER_IO = new UserIO(getContext());
+        user = USER_IO.readUser();
+
         initUIReference(rootView);
         initDB();
-        readSerializedUser();
-        initServices();
 
-        textViewVideoCounter.setText(money + "");
+        initServices();
 
         uriList = new ArrayList<>();
         setVideoURIList();
@@ -139,6 +140,10 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     }
     // todo TEST
     private void parseVideos(Video video) {
+        if (video == null) {
+            Toast.makeText(getContext(), "К сожалению, смотреть нечего :( Мы работаем над этим", Toast.LENGTH_LONG).show();
+            return;
+        }
         for (VideoItem videoItem : video.getVideoItemList()) {
             Video v = new Video();
             v.getVideoItem().setId(videoItem.getId());
@@ -194,7 +199,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     // todo TEST
     private void initUIReference(ViewGroup rootView) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
-        textViewVideoCounter = rootView.findViewById(R.id.textViewVideoCounter);
 
         videoView = rootView.findViewById(R.id.videoPlayer);
         videoView.stopPlayback();
@@ -225,35 +229,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     }
     private void initDB() {
         videoDAO = new VideoDAO(getContext());
-        actionsDAO = new ActionsDAO(getContext());
-        Log.i(CLASS_TAG, "ActionsDAO created");
     }
 
-    private void readSerializedUser() {
-        SerializeObject<UserInfo> so = new SerializeObject<UserInfo>(getContext());
-        user = new UserInfo();
-        try {
-            user = so.readObject();
-        } catch (ClassNotFoundException | IOException e) {
-            e.getStackTrace();
-        }
-        if (user != null)
-            Log.i(CLASS_TAG, user.toString());
-    }
-    private void serializeUser() {
-        try {
-            if (user.getUser() != null) {
-                SerializeObject so = new SerializeObject(getContext());
-                Log.i(CLASS_TAG, user.toString());
-                so.writeObject(user, user.getClass());
-                spManager.setQuestionnaire(user.getUser().getUser_coeff() != 0);
-                Log.i(CLASS_TAG, user.toString());
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     private void sendStatistic(){
         VideoAction videoAction = new VideoAction();
         videoAction.setUserId(user.getUser().getId());
@@ -264,18 +241,15 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
-    private void updateUser() {
+    private void updateUserLocal() {
         try {
             user = userService.getUser(user.getUser().getEmail()).execute().body();
-            serializeUser();
+            USER_IO.writeUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    public float getMoney(){
-        Log.i(CLASS_TAG, email);
-        return actionsDAO.getUserMoney(email);
     }
 
     @Override
@@ -336,17 +310,11 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.i(CLASS_TAG, "VIDEO #" + playingVideoIndex + " was over, STARTING new video");
-        money++;
 
-        //todo insert user actions
-//        float points = (float) (COEF * ((spManager.getQuestionnaire()) ? 1.2 : 1.0) * currentVideo.getVideoItem().getPrice());
         sendStatistic();
-        updateUser();
-        menu.getItem(0).setTitle("Состояние счета: " + getMoney());
+        updateUserLocal();
         // todo send statistics
         // todo POINTS
-//        actionsDAO.insert(email, currentVideo, points);
-        textViewVideoCounter.setText(money + "");
         nextVideo();
     }
 
@@ -354,12 +322,23 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
+        menu.getItem(0).setVisible(true);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                item.setTitle("Состояние счета: " + getMoney());
+                //todo connect to server
+                try {
+                    user = userService.getUser(email).execute().body();
+                    double money = 0;
+                    if (user != null)
+                        money = user.getUser().getCurrent_balance();
+                    item.setTitle("Состояние счета: " + money);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+//                item.setTitle("Состояние счета: " + getMoney());
                 return true;
             case R.id.action_help:
                 HintDialogs hd = new HintDialogs(getContext());

@@ -39,7 +39,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private String CLASS_TAG = "MenuActivity";
 
     private SharedPreferencesManager spManager;
-    private ActionsDAO actionsDAO;
+    //private ActionsDAO actionsDAO;
     private String email;
     private UserInfo user;
 
@@ -106,7 +106,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setCheckedItem(R.id.nav_help);
     }
     private void initDataBases() {
-        actionsDAO = new ActionsDAO(this);
         ActivatedCardsDAO activatedCardsDAO = new ActivatedCardsDAO(this);
         GiftCardDAO giftCardDAO = new GiftCardDAO(this);
         VideoDAO videoDAO = new VideoDAO(this);
@@ -135,8 +134,9 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_right_corner, menu);
-        menu.getItem(0).setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
-        Log.i("MENU_ACTIVITY", (actionsDAO.getUserMoney(email)) + "");
+        menu.getItem(0).setVisible(false);
+//        menu.getItem(0).setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
+//        Log.i("MENU_ACTIVITY", (actionsDAO.getUserMoney(email)) + "");
 
         return true;
     }

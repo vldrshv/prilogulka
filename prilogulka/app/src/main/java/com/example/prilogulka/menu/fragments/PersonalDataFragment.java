@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.prilogulka.R;
+import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.userData.SerializeObject;
@@ -41,6 +42,7 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
     private Button buttonQuestionnaire;
     private TextView textQuestionnaire;
 
+    private UserIO USER_IO;
     private String email;
     private UserInfo user;
 
@@ -55,7 +57,9 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
         spManager = new SharedPreferencesManager(getContext());
         email = spManager.getActiveUser();
 
-        serializeUser();
+        USER_IO = new UserIO(getContext());
+        user = USER_IO.readUser();
+
         initLayoutFields();
         showQuestionnaire();
         setTextToLayout();
@@ -65,17 +69,6 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
         return rootView;
     }
 
-    private void serializeUser() {
-        SerializeObject<UserInfo> so = new SerializeObject<UserInfo>(getContext());
-        user = new UserInfo();
-        try {
-            user = so.readObject();
-        } catch (ClassNotFoundException | IOException e) {
-            e.getStackTrace();
-        }
-        if (user != null)
-            Log.i(CLASS_TAG, user.toString());
-    }
     private void initLayoutFields() {
         editName = rootView.findViewById(R.id.name);
         editSurname = rootView.findViewById(R.id.surname);
@@ -113,15 +106,12 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        menu.getItem(0).setVisible(false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                ActionsDAO actionsDAO = new ActionsDAO(getContext());
-                item.setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
-                return true;
             case R.id.action_help:
                 HintDialogs hd = new HintDialogs(getContext());
                 hd.showHint(getString(R.string.personalDataHint), CLASS_TITLE);

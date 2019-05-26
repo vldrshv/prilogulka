@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
+import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data_base.ActionsDAO;
 import com.squareup.picasso.Picasso;
@@ -22,18 +23,13 @@ import java.util.List;
 
 public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.GiftCardsHolder> {
     private List<GiftCard> giftCardsList;
-    private ActionsDAO actionsDAO;
-    private String email;
     private int progress;
 
     public RVGiftCardsAdapter(List<GiftCard> giftCardsList, Context context) {
         this.giftCardsList = giftCardsList;
 
-        SharedPreferencesManager spManager = new SharedPreferencesManager(context);
-        email = spManager.getActiveUser();
-
-        actionsDAO = new ActionsDAO(context);
-        progress = (int)actionsDAO.getUserMoney(email);
+        UserIO USER_IO = new UserIO(context);
+        progress = (int)USER_IO.getMoney();
     }
 
     public static class GiftCardsHolder extends RecyclerView.ViewHolder {
@@ -60,9 +56,10 @@ public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.
         giftCard.setPrices();
 
         Log.i("ADAPTER", i+"");
-        personViewHolder.cardPrice.setText(giftCard.getPriceBronze()+"");
-        personViewHolder.giftCardProgressBar.setMax(giftCard.getPriceBronze());
-        personViewHolder.giftCardProgressBar.setProgress(progress);
+        int price = giftCard.getPriceBronze();
+        personViewHolder.cardPrice.setText(price+"");
+        personViewHolder.giftCardProgressBar.setMax(price+1);
+        personViewHolder.giftCardProgressBar.setProgress(price == 0 ? price+1 : progress * 100 / price);
 
         Picasso.get()
                 .load("http://92.53.65.46:3000/" + giftCard.getImageUrl())

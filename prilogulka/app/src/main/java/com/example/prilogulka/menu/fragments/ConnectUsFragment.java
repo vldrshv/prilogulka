@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,27 +15,32 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.prilogulka.R;
+import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
+import com.example.prilogulka.data.userData.SerializeObject;
 import com.example.prilogulka.data.userData.User;
+import com.example.prilogulka.data.userData.UserInfo;
 import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.data_base.UserInfoDataBaseImpl;
 import com.example.prilogulka.data_base.interfaces.UserInfoDataBase;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ConnectUsFragment extends Fragment {
-
-    SharedPreferencesManager spManager;
-    UserInfoDataBase userDB;
-    EditText editEmail, editName, editSurname, editMessage;
-    Button send;
-
-    ViewGroup rootView;
-
     String CLASS_TAG = "ConnectUsFragment";
     final String CLASS_TITLE = "Обратиться к нам";
     String email;
+
+    UserIO USER_IO;
+    SharedPreferencesManager spManager;
+    UserInfo userInfo;
+
+
+    EditText editEmail, editName, editSurname, editMessage;
+    Button send;
+    ViewGroup rootView;
 
     /**
      * TODO: ПОЧИСТИТЬ КЛАСС
@@ -46,36 +52,44 @@ public class ConnectUsFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
 
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_connect_us, container, false);
+
+        initGlobalVars();
+        initTextInfo();
+        initSendButton();
+
+        setHasOptionsMenu(true);
+
+        return rootView;
+    }
+
+    private void initGlobalVars() {
         spManager = new SharedPreferencesManager(getContext());
-        userDB = new UserInfoDataBaseImpl(getContext());
-
         email = spManager.getActiveUser();
-        List<User> userList = userDB.findUserInfo(userDB.COLUMN_EMAIL, email);
-        User user;
-
-        String info = "", info1 = "", info2 = "";
-        if (userList.size() == 1) {
-            user = userList.get(0);
-
-            info = user.getName();
-            info1 = user.getLastname();
-            info2 = user.getEmail();
+        USER_IO = new UserIO(getContext());
+        userInfo = USER_IO.readUser();
+    }
+    private void initTextInfo() {
+        String name = "", lastname = "";
+        if (userInfo != null) {
+            name = userInfo.getUser().getName();
+            lastname = userInfo.getUser().getLastname();
         }
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_connect_us, container, false);
         editName = rootView.findViewById(R.id.name_connect_us);
-        editName.setText(info);
+        editName.setText(name);
         editName.setKeyListener(null);
 
         editSurname = rootView.findViewById(R.id.surname_connect_us);
-        editSurname.setText(info1);
+        editSurname.setText(lastname);
         editSurname.setKeyListener(null);
 
         editEmail = rootView.findViewById(R.id.e_mail);
-        editEmail.setText(info2);
+        editEmail.setText(email);
         editEmail.setKeyListener(null);
 
         editMessage = rootView.findViewById(R.id.message);
 
+    }
+    private void initSendButton() {
         send = rootView.findViewById(R.id.send);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,28 +109,18 @@ public class ConnectUsFragment extends Fragment {
                 // Поехали!
                 ConnectUsFragment.this.startActivity(Intent.createChooser(emailIntent,
                         "Отправка письма..."));
-
-
             }
         });
-
-        setHasOptionsMenu(true);
-
-        return rootView;
     }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        menu.getItem(0).setVisible(false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                ActionsDAO actionsDAO = new ActionsDAO(getContext());
-                item.setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
-                return true;
             case R.id.action_help:
                 HintDialogs hd = new HintDialogs(getContext());
                 hd.showHint(getString(R.string.connectUsHint), CLASS_TITLE);
@@ -127,4 +131,5 @@ public class ConnectUsFragment extends Fragment {
 
         return false;
     }
+
 }

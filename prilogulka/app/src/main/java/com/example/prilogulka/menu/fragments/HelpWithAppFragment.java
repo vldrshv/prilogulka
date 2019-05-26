@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,8 +16,12 @@ import android.view.ViewGroup;
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
+import com.example.prilogulka.data.userData.SerializeObject;
+import com.example.prilogulka.data.userData.UserInfo;
 import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.menu.HelpAppActivity;
+
+import java.io.IOException;
 
 
 public class HelpWithAppFragment extends Fragment implements View.OnClickListener{
@@ -77,22 +82,15 @@ public class HelpWithAppFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    /**
-     * TODO: подключение к сервачку
-     */
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        menu.getItem(0).setVisible(false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                ActionsDAO actionsDAO = new ActionsDAO(getContext());
-                item.setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
-                return true;
             case R.id.action_help:
                 HintDialogs hd = new HintDialogs(getContext());
                 hd.showHint(getString(R.string.helpWithAppHint), CLASS_TITLE);
@@ -103,4 +101,5 @@ public class HelpWithAppFragment extends Fragment implements View.OnClickListene
 
         return false;
     }
+
 }

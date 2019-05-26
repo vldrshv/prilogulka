@@ -127,15 +127,12 @@ public class ActivatedCardsFragment  extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        menu.getItem(0).setVisible(false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                ActionsDAO actionsDAO = new ActionsDAO(getContext());
-                item.setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
-                return true;
             case R.id.action_help:
                 HintDialogs hd = new HintDialogs(getContext());
                 hd.showHint(getString(R.string.activatedCardsHint), CLASS_TITLE);
