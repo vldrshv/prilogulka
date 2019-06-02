@@ -16,7 +16,7 @@ interface VideoService {
      * возвращает видео по анкете
      */
     @GET("/api/v1/videos/videos_pool?")
-    fun getVideosByQuestionnaire(@Query("user_id") userId: Int) : Call<Video>
+    fun getVideos(@Query("user_id") userId: Int) : Call<Video>
     
     /**
      * возвращает видео по id

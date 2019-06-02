@@ -37,7 +37,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -50,9 +49,7 @@ import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.UserService;
 import com.example.prilogulka.data.service.VideoService;
-import com.example.prilogulka.data.userData.SerializeObject;
 import com.example.prilogulka.data.userData.UserInfo;
-import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.data_base.VideoDAO;
 import com.example.prilogulka.facetracker.FaceGraphic;
 import com.example.prilogulka.facetracker.ui.camera.CameraSourcePreview;
@@ -138,7 +135,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
         return rootView;
     }
-    // todo TEST
     private void parseVideos(Video video) {
         if (video == null) {
             Toast.makeText(getContext(), "К сожалению, смотреть нечего :( Мы работаем над этим", Toast.LENGTH_LONG).show();
@@ -148,23 +144,24 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             Video v = new Video();
             v.getVideoItem().setId(videoItem.getId());
             v.getVideoItem().setUrl(videoItem.getName());
+            v.getVideoItem().setWatchCounter(videoItem.getWatchCounter());
+            v.getVideoItem().setWatchInRow(videoItem.getWatchInRow());
             videoList.add(v);
         }
     }
-    // todo TEST
     private List<Video> checkVideosExistInDB() {
         return videoDAO.selectAll();
     }
-    // todo TEST
     private void getVideosFromServer() {
         try {
-            if (spManager.getQuestionnaire()) {
-                Video video = videoService.getVideosByQuestionnaire(user.getUser().getId()).execute().body(); // ответил на анкету
+//            if (spManager.getQuestionnaire()) {
+                Video video = videoService.getVideos(user.getUser().getId()).execute().body(); // ответил на анкету
                 parseVideos(video);
-                System.out.println(videoList);
-                Toast.makeText(getContext(), "ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
-            }
-            else {
+//                System.out.println(videoList);
+//                Toast.makeText(getContext(), "ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
+//            }
+//            else {
+            if (videoList == null || videoList.isEmpty()) {
                 videoList = videoService.getAllVideos().execute().body(); // не ответил
                 if (videoList != null)
                     videoDAO.insert(videoList);
@@ -174,8 +171,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             e.printStackTrace();
         }
     }
-    // todo TEST
     private void setVideoURIList() {
+        videoList = new ArrayList<>();
         List<Video> dbVideos = checkVideosExistInDB();
         if (dbVideos.size() == 0)
             getVideosFromServer();
@@ -184,7 +181,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
         if (videoList != null) {
             currentVideo = videoList.get(0);
-            //WATCH_ROW = currentVideo.getVideoItem().getWatchCounterInRow();
+            WATCH_ROW = currentVideo.getVideoItem().getWatchInRow();
             for (Video v : videoList) {
                 Log.i(CLASS_TAG, v.toString());
                 uriList.add(Uri.parse("http://92.53.65.46:3000/" + v.getVideoItem().getUrl()));
@@ -196,7 +193,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         //showHint();
 
     }
-    // todo TEST
     private void initUIReference(ViewGroup rootView) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
 
@@ -232,9 +228,13 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     }
 
     private void sendStatistic(){
+        //todo как начисляем прайс? из фронта или в беке?
         VideoAction videoAction = new VideoAction();
-        videoAction.setUserId(user.getUser().getId());
-        videoAction.setVideoId(currentVideo.getVideoItem().getId());
+        videoAction.getUserVideoAction().setUserId(user.getUser().getId());
+        videoAction.getUserVideoAction().setVideoId(currentVideo.getVideoItem().getId());
+        videoAction.getUserVideoAction().setIncome(1);//currentVideo.getVideoItem().getPrice());
+        videoAction.getUserVideoAction().setWasWatched(1);
+
         System.out.println(videoAction);
         try {
             videoService.postUserVideoAction(videoAction).execute();
@@ -243,6 +243,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         }
 
     }
+    /*
     private void updateUserLocal() {
         try {
             user = userService.getUser(user.getUser().getEmail()).execute().body();
@@ -251,7 +252,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             e.printStackTrace();
         }
     }
-
+    */
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -297,6 +298,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 playingVideoIndex = 0;
             else
                 playingVideoIndex++;
+
+            WATCH_ROW = videoList.get(playingVideoIndex).getVideoItem().getWatchInRow();
         }
 
 
@@ -312,9 +315,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         Log.i(CLASS_TAG, "VIDEO #" + playingVideoIndex + " was over, STARTING new video");
 
         sendStatistic();
-        updateUserLocal();
-        // todo send statistics
-        // todo POINTS
+        //updateUserLocal();
         nextVideo();
     }
 

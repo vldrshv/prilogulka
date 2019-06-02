@@ -35,18 +35,14 @@ class Card {
     @SerializedName("is_activated")
     var isActivated: Boolean = false
     
-    var priceBronze: Int = 0
-    var priceSilver: Int = 0
-    var priceGold: Int = 0
-    
     fun setPrices() {
         var price = arrayOf(0, 0, 0)
         for (i in 0 until priceArray.size)
             price[i] = if (priceArray[i] == "") 0 else Integer.parseInt(priceArray[i])
         price.sort()
-        priceBronze = price[0]
-        priceSilver = price[1]
-        priceGold = price[2]
+        //priceBronze = price[0]
+        //priceSilver = price[1]
+        //priceGold = price[2]
     }
     
     override fun toString(): String {
@@ -54,7 +50,7 @@ class Card {
                 "companyAdvertisementId=$companyAdvertisementId, dueDate='$dueDate'," +
                 "dayBought='$dayBought', imageUrl='$imageUrl', " +
                 "brand='$brand', vendor='$vendor', description='$description', " +
-                "priceArray=$priceArray, priceBronze=$priceBronze, priceSilver=$priceSilver, priceGold=$priceGold)"
+                "priceArray=$priceArray, )"
     }
     
     

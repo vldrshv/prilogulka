@@ -15,8 +15,6 @@ class Video {
 }
 
 class VideoItem {
-//    @SerializedName("ad_compaing_ids")
-//    var adCompaniesIdList: List<Int> = arrayListOf()
     @SerializedName("b2b_client_id")
     var b2bClientId: Int = 0
     @SerializedName("created_at")
@@ -27,14 +25,18 @@ class VideoItem {
     var name: String = ""
     @SerializedName("url")
     var url: String = ""
-    @SerializedName("watch_counter")
+    @SerializedName("each_person_insequense_viewing")
+    var watchInRow: Int = 0
+    @SerializedName("each_person_viewing")
     var watchCounter: Int = 0
+    @SerializedName("was_insequense_view")
+    var wasWatchedInRow: Int = 0
+    @SerializedName("was_watched")
+    var wasWatched: Int = 0
     @SerializedName("price")
     var price: Int = 0
     
     override fun toString(): String {
         return "VideoItem(b2bClientId=$b2bClientId, createdAt='$createdAt', id=$id, name='$name', url='$url', watchCounter=$watchCounter, price=$price)"
     }
-    
-    
 }
