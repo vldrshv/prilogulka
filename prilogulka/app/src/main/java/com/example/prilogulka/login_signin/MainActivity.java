@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity
     }
     private void serializeUser() {
         try {
-            user = service.getUser(email).execute().body();
+            user = service.getUserByEmail(email).execute().body();
             if (user.getUser() != null) {
                 SerializeObject so = new SerializeObject(this);
                 Log.i(CLASS_TAG, user.toString());

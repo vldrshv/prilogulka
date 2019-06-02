@@ -15,8 +15,6 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.UserIO;
-import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data_base.ActionsDAO;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -57,6 +55,10 @@ public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.
 
         Log.i("ADAPTER", i+"");
         int price = giftCard.getPriceBronze();
+        if (price == -1) { // если не пришли прайсы
+            personViewHolder.cv.setVisibility(View.GONE);
+            return;
+        }
         personViewHolder.cardPrice.setText(price+"");
         personViewHolder.giftCardProgressBar.setMax(price+1);
         personViewHolder.giftCardProgressBar.setProgress(price == 0 ? price+1 : progress * 100 / price);

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,15 +17,7 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data.userData.SerializeObject;
-import com.example.prilogulka.data.userData.User;
 import com.example.prilogulka.data.userData.UserInfo;
-import com.example.prilogulka.data_base.ActionsDAO;
-import com.example.prilogulka.data_base.UserInfoDataBaseImpl;
-import com.example.prilogulka.data_base.interfaces.UserInfoDataBase;
-
-import java.io.IOException;
-import java.util.List;
 
 public class ConnectUsFragment extends Fragment {
     String CLASS_TAG = "ConnectUsFragment";
@@ -66,7 +57,7 @@ public class ConnectUsFragment extends Fragment {
         spManager = new SharedPreferencesManager(getContext());
         email = spManager.getActiveUser();
         USER_IO = new UserIO(getContext());
-        userInfo = USER_IO.readUser();
+        userInfo = USER_IO.readUserFromLocal();
     }
     private void initTextInfo() {
         String name = "", lastname = "";

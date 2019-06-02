@@ -10,7 +10,12 @@ interface UserService {
      * Возвращает пользователя в формате JSON
      */
     @GET("api/v1/users/email?")
-    fun getUser(@Query("email") email: String) : Call<UserInfo>
+    fun getUserByEmail(@Query("email") email: String) : Call<UserInfo>
+    /**
+    * Возвращает пользователя в формате JSON
+    */
+    @GET("api/v1/users/{id}")
+    fun getUserById(@Path("id") id: Int) : Call<UserInfo>
     
     /**
      * Отправляем пользователя в формате JSON

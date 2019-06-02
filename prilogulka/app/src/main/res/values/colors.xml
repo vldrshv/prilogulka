@@ -22,7 +22,7 @@
     <color name="colorSecondaryText">#757575</color>
     <color name="colorIcons">#FFFFFF</color>
     <color name="colorDivider">#BDBDBD</color>
-
+    <color name="buttonDisable">#d1d1d1</color>
 
     <color name="colorGridBackground">#8088B53F</color>
 </resources>

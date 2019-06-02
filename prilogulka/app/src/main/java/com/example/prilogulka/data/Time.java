@@ -31,7 +31,10 @@ public class Time {
     }
     public static String parseServerTime(String serverTime) {
         // yyyy-mm-ddThh:mm:ss.ZONE
-        String dateTime[] = serverTime.split("T");
+        String dateTime[] = serverTime.split(" ");
+        if (dateTime.length == 1)
+            dateTime = serverTime.split("T");
+
         String date[] = dateTime[0].split("-");
         String time[] = dateTime[1].split("\\.");
 

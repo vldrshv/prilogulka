@@ -13,12 +13,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserIO {
     private Context context;
+    private UserService service;
 
     public UserIO(Context context) {
         this.context = context;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://92.53.65.46:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        service = retrofit.create(UserService.class);
     }
 
-    public UserInfo readUser(){
+    public UserInfo readUserFromLocal(){
         SerializeObject<UserInfo> so = new SerializeObject<UserInfo>(context);
         UserInfo user = new UserInfo();
         try {
@@ -28,7 +35,7 @@ public class UserIO {
         }
         return user;
     }
-    public void writeUser(UserInfo user) {
+    public void writeUserToLocal(UserInfo user) {
         try {
             if (user.getUser() != null) {
                 SerializeObject so = new SerializeObject(context);
@@ -39,16 +46,21 @@ public class UserIO {
         }
     }
 
-    public UserInfo getUserFromServer(String email) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://92.53.65.46:3000")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        UserService service = retrofit.create(UserService.class);
+    public UserInfo getUserFromServerByEmail(String email) {
         UserInfo user = null;
         try {
-            user = service.getUser(email).execute().body();
+            user = service.getUserByEmail(email).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
+    public UserInfo getUserFromServerById(int id) {
+        UserInfo user = null;
+        try {
+            user = service.getUserById(id).execute().body();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,7 +69,7 @@ public class UserIO {
     }
 
     public double getMoney() {
-        UserInfo user = readUser();
+        UserInfo user = readUserFromLocal();
         return user == null ? 0 : user.getUser().getCurrent_balance();
     }
 }

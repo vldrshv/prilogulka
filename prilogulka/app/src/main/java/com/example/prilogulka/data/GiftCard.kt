@@ -3,9 +3,9 @@ package com.example.prilogulka.data
 import com.google.gson.annotations.SerializedName
 
 class GiftCard {
-    @SerializedName("giftcard")
+    @SerializedName("giftcard", alternate = arrayOf("gift_card"))
     var card: Card = Card()
-    
+
     override fun toString(): String {
         return "GiftCard(card=$card)"
     }
@@ -35,14 +35,24 @@ class Card {
     @SerializedName("is_activated")
     var isActivated: Boolean = false
     
+    var priceBronze: Int = -1
+    var priceSilver: Int = -1
+    var priceGold: Int = -1
+    
     fun setPrices() {
-        var price = arrayOf(0, 0, 0)
+        var priceList: ArrayList<Int> = arrayListOf()
+        
         for (i in 0 until priceArray.size)
-            price[i] = if (priceArray[i] == "") 0 else Integer.parseInt(priceArray[i])
-        price.sort()
-        //priceBronze = price[0]
-        //priceSilver = price[1]
-        //priceGold = price[2]
+            priceList.add(if (priceArray[i] == "") continue else Integer.parseInt(priceArray[i]))
+        
+        priceList.sort()
+        for (i in 0 until priceList.size) {
+            when (i) {
+                0 -> priceBronze = priceList[0]
+                1 -> priceSilver = priceList[1]
+                2 -> priceGold = priceList[2]
+            }
+        }
     }
     
     override fun toString(): String {
@@ -50,7 +60,7 @@ class Card {
                 "companyAdvertisementId=$companyAdvertisementId, dueDate='$dueDate'," +
                 "dayBought='$dayBought', imageUrl='$imageUrl', " +
                 "brand='$brand', vendor='$vendor', description='$description', " +
-                "priceArray=$priceArray, )"
+                "priceArray=$priceArray, priceBronze=$priceBronze, priceSilver=$priceSilver, priceGold=$priceGold)"
     }
     
     

@@ -120,7 +120,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_watching_video, container, false);
 
         USER_IO = new UserIO(getContext());
-        user = USER_IO.readUser();
+        user = USER_IO.readUserFromLocal();
 
         initUIReference(rootView);
         initDB();
@@ -246,8 +246,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     /*
     private void updateUserLocal() {
         try {
-            user = userService.getUser(user.getUser().getEmail()).execute().body();
-            USER_IO.writeUser(user);
+            user = userService.getUserByEmail(user.getUserByEmail().getEmail()).execute().body();
+            USER_IO.writeUserToLocal(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -331,7 +331,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             case R.id.action_settings:
                 //todo connect to server
                 try {
-                    user = userService.getUser(email).execute().body();
+                    user = userService.getUserByEmail(email).execute().body();
                     double money = 0;
                     if (user != null)
                         money = user.getUser().getCurrent_balance();

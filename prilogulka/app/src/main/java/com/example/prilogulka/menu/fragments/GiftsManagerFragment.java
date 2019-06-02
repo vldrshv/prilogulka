@@ -24,10 +24,7 @@ import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.GiftCardService;
-import com.example.prilogulka.data.service.UserService;
 import com.example.prilogulka.data.userData.UserInfo;
-import com.example.prilogulka.data_base.ActionsDAO;
-import com.example.prilogulka.data_base.GiftCardDAO;
 import com.example.prilogulka.menu.CardShop;
 import com.example.prilogulka.recycle_view_adapters.RVGiftCardsAdapter;
 import com.example.prilogulka.recycle_view_adapters.RecyclerItemClickListener;
@@ -81,7 +78,7 @@ public class GiftsManagerFragment extends Fragment {
     }
 
     private double getMoney() {
-        UserInfo user = USER_IO.readUser();
+        UserInfo user = USER_IO.getUserFromServerByEmail(email);//.readUserFromLocal();
         return user != null ? user.getUser().getCurrent_balance() : 0;
     }
 
@@ -99,10 +96,6 @@ public class GiftsManagerFragment extends Fragment {
                         new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                /**
-                                 * TODO: заменить битом синхронизации
-                                 */
-
                                 Context context = view.getContext();
                                 Intent intent = new Intent(context, CardShop.class);
                                 intent.putExtra("giftCardId", giftCardList.get(position).getCard().getCardId());
@@ -113,9 +106,6 @@ public class GiftsManagerFragment extends Fragment {
 
                             @Override
                             public void onLongItemClick(View view, int position) {
-                                /**
-                                 * TODO: кнопка не интересно, повысить приоритет.
-                                 */
                             }
                         })
         );
@@ -161,6 +151,8 @@ public class GiftsManagerFragment extends Fragment {
             }
 
             Log.i(CLASS_TAG, "DOWNLOADED " + giftCardList.size());
+            for (GiftCard gc : giftCardList)
+                Log.i(CLASS_TAG, gc.toString());
 
             return null;
         }

@@ -198,7 +198,7 @@ public class UserInfoActivity extends AppCompatActivity
     }
 
     private Auth getUserFromServer(UserService service) throws IOException {
-        Call<UserInfo> call = service.getUser(email);
+        Call<UserInfo> call = service.getUserByEmail(email);
         Response<UserInfo> response = call.execute();
         UserInfo userInfo = null;
         if (response.isSuccessful())

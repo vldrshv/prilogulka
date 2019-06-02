@@ -22,12 +22,8 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data.userData.SerializeObject;
 import com.example.prilogulka.data.userData.UserInfo;
-import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.menu.QuestionnaireActivity;
-
-import java.io.IOException;
 
 
 public class PersonalDataFragment extends Fragment implements View.OnClickListener {
@@ -58,7 +54,7 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
         email = spManager.getActiveUser();
 
         USER_IO = new UserIO(getContext());
-        user = USER_IO.readUser();
+        user = USER_IO.readUserFromLocal();
 
         initLayoutFields();
         showQuestionnaire();
