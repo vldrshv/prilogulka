@@ -163,10 +163,10 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 //            else {
             if (videoList == null || videoList.isEmpty()) {
                 videoList = videoService.getAllVideos().execute().body(); // не ответил
-                if (videoList != null)
-                    videoDAO.insert(videoList);
                 Toast.makeText(getContext(), "НЕ (!!!) ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
             }
+            if (videoList != null)
+                videoDAO.insert(videoList);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -285,10 +285,16 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
         stopVideo();
         WATCH_ROW--;
+
+        int watchCounter = currentVideo.getVideoItem().getWatchCounter() - 1;
+        currentVideo.getVideoItem().setWatchCounter(watchCounter);
+
         if (WATCH_ROW == 0) { // просмотров к ряду
-            if (currentVideo.getVideoItem().getWatchCounter() == 0) { // всего просмотров
-                // больше смотреть не надо, удаляем
+            if (currentVideo.getVideoItem().getWatchCounter() <= 0) { // всего просмотров
+                // больше смотреть не надо, удаляем из бд и списка
                 videoDAO.delete(currentVideo);
+                videoList.remove(playingVideoIndex);
+                Log.i(CLASS_TAG, "videoDAO.size = " + videoDAO.size());
             } else { // уменьшаем кол-во просмотров
                 videoList.get(playingVideoIndex).getVideoItem().setWatchCounter(
                         currentVideo.getVideoItem().getWatchCounter() - 1);

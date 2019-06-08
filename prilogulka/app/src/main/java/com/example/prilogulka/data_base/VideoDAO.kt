@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import com.example.prilogulka.data.Video
+import java.sql.ResultSet
 
 class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     object VideoEntery : BaseColumns {
@@ -113,6 +114,10 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
             put(VideoEntery._CREATED_AT, video.videoItem.createdAt)
         }
         return values
+    }
+
+    fun size(): Int {
+        return selectAll().size
     }
 }
 
