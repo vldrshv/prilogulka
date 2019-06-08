@@ -390,9 +390,10 @@ public class MainActivity extends AppCompatActivity
         }
 
         serializeUser();
-        if (user.getUser() != null)
+        if (user != null && user.getUser() != null)
             return user.getUser().getPin();
-
+        else
+            showHint("Какие-то проблемы с сервером, мы работаем над этим");
         return null;
 
     }
