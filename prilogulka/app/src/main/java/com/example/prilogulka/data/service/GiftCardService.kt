@@ -35,6 +35,14 @@ interface GiftCardService {
     @GET("/api/v1/users_gift_cards/{id}")
     fun getUsersGiftCard(@Path("id") cardId: Int) : Call<UserGiftCard>
     
-    @GET("/api/v1/users_gift_cards/get_gift_card")
-    fun getUsersGiftCard(@Body userGiftCard: UserGiftCard) : Call<UserGiftCard>
+    @POST("/api/v1/users_gift_cards/get_gift_card")
+    fun buyGiftCard(@QueryMap options: Map<String, String>) : Call<UserGiftCard>
 }
+//http://92.53.65.46:3000/api/v1/users_gift_cards/get_gift_card
+//{
+////  "users_gift_cards":{
+////    "user_id":7,
+////    "giftcard_id":34,
+////    "price":70
+////  }
+////}

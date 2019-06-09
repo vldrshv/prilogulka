@@ -3,7 +3,7 @@ package com.example.prilogulka.data
 import com.google.gson.annotations.SerializedName
 
 class UserGiftCard {
-    @SerializedName("user_gift_card")
+    @SerializedName("users_gift_card")
     var card: UserCard = UserCard()
     
     override fun toString(): String {
@@ -12,12 +12,14 @@ class UserGiftCard {
 }
 
 class UserCard {
-    @SerializedName("id")
-    var id: Int = 0
-    @SerializedName("giftcard_id")
+    @SerializedName("user_id")
     var userId: Int = 0
     @SerializedName("id")
+    var id: Int = -1
+    @SerializedName("giftcard_id")
     var cardId: Int = 0
+    @SerializedName("price")
+    var price: Int = 0
     @SerializedName("serial_number")
     var serialNumber: String = ""
     @SerializedName("due_date")
@@ -30,8 +32,13 @@ class UserCard {
     var vendor: String = ""
     @SerializedName("description")
     var description: String = ""
-    @SerializedName("price")
-    var price: Int = 0
+
     @SerializedName("is_activated")
     var isActivated: Boolean = false
+
+    override fun toString(): String {
+        return "UserCard(userId=$userId, id=$id, cardId=$cardId, price=$price, serialNumber='$serialNumber', dueDate='$dueDate', imageUrl='$imageUrl', brand='$brand', vendor='$vendor', description='$description', isActivated=$isActivated)"
+    }
+
+
 }

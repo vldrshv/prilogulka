@@ -1,7 +1,9 @@
 package com.example.prilogulka.menu;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -9,11 +11,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.Time;
+import com.example.prilogulka.data.UserGiftCard;
 import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
@@ -22,6 +26,7 @@ import com.example.prilogulka.data.userData.UserInfo;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -31,8 +36,6 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
 
     String CLASS_TAG = "CardShop";
 
-    // TODO: 27.04.2019 gift cards
-    //GiftCardDAO giftCardDAO;
     Card giftCard;
     UserInfo user;
     double userMoney = 0;
@@ -144,42 +147,76 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
         }
     }
 
-    public void setToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-
     // TODO: 27.04.2019 activated gift cards
     @Override
     public void onClick(View v) {
         HintDialogs hd = new HintDialogs(this);
-        GiftCard gcard = new GiftCard();
-        gcard.setCard(giftCard);
-        hd.showWarning("Вы действительно хотите активировать карту? После нажатия" +
-                        " \"Активировать\" отменить активацию будет НЕВОЗМОЖНО. Она переместится в раздел активированные карты",
-                "Использование карты", v.getId(), gcard);
+//        GiftCard gcard = new GiftCard();
+//        gcard.setCard(giftCard);
+        int price = 0;
+        switch (v.getId()) {
+            case R.id.buyBronzeCard:
+                price = giftCard.getPriceBronze();
+                break;
+            case R.id.buySilverCard:
+                price = giftCard.getPriceSilver();
+                break;
+            case R.id.buyGoldenCard:
+                price = giftCard.getPriceGold();
+                break;
+        }
 
-        Log.i(CLASS_TAG, "Active check - " + hd.wasActivated());
+        buyCard(giftCard.getCardId(), price, user.getUser().getId());
+        readAndUpdateUser();
+        checkButtons();
+    }
+    private void buyCard(int cardId, int price, int userId) {
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("user_id", userId + "");
+        map.put("price", price + "");
+        map.put("giftcard_id", cardId + "");
+
+        final GiftCardService service = initCardService();
+        try {
+            UserGiftCard giftCard = service.buyGiftCard(map).execute().body();
+            if (giftCard.getCard().getId() != -1)
+                Toast.makeText(this, "Поздравляем, карточка успешно куплена!", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, "Кто-то вас опередил, карточка была куплена :(", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    private GiftCardService initCardService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://92.53.65.46:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        return retrofit.create(GiftCardService.class);
+    }
     @Override
     public void onResume(){
         super.onResume();
         readAndUpdateUser();
         checkButtons();
     }
+    public void setToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
 }

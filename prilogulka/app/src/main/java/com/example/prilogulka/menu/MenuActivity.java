@@ -20,9 +20,6 @@ import com.example.prilogulka.R;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.userData.SerializeObject;
 import com.example.prilogulka.data.userData.UserInfo;
-import com.example.prilogulka.data_base.ActionsDAO;
-import com.example.prilogulka.data_base.ActivatedCardsDAO;
-import com.example.prilogulka.data_base.GiftCardDAO;
 import com.example.prilogulka.data_base.VideoDAO;
 import com.example.prilogulka.menu.fragments.ActivatedCardsFragment;
 import com.example.prilogulka.menu.fragments.ConnectUsFragment;
@@ -106,8 +103,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setCheckedItem(R.id.nav_help);
     }
     private void initDataBases() {
-        ActivatedCardsDAO activatedCardsDAO = new ActivatedCardsDAO(this);
-        GiftCardDAO giftCardDAO = new GiftCardDAO(this);
         VideoDAO videoDAO = new VideoDAO(this);
     }
 

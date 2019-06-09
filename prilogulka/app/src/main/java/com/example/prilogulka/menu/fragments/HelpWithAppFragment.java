@@ -16,12 +16,7 @@ import android.view.ViewGroup;
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data.userData.SerializeObject;
-import com.example.prilogulka.data.userData.UserInfo;
-import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.menu.HelpAppActivity;
-
-import java.io.IOException;
 
 
 public class HelpWithAppFragment extends Fragment implements View.OnClickListener{

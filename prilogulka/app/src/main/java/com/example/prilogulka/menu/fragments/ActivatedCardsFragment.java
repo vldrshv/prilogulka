@@ -22,7 +22,6 @@ import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.GiftCardService;
 import com.example.prilogulka.data.userData.SerializeObject;
 import com.example.prilogulka.data.userData.UserInfo;
-import com.example.prilogulka.data_base.ActionsDAO;
 import com.example.prilogulka.menu.ActivatedCardActivity;
 import com.example.prilogulka.recycle_view_adapters.RVActivatedCardsAdapter;
 import com.example.prilogulka.recycle_view_adapters.RecyclerItemClickListener;
