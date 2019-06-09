@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.GiftCard;
+import com.example.prilogulka.data.UserGiftCard;
+import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.GiftCardService;
@@ -28,6 +30,7 @@ import com.example.prilogulka.recycle_view_adapters.RecyclerItemClickListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Retrofit;
@@ -37,6 +40,7 @@ public class ActivatedCardsFragment  extends Fragment {
 
     RecyclerView recyclerView;
     ViewGroup rootView;
+    RVActivatedCardsAdapter adapter;
 
     SharedPreferencesManager spM;
     String email;
@@ -45,7 +49,7 @@ public class ActivatedCardsFragment  extends Fragment {
     final String CLASS_TITLE = "Активированные карты";
 
     GiftCardService service;
-    List<GiftCard> cardsList;
+    List<UserGiftCard> cardsList;
 
     /**
      * TODO: удаление карточки из списка после истечения срока действия
@@ -76,10 +80,10 @@ public class ActivatedCardsFragment  extends Fragment {
 
         // TODO: 27.04.2019 activated gift cards
         Log.i(CLASS_TAG, email);
-        for (GiftCard gc : cardsList)
+        for (UserGiftCard gc : cardsList)
             Log.i(CLASS_TAG, gc.toString());
 
-        RVActivatedCardsAdapter adapter = new RVActivatedCardsAdapter(cardsList, getContext());
+        adapter = new RVActivatedCardsAdapter(cardsList, getContext());
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(
@@ -88,7 +92,7 @@ public class ActivatedCardsFragment  extends Fragment {
                     public void onItemClick(View view, int position) {
                         Context context = view.getContext();
                         Intent intent = new Intent(context, ActivatedCardActivity.class);
-                        intent.putExtra("cardId", cardsList.get(position).getCard().getCardId());
+                        intent.putExtra("cardId", cardsList.get(position).getCard().getId());
                         context.startActivity(intent);
                     }
 
@@ -114,10 +118,18 @@ public class ActivatedCardsFragment  extends Fragment {
      * Скачиваем карточки, купленные пользователем
      */
     private void getBoughtCards() {
-        UserInfo user = readUser();
+        UserIO USER_IO = new UserIO(getContext());
+        UserInfo user = USER_IO.readUserFromLocal();
         try {
             cardsList = new ArrayList<>();
-            cardsList.addAll(service.getBoughtGiftCards(user.getUser().getId()).execute().body());
+            List<UserGiftCard> giftCardList = service.getBoughtGiftCards(user.getUser().getId()).execute().body();
+
+            for (UserGiftCard gc : giftCardList)
+                Log.i(CLASS_TAG, gc.toString());
+
+            if (giftCardList != null)
+                cardsList.addAll(giftCardList);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -131,30 +143,19 @@ public class ActivatedCardsFragment  extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_help:
-                HintDialogs hd = new HintDialogs(getContext());
-                hd.showHint(getString(R.string.activatedCardsHint), CLASS_TITLE);
-                return true;
-            default:
-                break;
+        if (item.getItemId() == R.id.action_help) {
+            HintDialogs hd = new HintDialogs(getContext());
+            hd.showHint(getString(R.string.activatedCardsHint), CLASS_TITLE);
+            return true;
         }
 
         return false;
     }
 
-    private UserInfo readUser() {
-        SerializeObject<UserInfo> so = new SerializeObject<UserInfo>(getContext());
-        UserInfo user = new UserInfo();
-        try {
-            user = so.readObject();
-        } catch (ClassNotFoundException | IOException e) {
-            e.getStackTrace();
-        }
-        if (user != null)
-            Log.i(CLASS_TAG, user.toString());
-
-        return user;
+    @Override
+    public void onResume(){
+        super.onResume();
+        getBoughtCards();
+        adapter.updateData(cardsList);
     }
-
 }

@@ -21,16 +21,12 @@ interface GiftCardService {
      * Возвращает список купленных карт пользователя
      */
     @GET("/api/v1/users_gift_cards")
-    fun getBoughtGiftCards(@Query("user_id") userId: Int) : Call<List<GiftCard>>
-    
-    /**
-     * Возвращает список доступных цен
-     */
-    @GET("/api/v1/users_gift_cards?giftcard_id=1")
-    fun getGiftCardsAvailablePrices(@Query("giftcard_id") userId: Int) : Call<Array<Int>>
-    
+    fun getBoughtGiftCards(@Query("user_id") userId: Int) : Call<List<UserGiftCard>>
+
     @PATCH ("/api/v1/users_gift_cards/{id}")
-    fun makeCardUsed(@Body giftCard: UserGiftCard, @Path("id") id: Int = giftCard.card.cardId)
+    fun makeCardUsed(@Body giftCard: UserGiftCard,
+                     @Path("id") id: Int = giftCard.card.cardId)
+    : Call<UserGiftCard>
     
     @GET("/api/v1/users_gift_cards/{id}")
     fun getUsersGiftCard(@Path("id") cardId: Int) : Call<UserGiftCard>
@@ -38,11 +34,3 @@ interface GiftCardService {
     @POST("/api/v1/users_gift_cards/get_gift_card")
     fun buyGiftCard(@QueryMap options: Map<String, String>) : Call<UserGiftCard>
 }
-//http://92.53.65.46:3000/api/v1/users_gift_cards/get_gift_card
-//{
-////  "users_gift_cards":{
-////    "user_id":7,
-////    "giftcard_id":34,
-////    "price":70
-////  }
-////}

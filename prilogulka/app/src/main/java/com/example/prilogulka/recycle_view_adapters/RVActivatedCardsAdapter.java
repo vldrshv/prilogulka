@@ -13,15 +13,22 @@ import android.widget.TextView;
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
 import com.example.prilogulka.data.GiftCard;
+import com.example.prilogulka.data.UserCard;
+import com.example.prilogulka.data.UserGiftCard;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class RVActivatedCardsAdapter extends RecyclerView.Adapter<RVActivatedCardsAdapter.ActivatedCardsHolder> {
-    private List<GiftCard> giftCardsList;
+    private List<UserGiftCard> giftCardsList;
 
-    public RVActivatedCardsAdapter(List<GiftCard> giftCardsList, Context context) {
+    public RVActivatedCardsAdapter(List<UserGiftCard> giftCardsList, Context context) {
         this.giftCardsList = giftCardsList;
+    }
+
+    public void updateData(List<UserGiftCard> newGiftCardsList) {
+        this.giftCardsList = newGiftCardsList;
+        notifyDataSetChanged();
     }
 
     public static class ActivatedCardsHolder extends RecyclerView.ViewHolder {
@@ -44,9 +51,9 @@ public class RVActivatedCardsAdapter extends RecyclerView.Adapter<RVActivatedCar
 
     @Override
     public void onBindViewHolder(RVActivatedCardsAdapter.ActivatedCardsHolder personViewHolder, int i) {
-        Card giftCard = giftCardsList.get(i).getCard();
+        UserCard giftCard = giftCardsList.get(i).getCard();
         personViewHolder.cardDescription.setText(giftCard.getDescription());
-        personViewHolder.cardPrice.setText(giftCard.getPriceArray().get(0) + "");
+        personViewHolder.cardPrice.setText(giftCard.getPrice() + "");
         personViewHolder.giftCardProgressBar.setVisibility(View.GONE);
         Picasso.get()
                 .load("http://92.53.65.46:3000/" + giftCard.getImageUrl())

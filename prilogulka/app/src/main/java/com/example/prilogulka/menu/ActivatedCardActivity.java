@@ -136,7 +136,11 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
                 // set card activated, show QR
                 barcodeImage.setImageBitmap(createQRcode(giftCard.getCard().getSerialNumber()));
                 giftCard.getCard().setActivated(true);
-                service.makeCardUsed(giftCard, giftCard.getCard().getCardId());
+                try {
+                    service.makeCardUsed(giftCard, giftCard.getCard().getCardId()).execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
