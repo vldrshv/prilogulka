@@ -39,4 +39,8 @@ class VideoItem {
     override fun toString(): String {
         return "VideoItem(b2bClientId=$b2bClientId, createdAt='$createdAt', id=$id, name='$name', url='$url', watchCounter=$watchCounter, price=$price)"
     }
+
+    fun decrementWatchCounter() {
+        watchCounter --
+    }
 }

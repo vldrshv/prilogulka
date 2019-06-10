@@ -37,6 +37,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -163,7 +164,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 //            else {
             if (videoList == null || videoList.isEmpty()) {
                 videoList = videoService.getAllVideos().execute().body(); // не ответил
-                Toast.makeText(getContext(), "НЕ (!!!) ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "НЕ (!!!) ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
             }
             if (videoList != null)
                 videoDAO.insert(videoList);
@@ -199,7 +200,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         videoView = rootView.findViewById(R.id.videoPlayer);
         videoView.stopPlayback();
         videoView.setOnCompletionListener(this);
-
         btnNext = rootView.findViewById(R.id.button_next);
         btnNext.setEnabled(true);
         btnNext.setOnClickListener(this);
@@ -264,54 +264,47 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         }
     }
     private void nextVideo() {
-        /**
-         * WATCH_COUNTER - количество всех просмотров, WATCH_ROW - просмотры подряд
-         *
-         * если WATCH_ROW = 0 (то юзер посмотрел видос подряд сколько нужно) {
-         *      если WATCH_COUNTER = 0, значит больше видео смотреть не надо
-         *          удалить из БД
-         *      иначе
-         *          WATCH_COUNTER --
-         *
-         *      смотри следующий видос
-         *
-         * }
-         * иначе
-         *      смотри еще тот же
-         */
         // todo убрать гавнокод
         if (currentVideo == null)
             return;
 
         stopVideo();
         WATCH_ROW--;
+        currentVideo.getVideoItem().decrementWatchCounter();
 
-        int watchCounter = currentVideo.getVideoItem().getWatchCounter() - 1;
-        currentVideo.getVideoItem().setWatchCounter(watchCounter);
-
-        if (WATCH_ROW == 0) { // просмотров к ряду
-            if (currentVideo.getVideoItem().getWatchCounter() <= 0) { // всего просмотров
-                // больше смотреть не надо, удаляем из бд и списка
-                videoDAO.delete(currentVideo);
-                videoList.remove(playingVideoIndex);
-                Log.i(CLASS_TAG, "videoDAO.size = " + videoDAO.size());
-            } else { // уменьшаем кол-во просмотров
-                videoList.get(playingVideoIndex).getVideoItem().setWatchCounter(
-                        currentVideo.getVideoItem().getWatchCounter() - 1);
-                videoDAO.update(currentVideo);
-            }
-            if (playingVideoIndex == uriList.size() - 1)
-                playingVideoIndex = 0;
+        if (WATCH_ROW <= 0) {
+            if (currentVideo.getVideoItem().getWatchCounter() <= 0)
+                deleteFromLocalStorage();
             else
-                playingVideoIndex++;
+                updateLocalStorage();
 
+            if (videoList.isEmpty())
+                setVideoURIList();
+                //getVideosFromServer();
+
+            updatePlayingIndex();
             WATCH_ROW = videoList.get(playingVideoIndex).getVideoItem().getWatchInRow();
         }
 
-
         videoView.setVideoURI(uriList.get(playingVideoIndex));
         currentVideo = videoList.get(playingVideoIndex);
+    }
 
+    private void deleteFromLocalStorage() {
+        videoDAO.delete(currentVideo);
+        videoList.remove(playingVideoIndex);
+        uriList.remove(playingVideoIndex);
+        Log.i(CLASS_TAG, "videoDAO.size = " + videoDAO.size());
+    }
+    private void updateLocalStorage() {
+        videoList.get(playingVideoIndex).getVideoItem().decrementWatchCounter();
+        videoDAO.update(currentVideo);
+    }
+    private void updatePlayingIndex() {
+        if (playingVideoIndex >= videoList.size() - 1)
+            playingVideoIndex = 0;
+        else
+            playingVideoIndex++;
     }
     private void stopVideo() {
         videoView.stopPlayback();
@@ -321,7 +314,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         Log.i(CLASS_TAG, "VIDEO #" + playingVideoIndex + " was over, STARTING new video");
 
         sendStatistic();
-        //updateUserLocal();
         nextVideo();
     }
 
@@ -448,13 +440,14 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
      * and results arrays which should be treated as a cancellation.
      * </p>
      *
-     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}.
+     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}
      * @param permissions  The requested permissions. Never null.
      * @param grantResults The grant results for the corresponding permissions
      *                     which is either {@link PackageManager#PERMISSION_GRANTED}
      *                     or {@link PackageManager#PERMISSION_DENIED}. Never null.
      * @see #requestPermissions(String[], int)
      */
+    @SuppressWarnings("JavadocReference")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode != RC_HANDLE_CAMERA_PERM) {
@@ -557,9 +550,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
-//            Snackbar.make(mGraphicOverlay, "onUpdate",
-//                    Snackbar.LENGTH_SHORT)
-//                    .show();
             videoView.start();
         }
 
@@ -571,9 +561,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
             mOverlay.remove(mFaceGraphic);
-//            Snackbar.make(mGraphicOverlay, "onMissing",
-//                    Snackbar.LENGTH_SHORT)
-//                    .show();
             videoView.pause();
         }
 
@@ -584,9 +571,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         @Override
         public void onDone() {
             mOverlay.remove(mFaceGraphic);
-//            Snackbar.make(mGraphicOverlay, "onDone",
-//                    Snackbar.LENGTH_SHORT)
-//                    .show();
             videoView.pause();
         }
     }
