@@ -8,7 +8,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_person"
-            android:icon="@drawable/ic_account_box_black_24dp"
+            android:icon="@drawable/outline_account_box_black_48dp"
             android:title="@string/personal"
             />
         <!--<item-->
@@ -17,11 +17,11 @@
             <!--android:title="@string/money" />-->
         <item
             android:id="@+id/nav_video"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/outline_video_library_black_48dp"
             android:title="@string/video" />
         <item
             android:id="@+id/nav_gifts"
-            android:icon="@drawable/ic_account_balance_wallet_black_24dp"
+            android:icon="@drawable/outline_shop_black_48dp"
             android:title="@string/money" />
         <!--<item-->
             <!--android:id="@+id/nav_gifts"-->
@@ -39,11 +39,11 @@
 
                 <item
                     android:id="@+id/nav_help"
-                    android:icon="@drawable/ic_menu_manage"
+                    android:icon="@drawable/outline_info_black_48dp"
                     android:title="@string/how_it_work" />
                 <item
                     android:id="@+id/nav_connect_us"
-                    android:icon="@drawable/ic_menu_send"
+                    android:icon="@drawable/outline_question_answer_black_48dp"
                     android:title="@string/call_us" />
             </group>
         </menu>
