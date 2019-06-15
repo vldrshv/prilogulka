@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity
     int position = 0;   // позиция editText# (позиция цифры пароля)
     String email = "";  // для отправки сообщения на сервер и получения юзера
     int userId = 0;     // для дальнейшего общения с сервером
+    double location_coeff = 0;
+    double district_coef = 0;
+    String city = "";
 
     /*  Сервисы общения с сервером и локацией   */
     private UserService service;
@@ -365,9 +368,10 @@ public class MainActivity extends AppCompatActivity
     private float makeCoefficients() {
         CoefficientManager cm = new CoefficientManager();
 
-        String city = new GeofenceManager(lat, longt).getCity();
+        city = new GeofenceManager(lat, longt).getCity();
         Log.i(CLASS_TAG, city);
-        double district_coef = cm.getDistrictCoefficient(city);
+        location_coeff = cm.getLocationCoefficient(city);
+        district_coef = cm.getDistrictCoefficient(city);
         System.out.println("district_coef = " + district_coef);
 
         String date = user.getUser().getBirthday();
@@ -385,7 +389,7 @@ public class MainActivity extends AppCompatActivity
         uploadEmail();
         Log.i(CLASS_TAG, email);
         if (email.equals("")) {
-            showHint("Передите во вкладку *Не могу войти, чтобы система вспомнила ваш e-mail*");
+            showHint("Передите во вкладку *Не могу войти*, чтобы напомнить ваш e-mail");
             return null;
         }
 
@@ -418,13 +422,25 @@ public class MainActivity extends AppCompatActivity
         }
     }
     private void welcomeUser() {
-        String name = user.getUser().getName();
-
-        Toast.makeText(this, "Здравствуйте, " + name, Toast.LENGTH_SHORT).show();
         clearText();
+        String name = user.getUser().getName();
+        Toast.makeText(this, "Здравствуйте, " + name, Toast.LENGTH_SHORT).show();
+
         float coefficient = makeCoefficients();
         spManager.setWPCoefficient(coefficient);
 
+        user.getUser().setLocation(city);
+        user.getUser().setLocation_coeff(location_coeff);
+        user.getUser().setCurrent_video_coeff(coefficient);
+
+        try {
+            service.updateUserInfo(user.getUser(), userId).execute();
+            user = service.getUserById(userId).execute().body();
+
+            serializeUser();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Intent intent = new Intent(this, MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
@@ -491,10 +507,7 @@ public class MainActivity extends AppCompatActivity
     public void onDestroy() {
         Log.i(CLASS_TAG, "onDestroy()");
         super.onDestroy();
-        if (locationManager != null) {
-            locationManager.removeUpdates(this);
-            locationManager = null;
-        }
+        destroyLocationManager();
     }
     @Override
     public void onResume() {
@@ -594,7 +607,7 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "Можно вводить пароль", Toast.LENGTH_SHORT).show();
         }
         Log.i(CLASS_TAG, "Latitude:" + lat + ", Longitude:" + longt);
-
+        destroyLocationManager();
     }
 
     @Override
@@ -614,5 +627,10 @@ public class MainActivity extends AppCompatActivity
     /**
      * ========================================================================================
      */
-
+    private void destroyLocationManager() {
+        if (locationManager != null) {
+            locationManager.removeUpdates(this);
+            locationManager = null;
+        }
+    }
 }

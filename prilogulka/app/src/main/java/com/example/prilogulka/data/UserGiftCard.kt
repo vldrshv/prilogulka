@@ -3,7 +3,7 @@ package com.example.prilogulka.data
 import com.google.gson.annotations.SerializedName
 
 class UserGiftCard {
-    @SerializedName("user_gift_card", alternate = arrayOf("gift_card"))
+    @SerializedName("users_gift_card", alternate = arrayOf("gift_card"))
     var card: UserCard = UserCard()
     
     override fun toString(): String {
