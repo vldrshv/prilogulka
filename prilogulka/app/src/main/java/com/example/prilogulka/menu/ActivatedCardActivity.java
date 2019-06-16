@@ -136,7 +136,8 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
                 giftCard.getCard().setActivated(true);
                 Log.i(CLASS_TAG, "make used : " + giftCard.toString());
                 try {
-                    service.makeCardUsed(giftCard, giftCard.getCard().getCardId()).execute();
+//                    service.makeCardUsed(giftCard, giftCard.getCard().getCardId()).execute();
+                    service.makeCardUsed("{\"is_activated\": true}", giftCard.getCard().getCardId()).execute();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

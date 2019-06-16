@@ -111,7 +111,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle icicle) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Рекламные ролики");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Рекламные ролики");
         super.onCreate(icicle);
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_watching_video, container, false);
 
@@ -126,11 +126,13 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         uriList = new ArrayList<>();
         setVideoURIList();
 
+        startCameraSource();
         checkCameraPermission();
         setHasOptionsMenu(true);
 
         return rootView;
     }
+
     private void parseVideos(Video video) {
         if (video == null) {
             Toast.makeText(getContext(), "К сожалению, смотреть нечего :( Мы работаем над этим", Toast.LENGTH_LONG).show();
@@ -145,14 +147,16 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             videoList.add(v);
         }
     }
+
     private List<Video> checkVideosExistInDB() {
         return videoDAO.selectAll();
     }
+
     private void getVideosFromServer() {
         try {
 //            if (spManager.getQuestionnaire()) {
-                Video video = videoService.getVideos(user.getUser().getId()).execute().body(); // ответил на анкету
-                parseVideos(video);
+            Video video = videoService.getVideos(user.getUser().getId()).execute().body(); // ответил на анкету
+            parseVideos(video);
 //                System.out.println(videoList);
 //                Toast.makeText(getContext(), "ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
 //            }
@@ -167,6 +171,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             e.printStackTrace();
         }
     }
+
     private void setVideoURIList() {
         videoList = new ArrayList<>();
         List<Video> dbVideos = checkVideosExistInDB();
@@ -183,14 +188,14 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 uriList.add(Uri.parse("http://92.53.65.46:3000/" + v.getVideoItem().getUrl()));
             }
             videoView.setVideoURI(uriList.get(0));
-        }
-        else  // нечего смотреть
+        } else  // нечего смотреть
             Toast.makeText(getContext(), "Nothing to show", Toast.LENGTH_SHORT).show();
         //showHint();
 
     }
+
     private void initUIReference(ViewGroup rootView) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
 
         videoView = rootView.findViewById(R.id.videoPlayer);
         videoView.stopPlayback();
@@ -199,6 +204,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         btnNext.setEnabled(true);
         btnNext.setOnClickListener(this);
     }
+
     private void initServices() {
 
         spManager = new SharedPreferencesManager(getContext());
@@ -214,11 +220,12 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         videoService = retrofit.create(VideoService.class);
         userService = retrofit.create(UserService.class);
     }
+
     private void initDB() {
         videoDAO = new VideoDAO(getContext());
     }
 
-    private void sendStatistic(){
+    private void sendStatistic() {
         //todo как начисляем прайс? из фронта или в беке?
         VideoAction videoAction = new VideoAction();
         videoAction.getUserVideoAction().setUserId(user.getUser().getId());
@@ -245,6 +252,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 break;
         }
     }
+
     private void nextVideo() {
         // todo убрать гавнокод
         if (currentVideo == null)
@@ -277,19 +285,23 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         uriList.remove(playingVideoIndex);
         Log.i(CLASS_TAG, "videoDAO.size = " + videoDAO.size());
     }
+
     private void updateLocalStorage() {
         videoList.get(playingVideoIndex).getVideoItem().decrementWatchCounter();
         videoDAO.update(currentVideo);
     }
+
     private void updatePlayingIndex() {
         if (playingVideoIndex >= videoList.size() - 1)
             playingVideoIndex = 0;
         else
             playingVideoIndex++;
     }
+
     private void stopVideo() {
         videoView.stopPlayback();
     }
+
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.i(CLASS_TAG, "VIDEO #" + playingVideoIndex + " was over, STARTING new video");
@@ -304,6 +316,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         this.menu = menu;
         menu.getItem(0).setVisible(true);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -346,6 +359,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             createCameraSource();
         }
     }
+
     /**
      * Handles the requesting of the camera permission.  This includes
      * showing a "Snackbar" message of why the permission is needed then
@@ -373,6 +387,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             }
         };
     }
+
     /**
      * Creates and starts the camera.  Note that this uses a higher resolution in comparison
      * to other detection examples to enable the barcode detector to detect small barcodes
@@ -407,6 +422,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 .setRequestedFps(30.0f)
                 .build();
     }
+
     /**
      * Callback for the result from requesting permissions. This method
      * is invoked for every call on {@link #requestPermissions(String[], int)}.
@@ -454,6 +470,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 .setPositiveButton(R.string.ok, listener)
                 .show();
     }
+
     /**
      * *********************************************************************************************
      *                                  Camera Source Preview
@@ -463,7 +480,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
      * (e.g., because onResume was called before the camera source was created), this will be called
      * again when the camera source is created.
      */
-    @SuppressLint("MissingPermission")
     private void startCameraSource() {
 
         // check that the device has play services available.
@@ -476,6 +492,10 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         }
         if (mCameraSource != null) {
             try {
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                    requestCameraPermission();
+                    return;
+                }
                 mCameraSource.start();
             } catch (IOException e) {
                 e.printStackTrace();
