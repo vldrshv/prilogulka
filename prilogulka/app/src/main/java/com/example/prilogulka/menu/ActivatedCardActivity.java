@@ -36,7 +36,6 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
 
     // TODO: 27.04.2019 activated gift cards
     GiftCardService service;
-    //ActivatedCardsDAO activatedCardsDAO;
     UserGiftCard giftCard;
 
     SharedPreferencesManager spM;
@@ -68,7 +67,6 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
         btnActivate = findViewById(R.id.btnActivate);
         btnActivate.setOnClickListener(this);
 
-        //activatedCardsDAO = new ActivatedCardsDAO(this);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://92.53.65.46:3000")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -81,12 +79,12 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
         int cardId = findCardInDataBase();
         try {
             giftCard = service.getUsersGiftCard(cardId).execute().body();
+            Log.i(CLASS_TAG, giftCard.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (giftCard != null) {
-//            giftCardView.setImageResource(R.drawable.hsm);//giftCard.getDestination());
             Picasso.get().load("http://92.53.65.46:3000/" + giftCard.getCard().getImageUrl())
                     .into(giftCardView);
             activatedCardNumber.setText(
@@ -136,8 +134,10 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
                 // set card activated, show QR
                 barcodeImage.setImageBitmap(createQRcode(giftCard.getCard().getSerialNumber()));
                 giftCard.getCard().setActivated(true);
+                Log.i(CLASS_TAG, "make used : " + giftCard.toString());
                 try {
-                    service.makeCardUsed(giftCard, giftCard.getCard().getCardId()).execute();
+//                    service.makeCardUsed(giftCard, giftCard.getCard().getCardId()).execute();
+                    service.makeCardUsed("{\"is_activated\": true}", giftCard.getCard().getCardId()).execute();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -39,7 +39,7 @@
     <string name="money">Мой счет/Вывод средств</string>
     <string name="video">Рекламные ролики</string>
     <string name="gift_card">Подарочные карты</string>
-    <string name="gift_card_activated">Активированные карты</string>
+    <string name="gift_card_bought">Купленные карты</string>
     <string name="about_us">О нас</string>
     <string name="how_it_work">Как это работает</string>
     <string name="call_us">Обратиться к нам</string>
@@ -58,7 +58,7 @@
     <string name="next">Далее</string>
     <string name="play">Play</string>
     <string name="stop">Stop</string>
-    <string name="next_play">NEXT</string>
+    <string name="next_play">пропустить видео</string>
     <string name="shown_video">Просмотренные видео:</string>
     <string name="refresh_money">Обновить счет</string>
     <string name="tarif">Описание тарифа</string>

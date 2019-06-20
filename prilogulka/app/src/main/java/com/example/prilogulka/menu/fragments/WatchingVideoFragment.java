@@ -16,6 +16,7 @@
 package com.example.prilogulka.menu.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,7 +38,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -52,9 +52,6 @@ import com.example.prilogulka.data.service.UserService;
 import com.example.prilogulka.data.service.VideoService;
 import com.example.prilogulka.data.userData.UserInfo;
 import com.example.prilogulka.data_base.VideoDAO;
-import com.example.prilogulka.facetracker.FaceGraphic;
-import com.example.prilogulka.facetracker.ui.camera.CameraSourcePreview;
-import com.example.prilogulka.facetracker.ui.camera.GraphicOverlay;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
@@ -79,8 +76,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     // CAMERA VARS
     private CameraSource mCameraSource = null;
-    private CameraSourcePreview mPreview;
-    private GraphicOverlay mGraphicOverlay;
 
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
@@ -116,7 +111,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle icicle) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Рекламные ролики");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Рекламные ролики");
         super.onCreate(icicle);
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_watching_video, container, false);
 
@@ -131,11 +126,13 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         uriList = new ArrayList<>();
         setVideoURIList();
 
+        startCameraSource();
         checkCameraPermission();
         setHasOptionsMenu(true);
 
         return rootView;
     }
+
     private void parseVideos(Video video) {
         if (video == null) {
             Toast.makeText(getContext(), "К сожалению, смотреть нечего :( Мы работаем над этим", Toast.LENGTH_LONG).show();
@@ -150,14 +147,16 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             videoList.add(v);
         }
     }
+
     private List<Video> checkVideosExistInDB() {
         return videoDAO.selectAll();
     }
+
     private void getVideosFromServer() {
         try {
 //            if (spManager.getQuestionnaire()) {
-                Video video = videoService.getVideos(user.getUser().getId()).execute().body(); // ответил на анкету
-                parseVideos(video);
+            Video video = videoService.getVideos(user.getUser().getId()).execute().body(); // ответил на анкету
+            parseVideos(video);
 //                System.out.println(videoList);
 //                Toast.makeText(getContext(), "ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
 //            }
@@ -172,6 +171,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             e.printStackTrace();
         }
     }
+
     private void setVideoURIList() {
         videoList = new ArrayList<>();
         List<Video> dbVideos = checkVideosExistInDB();
@@ -188,14 +188,14 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 uriList.add(Uri.parse("http://92.53.65.46:3000/" + v.getVideoItem().getUrl()));
             }
             videoView.setVideoURI(uriList.get(0));
-        }
-        else  // нечего смотреть
+        } else  // нечего смотреть
             Toast.makeText(getContext(), "Nothing to show", Toast.LENGTH_SHORT).show();
         //showHint();
 
     }
+
     private void initUIReference(ViewGroup rootView) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
 
         videoView = rootView.findViewById(R.id.videoPlayer);
         videoView.stopPlayback();
@@ -203,11 +203,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         btnNext = rootView.findViewById(R.id.button_next);
         btnNext.setEnabled(true);
         btnNext.setOnClickListener(this);
-
-        mPreview = (CameraSourcePreview) rootView.findViewById(R.id.preview);
-        mGraphicOverlay = (GraphicOverlay) rootView.findViewById(R.id.faceOverlay);
-
     }
+
     private void initServices() {
 
         spManager = new SharedPreferencesManager(getContext());
@@ -223,11 +220,12 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         videoService = retrofit.create(VideoService.class);
         userService = retrofit.create(UserService.class);
     }
+
     private void initDB() {
         videoDAO = new VideoDAO(getContext());
     }
 
-    private void sendStatistic(){
+    private void sendStatistic() {
         //todo как начисляем прайс? из фронта или в беке?
         VideoAction videoAction = new VideoAction();
         videoAction.getUserVideoAction().setUserId(user.getUser().getId());
@@ -243,16 +241,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         }
 
     }
-    /*
-    private void updateUserLocal() {
-        try {
-            user = userService.getUserByEmail(user.getUserByEmail().getEmail()).execute().body();
-            USER_IO.writeUserToLocal(user);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -263,6 +252,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 break;
         }
     }
+
     private void nextVideo() {
         // todo убрать гавнокод
         if (currentVideo == null)
@@ -280,7 +270,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
             if (videoList.isEmpty())
                 setVideoURIList();
-                //getVideosFromServer();
 
             updatePlayingIndex();
             WATCH_ROW = videoList.get(playingVideoIndex).getVideoItem().getWatchInRow();
@@ -296,19 +285,23 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         uriList.remove(playingVideoIndex);
         Log.i(CLASS_TAG, "videoDAO.size = " + videoDAO.size());
     }
+
     private void updateLocalStorage() {
         videoList.get(playingVideoIndex).getVideoItem().decrementWatchCounter();
         videoDAO.update(currentVideo);
     }
+
     private void updatePlayingIndex() {
         if (playingVideoIndex >= videoList.size() - 1)
             playingVideoIndex = 0;
         else
             playingVideoIndex++;
     }
+
     private void stopVideo() {
         videoView.stopPlayback();
     }
+
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.i(CLASS_TAG, "VIDEO #" + playingVideoIndex + " was over, STARTING new video");
@@ -323,6 +316,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         this.menu = menu;
         menu.getItem(0).setVisible(true);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -365,6 +359,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             createCameraSource();
         }
     }
+
     /**
      * Handles the requesting of the camera permission.  This includes
      * showing a "Snackbar" message of why the permission is needed then
@@ -391,12 +386,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                         RC_HANDLE_CAMERA_PERM);
             }
         };
-
-        Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.ok, listener)
-                .show();
     }
+
     /**
      * Creates and starts the camera.  Note that this uses a higher resolution in comparison
      * to other detection examples to enable the barcode detector to detect small barcodes
@@ -431,6 +422,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 .setRequestedFps(30.0f)
                 .build();
     }
+
     /**
      * Callback for the result from requesting permissions. This method
      * is invoked for every call on {@link #requestPermissions(String[], int)}.
@@ -478,6 +470,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 .setPositiveButton(R.string.ok, listener)
                 .show();
     }
+
     /**
      * *********************************************************************************************
      *                                  Camera Source Preview
@@ -497,14 +490,15 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                     GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), code, RC_HANDLE_GMS);
             dlg.show();
         }
-
         if (mCameraSource != null) {
             try {
-                mPreview.start(mCameraSource, mGraphicOverlay);
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                    requestCameraPermission();
+                    return;
+                }
+                mCameraSource.start();
             } catch (IOException e) {
-                Log.e(CLASS_TAG, "Unable to start camera source.", e);
-                mCameraSource.release();
-                mCameraSource = null;
+                e.printStackTrace();
             }
         }
     }
@@ -519,7 +513,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     private class GraphicFaceTrackerFactory implements MultiProcessor.Factory<Face> {
         @Override
         public Tracker<Face> create(Face face) {
-            return new GraphicFaceTracker(mGraphicOverlay);
+            return new GraphicFaceTracker();
         }
     }
     /**
@@ -527,20 +521,12 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
      * associated face overlay.
      */
     private class GraphicFaceTracker extends Tracker<Face> {
-        private GraphicOverlay mOverlay;
-        private FaceGraphic mFaceGraphic;
-
-        GraphicFaceTracker(GraphicOverlay overlay) {
-            mOverlay = overlay;
-            mFaceGraphic = new FaceGraphic(overlay);
-        }
 
         /**
          * Start tracking the detected face instance within the face overlay.
          */
         @Override
         public void onNewItem(int faceId, Face item) {
-            mFaceGraphic.setId(faceId);
         }
 
         /**
@@ -548,8 +534,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
          */
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
-            mOverlay.add(mFaceGraphic);
-            mFaceGraphic.updateFace(face);
             videoView.start();
         }
 
@@ -560,7 +544,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
          */
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
-            mOverlay.remove(mFaceGraphic);
             videoView.pause();
         }
 
@@ -570,7 +553,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
          */
         @Override
         public void onDone() {
-            mOverlay.remove(mFaceGraphic);
             videoView.pause();
         }
     }
@@ -588,7 +570,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     @Override
     public void onPause() {
         super.onPause();
-        mPreview.stop();
     }
     /**
      * Releases the resources associated with the camera source, the associated detector, and the

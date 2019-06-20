@@ -3,6 +3,7 @@ package com.example.prilogulka.recycle_view_adapters;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class RVActivatedCardsAdapter extends RecyclerView.Adapter<RVActivatedCardsAdapter.ActivatedCardsHolder> {
+    private final String CLASS_TAG = "RVActivatedCardsAdapter";
+
     private List<UserGiftCard> giftCardsList;
 
     public RVActivatedCardsAdapter(List<UserGiftCard> giftCardsList, Context context) {
@@ -58,6 +61,7 @@ public class RVActivatedCardsAdapter extends RecyclerView.Adapter<RVActivatedCar
         Picasso.get()
                 .load("http://92.53.65.46:3000/" + giftCard.getImageUrl())
                 .into(personViewHolder.cardImage);
+        Log.i(CLASS_TAG, giftCard.getImageUrl());
     }
 
 
