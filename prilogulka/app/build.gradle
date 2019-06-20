@@ -1,6 +1,20 @@
 apply plugin: 'com.android.application'
 //apply plugin: 'com.google.gms.google-services'
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\user\\apk_android_key.jks')
+            keyAlias = 'key0'
+            storePassword 'DrittenReih'
+            keyPassword 'DrittenReih'
+        }
+        debug {
+            storeFile file('C:\\Users\\user\\apk_android_key.jks')
+            storePassword 'DrittenReih'
+            keyAlias = 'key0'
+            keyPassword 'DrittenReih'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.prilogulka"
@@ -10,11 +24,13 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        proguardFiles
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
