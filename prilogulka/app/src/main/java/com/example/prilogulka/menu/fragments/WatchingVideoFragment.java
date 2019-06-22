@@ -16,7 +16,6 @@
 package com.example.prilogulka.menu.fragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -38,6 +37,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -82,6 +82,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     private static final int RC_HANDLE_CAMERA_PERM = 2;
 
     // ACTIVITY VARS
+    ViewGroup rootView;
     Button btnNext;
     VideoView videoView;
     Video currentVideo;
@@ -97,7 +98,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     int playingVideoIndex = 0;
 
-    //ActionsDAO actionsDAO;
     VideoDAO videoDAO;
     SharedPreferencesManager spManager;
     VideoService videoService;
@@ -113,12 +113,12 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle icicle) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Рекламные ролики");
         super.onCreate(icicle);
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_watching_video, container, false);
+        rootView = (ViewGroup) inflater.inflate(R.layout.fragment_watching_video, container, false);
 
         USER_IO = new UserIO(getContext());
         user = USER_IO.readUserFromLocal();
 
-        initUIReference(rootView);
+        initUIReference();
         initDB();
 
         initServices();
@@ -154,19 +154,15 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     private void getVideosFromServer() {
         try {
-//            if (spManager.getQuestionnaire()) {
             Video video = videoService.getVideos(user.getUser().getId()).execute().body(); // ответил на анкету
             parseVideos(video);
-//                System.out.println(videoList);
-//                Toast.makeText(getContext(), "ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
-//            }
-//            else {
-            if (videoList == null || videoList.isEmpty()) {
-                videoList = videoService.getAllVideos().execute().body(); // не ответил
-                //Toast.makeText(getContext(), "НЕ (!!!) ОТВЕТИЛ. БЕРУ", Toast.LENGTH_SHORT).show();
-            }
-            if (videoList != null)
+
+//            videoList = videoService.getAllVideos().execute().body();
+
+            if (videoList != null && videoList.size() != 0)
                 videoDAO.insert(videoList);
+            else
+                showHint("Извините, для Вас нет видео :(");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -180,7 +176,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         else
             videoList.addAll(dbVideos);
 
-        if (videoList != null) {
+        if (videoList != null && videoList.size() != 0) {
             currentVideo = videoList.get(0);
             WATCH_ROW = currentVideo.getVideoItem().getWatchInRow();
             for (Video v : videoList) {
@@ -188,13 +184,10 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 uriList.add(Uri.parse("http://92.53.65.46:3000/" + v.getVideoItem().getUrl()));
             }
             videoView.setVideoURI(uriList.get(0));
-        } else  // нечего смотреть
-            Toast.makeText(getContext(), "Nothing to show", Toast.LENGTH_SHORT).show();
-        //showHint();
-
+        }
     }
 
-    private void initUIReference(ViewGroup rootView) {
+    private void initUIReference() {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(CLASS_TITLE);
 
         videoView = rootView.findViewById(R.id.videoPlayer);
@@ -272,11 +265,12 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
                 setVideoURIList();
 
             updatePlayingIndex();
-            WATCH_ROW = videoList.get(playingVideoIndex).getVideoItem().getWatchInRow();
         }
-
-        videoView.setVideoURI(uriList.get(playingVideoIndex));
-        currentVideo = videoList.get(playingVideoIndex);
+        if (uriList.size() != 0) {
+            WATCH_ROW = videoList.get(playingVideoIndex).getVideoItem().getWatchInRow();
+            videoView.setVideoURI(uriList.get(playingVideoIndex));
+            currentVideo = videoList.get(playingVideoIndex);
+        }
     }
 
     private void deleteFromLocalStorage() {
@@ -581,5 +575,21 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         if (mCameraSource != null) {
             mCameraSource.release();
         }
+    }
+
+
+    private void showHint(String hintText){
+        //View currentView = rootView.findViewById(R.id.videoPlayerLayout);
+        final Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), hintText, Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        TextView snackBarTextView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        snackBarTextView.setSingleLine(false);
+        snackbar.setAction("Понятно", new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
     }
 }
