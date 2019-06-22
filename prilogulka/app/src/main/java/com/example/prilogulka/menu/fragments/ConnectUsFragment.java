@@ -89,7 +89,7 @@ public class ConnectUsFragment extends Fragment {
                 emailIntent.setType("plain/text");
                 // Кому
                 emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-                        new String[] { "eva13u113@gmail.com" });
+                        new String[] { "yoboboshka@yandex.ru" });
                 // Зачем
                 emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
                         "Важное сообщение");

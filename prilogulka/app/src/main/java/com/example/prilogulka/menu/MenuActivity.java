@@ -1,6 +1,7 @@
 package com.example.prilogulka.menu;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -159,6 +160,11 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_connect_us:
                 fragment = new ConnectUsFragment();
                 break;
+            case R.id.nav_about_app:
+                Intent intent = new Intent(this, AboutAppActivity.class);
+                startActivity(intent);
+                return true;
+                //break;
         }
 
         setFragment(fragment);

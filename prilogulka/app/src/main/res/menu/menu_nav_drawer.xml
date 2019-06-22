@@ -45,20 +45,13 @@
                     android:id="@+id/nav_connect_us"
                     android:icon="@drawable/outline_question_answer_black_48dp"
                     android:title="@string/call_us" />
+                <item
+                    android:id="@+id/nav_about_app"
+                    android:icon="@drawable/outline_live_help_black_48"
+                    android:title="О приложении" />
             </group>
         </menu>
     </item>
-    <!--<item android:title="Базеночка">-->
-        <!--<menu>-->
-            <!--<group android:checkableBehavior="single">-->
-                <!--<item-->
-                    <!--android:id="@+id/list_of_users"-->
-                    <!--android:title="пользователи" />-->
-                <!--<item-->
-                    <!--android:id="@+id/list_of_user_actions"-->
-                    <!--android:title="действия пользователей" />-->
-            <!--</group>-->
-        <!--</menu>-->
-    <!--</item>-->
+
 
 </menu>

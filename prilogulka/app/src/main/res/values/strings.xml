@@ -100,4 +100,5 @@
     <string name="e_mail">E-mail</string>
     <string name="message">Введите сообщение</string>
     <string name="sent">Отправить</string>
+    <string name="title_activity_about_app">AboutAppActivity</string>
 </resources>
