@@ -21,7 +21,7 @@ import com.example.prilogulka.menu.HelpAppActivity;
 
 public class HelpWithAppFragment extends Fragment implements View.OnClickListener{
     ViewGroup rootView;
-    CardView cv1, cv2, cv3, cv4;
+    CardView cv1, cv2, cv4;
     String email;
 
     final String CLASS_TITLE = "Как это работает";
@@ -38,12 +38,10 @@ public class HelpWithAppFragment extends Fragment implements View.OnClickListene
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_help_with_app, container, false);
         cv1 = rootView.findViewById(R.id.cv);
         cv2 = rootView.findViewById(R.id.cv2);
-        cv3 = rootView.findViewById(R.id.cv3);
         cv4 = rootView.findViewById(R.id.cv4);
 
         cv1.setOnClickListener(this);
         cv2.setOnClickListener(this);
-        cv3.setOnClickListener(this);
         cv4.setOnClickListener(this);
 
         email = new SharedPreferencesManager(getContext()).getActiveUser();
@@ -64,10 +62,6 @@ public class HelpWithAppFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.cv2: // what the income depends on
                 intent.putExtra("description", "what the income depends on");
-                startActivity(intent);
-                break;
-            case R.id.cv3: // secrets of watching
-                intent.putExtra("description", "secrets of watching");
                 startActivity(intent);
                 break;
             case R.id.cv4: // want to spend my legally earned money

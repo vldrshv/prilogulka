@@ -22,7 +22,7 @@
         android:layout_weight="1"
         android:background="@color/colorPrimary"
         android:padding="8dp"
-        app:srcCompat="@drawable/ozon" />
+        />
 
     <ScrollView
         android:layout_width="match_parent"
