@@ -310,22 +310,25 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         this.menu = menu;
         menu.getItem(0).setVisible(true);
     }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        //  preparation code here
+        super.onPrepareOptionsMenu(menu);
+        try {
+            user = userService.getUserByEmail(email).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        double money = 0;
+        if (user != null)
+            money = user.getUser().getCurrent_balance();
+        menu.getItem(0).setTitle("Состояние счета: " + money);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                //todo connect to server
-                try {
-                    user = userService.getUserByEmail(email).execute().body();
-                    double money = 0;
-                    if (user != null)
-                        money = user.getUser().getCurrent_balance();
-                    item.setTitle("Состояние счета: " + money);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-//                item.setTitle("Состояние счета: " + getMoney());
                 return true;
             case R.id.action_help:
                 HintDialogs hd = new HintDialogs(getContext());
