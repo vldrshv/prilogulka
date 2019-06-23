@@ -9,11 +9,24 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"/>
-<TextView
-    android:id="@+id/textViewTest_HelpAppActivity"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="smth"
-    android:textSize="18dp"
-    android:layout_margin="8dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textViewTest_HelpAppActivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="smth"
+                android:textSize="18dp" />
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

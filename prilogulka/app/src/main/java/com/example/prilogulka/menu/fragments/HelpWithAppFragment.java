@@ -57,15 +57,15 @@ public class HelpWithAppFragment extends Fragment implements View.OnClickListene
         Intent intent = new Intent(getContext(), HelpAppActivity.class);
         switch (v.getId()){
             case R.id.cv: // watch ad and earn money
-                intent.putExtra("description", "watch ad and earn money");
+                intent.putExtra("description", R.string.watch_earn);
                 startActivity(intent);
                 break;
             case R.id.cv2: // what the income depends on
-                intent.putExtra("description", "what the income depends on");
+                intent.putExtra("description", R.string.income_depends);
                 startActivity(intent);
                 break;
             case R.id.cv4: // want to spend my legally earned money
-                intent.putExtra("description", "want to spend my legally earned money");
+                intent.putExtra("description", R.string.spend_money);
                 startActivity(intent);
                 break;
         }

@@ -51,21 +51,11 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         initMenuHeader();
         initDataBases();
 
-        /*  Задаем начальный фрагмент    */
-        if (spManager.isFirstEnter()) {
-            setFragment(new HelpWithAppFragment());
-            spManager.setFirstEnter(false);
-        } else {
-            setFragment(new WatchingVideoFragment());
-        }
-
     }
 
     /*  Инициализация */
     private void initGlobalVars() {
         spManager = new SharedPreferencesManager(this);
-
-//        actionsDAO = new ActionsDAO(this);
         email = spManager.getActiveUser();
 
         SerializeObject<UserInfo> so = new SerializeObject<UserInfo>(this);
@@ -106,8 +96,17 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         float coeff = (float) (spManager.getWPCoefficient() * (spManager.getQuestionnaire() ? 1.2 : 1));
         userCoefHeader.setText(coeff + "");
 
+        /*  Задаем начальный фрагмент    */
         /* начальное значение выделленой строки меню    */
-        navigationView.setCheckedItem(R.id.nav_help);
+        if (spManager.isFirstEnter()) {
+            setFragment(new HelpWithAppFragment());
+            spManager.setFirstEnter(false);
+            navigationView.setCheckedItem(R.id.nav_help);
+        } else {
+            setFragment(new WatchingVideoFragment());
+            navigationView.setCheckedItem(R.id.nav_video);
+        }
+
     }
     private void initDataBases() {
         VideoDAO videoDAO = new VideoDAO(this);
@@ -116,7 +115,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private void setFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction
-                .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.flContent, fragment)
                 .commit();
 
@@ -134,11 +133,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_right_corner, menu);
         menu.getItem(0).setVisible(false);
-//        menu.getItem(0).setTitle("Состояние счета: " + (actionsDAO.getUserMoney(email)));
-//        Log.i("MENU_ACTIVITY", (actionsDAO.getUserMoney(email)) + "");
 
         return true;
     }

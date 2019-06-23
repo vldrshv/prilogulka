@@ -11,10 +11,6 @@
             android:icon="@drawable/outline_account_box_black_48dp"
             android:title="@string/personal"
             />
-        <!--<item-->
-            <!--android:id="@+id/nav_money"-->
-            <!--android:icon="@drawable/ic_account_balance_wallet_black_24dp"-->
-            <!--android:title="@string/money" />-->
         <item
             android:id="@+id/nav_video"
             android:icon="@drawable/outline_video_library_black_48dp"
@@ -23,10 +19,6 @@
             android:id="@+id/nav_gifts"
             android:icon="@drawable/outline_shop_black_48dp"
             android:title="@string/money" />
-        <!--<item-->
-            <!--android:id="@+id/nav_gifts"-->
-            <!--android:icon="@drawable/ic_card_giftcard_black_24dp"-->
-            <!--android:title="@string/gift_card" />-->
         <item
             android:id="@+id/nav_gifts_activated"
             android:icon="@drawable/ic_card_giftcard_black_24dp"

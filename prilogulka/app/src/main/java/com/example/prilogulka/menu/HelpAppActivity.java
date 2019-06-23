@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.widget.TextView;
 
 import com.example.prilogulka.R;
@@ -20,9 +21,11 @@ public class HelpAppActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.textViewTest_HelpAppActivity);
         Intent intent = getIntent();
-        String description = intent.getStringExtra("description");
+        int description = intent.getIntExtra("description", 0);
 
-        textView.setText(description);
+        if (description != 0) {
+            textView.setText(description);
+        }
     }
 
     public void setToolbar(){
