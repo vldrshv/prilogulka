@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.prilogulka.R;
+import com.example.prilogulka.data.Time;
 import com.example.prilogulka.data.android.interraction.DatePicker;
 import com.example.prilogulka.data.managers.CoefficientManager;
 import com.example.prilogulka.data.managers.GeofenceManager;
@@ -61,7 +62,6 @@ public class UserInfoActivity extends AppCompatActivity
     String email;
 
     // UI references
-    ImageView emailImage;
     EditText editEmail, editName, editSurname, editBirthday;
     TextInputLayout emailInputLayout;
     TextView cityTextView;
@@ -85,7 +85,6 @@ public class UserInfoActivity extends AppCompatActivity
         buttonNext = findViewById(R.id.buttonNext);
 
         editEmail = findViewById(R.id.email);
-        emailImage = findViewById(R.id.emailImage);
         emailInputLayout = findViewById(R.id.email_text_input_layout);
 
         editName = findViewById(R.id.name);
@@ -122,13 +121,23 @@ public class UserInfoActivity extends AppCompatActivity
 
         email = editEmail.getText().toString();
         if (isEmailValid()) {
-            saveInfo();
+            emailInputLayout.setErrorEnabled(false);
+            if (isAdult()) {
+                saveInfo();
 
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            this.finish();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                this.finish();
+            }
+        }
+        else {
+            emailInputLayout.setErrorEnabled(true);
+            emailInputLayout.setError("Можно использовать латинские буквы (a-z), цифры и точку.");
         }
 
+    }
+    private boolean isAdult() {
+        return Time.isAdult(editBirthday.getText().toString());
     }
     private void saveInfo() {
         saveAppContext();
@@ -247,7 +256,7 @@ public class UserInfoActivity extends AppCompatActivity
 
         if (!noErrors) {
             emailInputLayout.setErrorEnabled(true);
-            showHint("Какая-то ошибка при входе в вашу учетную запись. Проверьте данные.");
+            showHint("Какая-то ошибка при входе регистрации Вашей учетной записи. Проверьте данные.");
         }
 
         return noErrors;

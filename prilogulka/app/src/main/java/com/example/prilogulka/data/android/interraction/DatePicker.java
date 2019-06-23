@@ -5,11 +5,13 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.prilogulka.R;
+import com.example.prilogulka.data.Time;
 
 import java.util.Calendar;
 
@@ -47,8 +49,17 @@ public class DatePicker extends DialogFragment
                           int month, int day) {
 
         TextView tv = (TextView) getActivity().findViewById(R.id.birthday);
+        TextInputLayout bdayTextInput = getActivity().findViewById(R.id.birthday_text_input_layout);
+
         String m = (month < 9) ? "0" + (month+1) : (month+1) + "";
         String d = (day < 10) ? "0" + day : day + "";
         tv.setText(d + "." + m + "." + year);
+        if (!Time.isAdult(tv.getText().toString())) {
+            bdayTextInput.setErrorEnabled(true);
+            bdayTextInput.setError("Вы моложе 18 лет.");
+        } else {
+            bdayTextInput.setErrorEnabled(false);
+        }
+
     }
 }

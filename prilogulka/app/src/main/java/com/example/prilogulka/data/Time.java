@@ -1,6 +1,9 @@
 package com.example.prilogulka.data;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 
 public class Time {
@@ -39,5 +42,41 @@ public class Time {
         String time[] = dateTime[1].split("\\.");
 
         return String.format("%s-%s-%s %s", date[2], date[1], date[0], time[0]);
+    }
+
+    public static boolean isAdult(String dateS) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        try {
+            Date date = sdf.parse(dateS);
+            int day = date.getDate();
+            int month = date.getMonth();
+            int year = date.getYear() + 1900;
+            System.out.println("b_date = " + date.getDate() + "." + date.getMonth() + "." + (date.getYear() + 1900));
+
+            Date dateNow = new Date();
+            int nDay = dateNow.getDate();
+            int nMonth = dateNow.getMonth();
+            int nYear = dateNow.getYear() + 1900;
+            System.out.println("now = " + nDay + "." + nMonth + "." + nYear);
+
+            if (year + 18 < nYear)
+                return true;
+            else if (year + 18 == nYear) {
+                System.out.println("year");
+                if (month < nMonth)
+                    return true;
+                else if (month == nMonth) {
+                    System.out.println("month");
+                    if (day + 1 <= nDay) {
+                        System.out.println("day");
+                        return true;
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

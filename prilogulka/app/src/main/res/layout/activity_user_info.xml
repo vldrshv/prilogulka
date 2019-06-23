@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".login_signin.UserInfoActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,14 +25,25 @@
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp" />
 
-        <!-- 1 stage -->
-        <include
-            layout="@layout/email_input"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/email_text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="false"
-            android:layout_centerHorizontal="false"
-            android:visibility="visible" />
+            android:layout_gravity="center">
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:imeActionId="6"
+                android:inputType="textEmailAddress"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@1234567890."
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColorLink="#FF88B53F"
+                android:textSize="18sp" />
+        </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/surname_text_input_layout"
@@ -48,6 +60,7 @@
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="text|textCapSentences"
+                android:digits="АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя-"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColorLink="#FF88B53F" />
@@ -68,6 +81,7 @@
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="text|textCapSentences"
+                android:digits="АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя-"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColorLink="#FF88B53F"/>

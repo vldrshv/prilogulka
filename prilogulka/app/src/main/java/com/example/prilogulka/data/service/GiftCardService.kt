@@ -24,8 +24,8 @@ interface GiftCardService {
     fun getBoughtGiftCards(@Query("user_id") userId: Int) : Call<List<UserGiftCard>>
 
     @PATCH ("/api/v1/users_gift_cards/{id}")
-//    fun makeCardUsed(@Body giftCard: UserGiftCard,
-    fun makeCardUsed(@Body body: String,
+    fun makeCardUsed(@Body giftCard: UserGiftCard,
+//    fun makeCardUsed(@Body body: String,
                      @Path("id") id: Int)
     : Call<UserGiftCard>
     
