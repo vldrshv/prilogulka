@@ -355,15 +355,7 @@ public class QuestionnaireActivity extends AppCompatActivity
             if (!questionnaire.isEmpty()){
                 boolean wasSent = sendQuestionnaire();
                 if (wasSent) {
-                    spManager.setQuestionnaire(true);
-                    Log.i(CLASS_TAG, "SEND");
-                    updateUserCoefficient();
-                    updateUserLocationCoefficient();
-                    updateCurrentUser();
-                    serializeUserWrite();
-                    VideoDAO videoDAO = new VideoDAO(this);
-                    videoDAO.deleteAll();
-                    onBackPressed();
+                    showHint("Спасибо, что заполнили анкету! Теперь за каждый просмотр вы получите на 20% больше!");
 //                    startActivity(new Intent(this, MenuActivity.class));
 //                    this.finish();
                 } else {
@@ -492,10 +484,24 @@ public class QuestionnaireActivity extends AppCompatActivity
         snackbar.setAction("Понятно", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!questionnaire.isEmpty())
+                    updateAppData();
                 snackbar.dismiss();
             }
         });
         snackbar.show();
+    }
+
+    private void updateAppData() {
+        spManager.setQuestionnaire(true);
+        Log.i(CLASS_TAG, "SEND");
+        updateUserCoefficient();
+        updateUserLocationCoefficient();
+        updateCurrentUser();
+        serializeUserWrite();
+        VideoDAO videoDAO = new VideoDAO(this);
+        videoDAO.deleteAll();
+        onBackPressed();
     }
 
 }

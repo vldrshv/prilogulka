@@ -76,7 +76,8 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
         buttonQuestionnaire = rootView.findViewById(R.id.buttonQuestionnaire);
     }
     private void showQuestionnaire() {
-        boolean additionQuestionnaire = spManager.getQuestionnaire();
+        user = USER_IO.getUserFromServerById(user.getUser().getId());
+        boolean additionQuestionnaire = user.getUser().getUser_coeff() != 0;//spManager.getQuestionnaire();
         textQuestionnaire.setVisibility(additionQuestionnaire ? View.GONE : View.VISIBLE);
         buttonQuestionnaire.setVisibility(additionQuestionnaire ? View.GONE : View.VISIBLE);
         buttonQuestionnaire.setOnClickListener(this);
