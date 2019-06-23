@@ -52,7 +52,13 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         initDataBases();
 
         /*  Задаем начальный фрагмент    */
-        setFragment(new HelpWithAppFragment());
+        if (spManager.isFirstEnter()) {
+            setFragment(new HelpWithAppFragment());
+            spManager.setFirstEnter(false);
+        } else {
+            setFragment(new WatchingVideoFragment());
+        }
+
     }
 
     /*  Инициализация */

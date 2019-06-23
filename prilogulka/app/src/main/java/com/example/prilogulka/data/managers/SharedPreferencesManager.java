@@ -44,6 +44,8 @@ public class SharedPreferencesManager {
     private void initUserInfoStorer(@NonNull Context context){
         this.sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
         editor = this.sharedPreferences.edit();
+        if (getActiveUser().equals(""))
+            setFirstEnter(true);
     }
 
     public String getPreferencesName() {
@@ -89,5 +91,16 @@ public class SharedPreferencesManager {
 
     public boolean getQuestionnaire() {
         return Boolean.parseBoolean(getStringFromSharedPreferences("questionnaire"));
+    }
+
+    /**
+     * @param firstEnter - true if user entered the app for the first time
+     */
+    public void setFirstEnter(boolean firstEnter) {
+        putInSharedPreferences("firstEnter", firstEnter + "");
+    }
+
+    public boolean isFirstEnter() {
+        return Boolean.parseBoolean(getStringFromSharedPreferences("firstEnter"));
     }
 }
