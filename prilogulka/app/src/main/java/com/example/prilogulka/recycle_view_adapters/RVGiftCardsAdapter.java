@@ -60,8 +60,8 @@ public class RVGiftCardsAdapter extends RecyclerView.Adapter<RVGiftCardsAdapter.
             return;
         }
         personViewHolder.cardPrice.setText(price+"");
-        personViewHolder.giftCardProgressBar.setMax(price+1);
-        personViewHolder.giftCardProgressBar.setProgress(price == 0 ? price+1 : progress * 100 / price);
+        personViewHolder.giftCardProgressBar.setMax(price);
+        personViewHolder.giftCardProgressBar.setProgress(price == 0 ? price+1 : progress);
 
         Picasso.get()
                 .load("http://92.53.65.46:3000/" + giftCard.getImageUrl())

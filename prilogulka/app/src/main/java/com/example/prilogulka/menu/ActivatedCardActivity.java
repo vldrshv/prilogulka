@@ -28,6 +28,9 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
+import okhttp3.RequestBody;
+import okio.Buffer;
+import okio.BufferedSink;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -136,7 +139,20 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
                 giftCard.getCard().setActivated(true);
                 Log.i(CLASS_TAG, "make used : " + giftCard.toString());
                 try {
-                    service.makeCardUsed(giftCard, giftCard.getCard().getCardId()).execute();
+                    service.makeCardUsed(giftCard, giftCard.getCard().getId()).execute();
+                //Log.i(CLASS_TAG, s);
+
+                    try {
+                        final RequestBody copy = service.makeCardUsed(giftCard, giftCard.getCard().getCardId()).request().body();
+                        final BufferedSink buffer = new Buffer();
+                        if (copy != null)
+                            copy.writeTo(buffer);
+
+                        String s =  ((Buffer) buffer).readUtf8();
+                        Log.i(CLASS_TAG, s);
+                    } catch (final IOException e) {
+
+                    }
 //                    service.makeCardUsed("{\"is_activated\": true}", giftCard.getCard().getCardId()).execute();
                 } catch (IOException e) {
                     e.printStackTrace();

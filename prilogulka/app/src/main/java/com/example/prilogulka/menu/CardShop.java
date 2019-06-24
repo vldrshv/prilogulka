@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
     Button buyBronzeCard, buySilverCard, buyGoldenCard;
     ImageView giftCardView;
     TextView infoAboutCard;
+    LinearLayout cardShopLayout;
 
     String CARD_INFO = "Акция продлится до ";
 
@@ -79,6 +81,8 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
 
         giftCardView = findViewById(R.id.giftCardView);
         infoAboutCard = findViewById(R.id.infoAboutCard);
+
+        cardShopLayout = findViewById(R.id.cardShopLayout);
     }
     private void initServices() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -180,10 +184,21 @@ public class CardShop extends AppCompatActivity implements Button.OnClickListene
         final GiftCardService service = initCardService();
         try {
             UserGiftCard giftCard = service.buyGiftCard(map).execute().body();
-            if (giftCard.getCard().getId() != -1)
-                Toast.makeText(this, "Поздравляем, карточка успешно куплена!", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(this, "Кто-то вас опередил, карточка была куплена :(", Toast.LENGTH_SHORT).show();
+            if (giftCard != null) {
+                if (giftCard.getCard().getId() != -1) {
+                    Toast.makeText(this, "Поздравляем, карточка успешно куплена!", Toast.LENGTH_SHORT).show();
+                    user.getUser().setCurrent_balance(user.getUser().getCurrent_balance() - giftCard.getCard().getPrice());
+                    cardShopLayout.invalidate();
+//                    checkButtons();
+//                    onResume();
+                    user = USER_IO.getUserFromServerById(userId);
+                    USER_IO.writeUserToLocal(user);
+                }
+                else
+                    Toast.makeText(this, "Кто-то вас опередил, карточка была куплена :(", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Непредвиденная ошибка.", Toast.LENGTH_SHORT).show();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
