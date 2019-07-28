@@ -24,20 +24,21 @@
             android:text="Введите ниже свой EMAIL, чтобы получить pin-код."
             android:textSize="18sp" />
 
-        <GridLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:columnCount="3"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email_text_input_layout"
-                android:layout_columnSpan="2"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="fill"
-                android:layout_marginStart="8dp">
+                android:layout_margin="8dp">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -46,15 +47,18 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColorLink="#FF88B53F" />
+                    />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/buttonResendPin"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:text="Отправить" />
-        </GridLayout>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Отправить"
+                android:textAppearance="?attr/textAppearanceButton" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -62,7 +66,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -128,7 +133,8 @@
         android:gravity="center"
         android:orientation="vertical"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:paddingRight="16dp"
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -139,31 +145,34 @@
 
             <Button
                 android:id="@+id/button1"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="1"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
 
             <Button
                 android:id="@+id/button2"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="2"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
 
             <Button
                 android:id="@+id/button3"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="3"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
         </LinearLayout>
@@ -177,31 +186,34 @@
 
             <Button
                 android:id="@+id/button4"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="4"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
 
             <Button
                 android:id="@+id/button5"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="5"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
 
             <Button
                 android:id="@+id/button6"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="6"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
         </LinearLayout>
@@ -215,31 +227,34 @@
 
             <Button
                 android:id="@+id/button7"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="7"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
 
             <Button
                 android:id="@+id/button8"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="8"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
 
             <Button
                 android:id="@+id/button9"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="9"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
         </LinearLayout>
@@ -253,19 +268,22 @@
 
             <Button
                 android:id="@+id/button12"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Button"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:visibility="invisible" />
 
             <Button
                 android:id="@+id/button0"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0"
+                android:textAppearance="?attr/textAppearanceButton"
                 android:textSize="24sp"
                 android:typeface="monospace" />
 
@@ -276,9 +294,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
-                android:tint="@color/colorPrimaryDark"
-                app:srcCompat="@android:drawable/ic_input_delete"
-                />
+                android:tint="@color/colorPrimary"
+                app:srcCompat="@android:drawable/ic_input_delete" />
 
         </LinearLayout>
 
@@ -294,28 +311,28 @@
 
         <Button
             android:id="@+id/buttonCannotEnter"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Не можете войти?"
-            android:typeface="monospace" />
+            android:textAppearance="?attr/textAppearanceButton" />
 
         <Button
             android:id="@+id/buttonRegister"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="      регистрация      " />
+            android:text="      регистрация      "
+            android:textAppearance="?attr/textAppearanceButton" />
 
         <Button
             android:id="@+id/buttonRepeat"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
             android:text="    Попробовать снова    "
-            android:textColor="@color/colorAccent"
+            android:textAppearance="?attr/textAppearanceButton"
             android:visibility="invisible" />
 
     </LinearLayout>

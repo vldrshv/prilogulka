@@ -5,8 +5,8 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -479,7 +479,7 @@ public class QuestionnaireActivity extends AppCompatActivity
         View currentView = findViewById(R.id.questionnaire_linear_layout);
         final Snackbar snackbar = Snackbar.make(currentView, hintText, Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
-        TextView snackBarTextView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
         snackBarTextView.setSingleLine(false);
         snackbar.setAction("Понятно", new View.OnClickListener() {
             @Override

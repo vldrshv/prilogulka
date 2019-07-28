@@ -4,24 +4,24 @@
     android:id="@+id/cardShopLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorPrimaryLight"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        app:theme="@style/ToolBarStyle"
         android:minHeight="?attr/actionBarSize">
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <ImageView
         android:id="@+id/giftCardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryLight"
         android:padding="8dp" />
 
     <ScrollView
@@ -34,44 +34,47 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/infoAboutCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
+                android:background="@color/colorPrimaryLight"
                 android:gravity="center"
                 android:padding="8dp"
                 android:text=""
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buyBronzeCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimaryDark"
+                style="@style/Widget.MaterialComponents.Button"
                 android:text="Активировать карту на 500 Р"
                 android:textColor="@android:color/background_light" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buySilverCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimaryDark"
+                style="@style/Widget.MaterialComponents.Button"
                 android:text="Активировать карту на 1000 Р"
                 android:textColor="@android:color/background_light" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buyGoldenCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
+                style="@style/Widget.MaterialComponents.Button"
                 android:background="@color/colorPrimaryDark"
                 android:text="Активировать карту на 1500 Р"
                 android:textColor="@android:color/background_light" />

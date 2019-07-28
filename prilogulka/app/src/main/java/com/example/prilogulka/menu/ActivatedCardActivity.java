@@ -4,9 +4,9 @@ package com.example.prilogulka.menu;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -113,7 +113,7 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
         View currentView = findViewById(R.id.activatedCard);
         final Snackbar snackbar = Snackbar.make(currentView, hintText, Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
-        TextView snackBarTextView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
         snackBarTextView.setSingleLine(false);
         snackbar.setAction("Понятно", new View.OnClickListener(){
             @Override

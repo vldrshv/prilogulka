@@ -25,10 +25,10 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,6 +61,8 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,7 +143,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         for (VideoItem videoItem : video.getVideoItemList()) {
             Video v = new Video();
             v.getVideoItem().setId(videoItem.getId());
-            v.getVideoItem().setUrl(videoItem.getName());
+            v.getVideoItem().setUrl(videoItem.getName().replace(" ", "%20"));
             v.getVideoItem().setWatchCounter(videoItem.getWatchCounter());
             v.getVideoItem().setWatchInRow(videoItem.getWatchInRow());
             videoList.add(v);
@@ -585,7 +587,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         //View currentView = rootView.findViewById(R.id.videoPlayerLayout);
         final Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), hintText, Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
-        TextView snackBarTextView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
         snackBarTextView.setSingleLine(false);
         snackbar.setAction("Понятно", new View.OnClickListener(){
             @Override

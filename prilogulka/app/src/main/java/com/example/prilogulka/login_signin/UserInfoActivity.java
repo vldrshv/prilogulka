@@ -13,18 +13,17 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -271,7 +270,7 @@ public class UserInfoActivity extends AppCompatActivity
     void showHint(String hintText) {
         final Snackbar snackbar = Snackbar.make(getCurrentFocus(), hintText, Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
-        TextView snackBarTextView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
         snackBarTextView.setSingleLine(false);
         snackbar.setAction("Понятно", new View.OnClickListener() {
             @Override
@@ -345,7 +344,7 @@ public class UserInfoActivity extends AppCompatActivity
                             "Мы используем Геопозицию для определения коэффициентов при просмотре видео. Пожалуйста, разрешите геолокацию в настроках для перерасчета коэффициента.",
                             Snackbar.LENGTH_INDEFINITE);
                     View snackbarView = snackbar.getView();
-                    TextView snackBarTextView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
                     snackBarTextView.setSingleLine(false);
                     snackbar.setAction("Понятно", new View.OnClickListener() {
                         @Override

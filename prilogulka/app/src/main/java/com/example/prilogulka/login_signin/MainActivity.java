@@ -14,10 +14,10 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -452,7 +452,7 @@ public class MainActivity extends AppCompatActivity
         View currentView = findViewById(R.id.mainActivity_linear_layout);
         final Snackbar snackbar = Snackbar.make(currentView, hintText, Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
-        TextView snackBarTextView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
         snackBarTextView.setSingleLine(false);
         snackbar.setAction("Понятно", new View.OnClickListener(){
             @Override
@@ -582,7 +582,7 @@ public class MainActivity extends AppCompatActivity
                             "Мы используем геопозицию для определения коэффициентов при просмотре видео. Пожалуйста, разрешите геолокацию в настроках для перерасчета коэффициента.",
                             Snackbar.LENGTH_INDEFINITE);
                     View snackbarView = snackbar.getView();
-                    TextView snackBarTextView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
                     snackBarTextView.setSingleLine(false);
                     snackbar.setAction("Понятно", new View.OnClickListener() {
                         @Override

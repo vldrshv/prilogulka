@@ -3,9 +3,9 @@ package com.example.prilogulka.menu.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.navigation.NavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,12 +34,10 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
 
     private ViewGroup rootView;
     private EditText editName, editSurname, editCity, editBirthday;
-    private Spinner spinner;
     private Button buttonQuestionnaire;
     private TextView textQuestionnaire;
 
     private UserIO USER_IO;
-    private String email;
     private UserInfo user;
 
     private String CLASS_TITLE = "Личные данные";
@@ -51,7 +49,6 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_personal_data, container, false);
 
         spManager = new SharedPreferencesManager(getContext());
-        email = spManager.getActiveUser();
 
         USER_IO = new UserIO(getContext());
         user = USER_IO.readUserFromLocal();
@@ -70,7 +67,6 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
         editSurname = rootView.findViewById(R.id.surname);
         editCity = rootView.findViewById(R.id.city);
         editBirthday = rootView.findViewById(R.id.birthday);
-        spinner = rootView.findViewById(R.id.sex);
 
         textQuestionnaire = rootView.findViewById(R.id.textQuestionaire);
         buttonQuestionnaire = rootView.findViewById(R.id.buttonQuestionnaire);
@@ -96,8 +92,6 @@ public class PersonalDataFragment extends Fragment implements View.OnClickListen
 
         editBirthday.setText(user.getUser().getBirthday());
         editBirthday.setKeyListener(null);
-
-        spinner.setSelection(sex);
     }
 
     @Override

@@ -3,10 +3,10 @@ package com.example.prilogulka.menu.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,13 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.prilogulka.R;
-import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.UserGiftCard;
 import com.example.prilogulka.data.UserIO;
 import com.example.prilogulka.data.android.interraction.HintDialogs;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
 import com.example.prilogulka.data.service.GiftCardService;
-import com.example.prilogulka.data.userData.SerializeObject;
 import com.example.prilogulka.data.userData.UserInfo;
 import com.example.prilogulka.menu.ActivatedCardActivity;
 import com.example.prilogulka.recycle_view_adapters.RVActivatedCardsAdapter;
@@ -30,7 +28,6 @@ import com.example.prilogulka.recycle_view_adapters.RecyclerItemClickListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Retrofit;

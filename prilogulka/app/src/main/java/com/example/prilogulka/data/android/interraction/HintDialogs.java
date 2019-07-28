@@ -3,22 +3,12 @@ package com.example.prilogulka.data.android.interraction;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Card;
-import com.example.prilogulka.data.GiftCard;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
-import com.example.prilogulka.data.service.GiftCardService;
-import com.example.prilogulka.menu.ActivatedCardActivity;
-
-import java.io.IOException;
-import java.util.HashMap;
-
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HintDialogs {
     private String CLASS_TAG = "HintDialogs";
