@@ -15,7 +15,16 @@ public class SharedPreferencesManager {
     public SharedPreferencesManager(Context context) {
         initUserInfoStorer(context);
     }
-
+    /**
+     *
+     * @param context - in which context you call this method. NonNull value. Should be defined
+     *                necessarily.
+     */
+    private void initUserInfoStorer(@NonNull Context context){
+        this.sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        editor = this.sharedPreferences.edit();
+        setFirstEnter();
+    }
     /**
      *
      * @param keyInSharedPreferences - get value, that has this key
@@ -34,18 +43,6 @@ public class SharedPreferencesManager {
     private void putInSharedPreferences(String key, String stringToPut) {
         editor.putString(key, stringToPut);
         editor.commit();
-    }
-
-    /**
-     *
-     * @param context - in which context you call this method. NonNull value. Should be defined
-     *                necessarily.
-     */
-    private void initUserInfoStorer(@NonNull Context context){
-        this.sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-        editor = this.sharedPreferences.edit();
-        if (getActiveUser().equals(""))
-            setFirstEnter(true);
     }
 
     public String getPreferencesName() {
@@ -93,14 +90,11 @@ public class SharedPreferencesManager {
         return Boolean.parseBoolean(getStringFromSharedPreferences("questionnaire"));
     }
 
-    /**
-     * @param firstEnter - true if user entered the app for the first time
-     */
-    public void setFirstEnter(boolean firstEnter) {
-        putInSharedPreferences("firstEnter", firstEnter + "");
+    public void setFirstEnter() {
+        putInSharedPreferences("firstEnter", isFirstEnter() + "");
     }
 
     public boolean isFirstEnter() {
-        return Boolean.parseBoolean(getStringFromSharedPreferences("firstEnter"));
+        return getActiveUser().equals("");
     }
 }

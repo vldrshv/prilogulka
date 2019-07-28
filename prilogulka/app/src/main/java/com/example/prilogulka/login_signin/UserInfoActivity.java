@@ -76,7 +76,6 @@ public class UserInfoActivity extends AppCompatActivity
         setContentView(R.layout.activity_user_info);
 
         initLayoutFields();
-//        locationService = new LocationService( this, this);
         checkLocationPermission();
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -400,6 +399,9 @@ public class UserInfoActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        this.finish();
     }
 
 }

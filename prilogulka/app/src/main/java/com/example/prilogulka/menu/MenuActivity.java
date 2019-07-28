@@ -46,6 +46,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private String email;
     private UserInfo user;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +107,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         /* начальное значение выделленой строки меню    */
         if (spManager.isFirstEnter()) {
             setFragment(new HelpWithAppFragment());
-            spManager.setFirstEnter(false);
+            spManager.setFirstEnter();
             navigationView.setCheckedItem(R.id.nav_help);
         } else {
             setFragment(new WatchingVideoFragment());

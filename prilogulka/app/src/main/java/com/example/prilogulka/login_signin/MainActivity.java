@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.buttonRegister:
                 Toast.makeText(this, "РЕГИСТРАЦИЯ", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, UserInfoActivity.class));
+                this.finish();
                 break;
             case R.id.buttonCannotEnter:
                 Toast.makeText(this, "НЕ МОГУ ВОЙТИ :-(", Toast.LENGTH_SHORT).show();

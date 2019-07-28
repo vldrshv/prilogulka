@@ -1,11 +1,6 @@
 <resources>
     <string name="app_name">YOBOBO</string>
     <string name="myAlphaNumeric">абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ-</string>
-    <string-array name="screen_array">
-        <item>Личные данные</item>
-        <item>Счет</item>
-        <item>Условия тарификации</item>
-    </string-array>
     <string name="title_activity_two">Регистрация YOBOBO</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -14,15 +9,15 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Состояние счета:</string>
     <string name="title_activity_login">YOBOBO</string>
+    <string name="prompt_email">Email</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
     <string name="prompt_password">Пароль</string>
     <string name="action_sign_in">Вход</string>
     <string name="action_sign_in_short">Проверка пароля</string>
     <string name="error_invalid_email">Введен некорректный email</string>
-    <string name="error_invalid_password">Упс, что-то не так с паролем. Смотри подсказку внизу.</string><!--Пароль слишком короткий-->
-    <string name="invalid_password_hint"> Длина пароля не менее 4-х символов.</string>
+    <string name="error_invalid_password">Упс, что-то не так с паролем. Смотри подсказку внизу.</string>
+    <string name="invalid_password_hint"> Длина пароля не менее 4-х символов.</string><!--Пароль слишком короткий-->
     <string name="error_incorrect_password">Неверный пароль</string>
     <string name="error_field_required">Обязательное поле</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
@@ -30,8 +25,8 @@
     </string>
     <string name="user_exists_error">Пользователь с таким E-mail существует. Введен неверный пароль.</string>
     <string name="has_empty_fields">Все поля, кроме ГОРОДА, должны быть Вами заполнены.</string>
-
     <string name="confirm_registry">Email не найден.Вы хотите зарегистрироваться с этим email и паролем?</string>
+
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="updatingReport">Обновление Базы данных</string>
@@ -64,23 +59,19 @@
     <string name="tarif">Описание тарифа</string>
     <string name="how_much_money">У вас на счету:</string>
     <string name="turn_back">Назад к просмотру</string>
-    <string-array name="пол">
-        <item>муж</item>
-        <item>жен</item>
-    </string-array>
-
-    <!-- FACE DETECTING -->
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+
+    <!-- FACE DETECTING -->
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
     <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
-
-
     <string name="card_title">Gift Card</string>
     <string name="card_tip">YOU ORDER WILL BE SHIPPED TO:</string>
 
+
     <string name="button_buy">Buy</string>
     <string name="button_check_test">ok</string>
+
     <string name="giftsManagerHint">Ниже представлены карты наших партнеров.
         Нажав на изображение карты вы можете открыть меню для её дальнейшей активации.
         Обратите внимание на полосу прогресса под каждой из карт.
@@ -100,7 +91,6 @@
     <string name="e_mail">E-mail</string>
     <string name="message">Введите сообщение</string>
     <string name="sent">Отправить</string>
-    
     <string name="watch_earn">
         <b>
             Смотри рекламу зарабатывай баллы.\n\n
@@ -121,6 +111,7 @@
             Всё очень просто! Чем больше Вы смотрите, тем больше получаете! Вы можете увеличить
             получаемые баллы на 20%, заполнив доп. анкету в «Личных данных».
     </string>
+
     <string name="spend_money">
         <b>
             Хочу потратить честно заработанное\n\n
@@ -139,4 +130,13 @@
             информацию Вы найдете рядом с картой.
 
     </string>
+    <string-array name="screen_array">
+        <item>Личные данные</item>
+        <item>Счет</item>
+        <item>Условия тарификации</item>
+    </string-array>
+    <string-array name="пол">
+        <item>муж</item>
+        <item>жен</item>
+    </string-array>
 </resources>
