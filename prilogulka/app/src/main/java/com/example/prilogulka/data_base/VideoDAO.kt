@@ -26,7 +26,7 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                     "${VideoEntery._NAME} TEXT," +
                     "${VideoEntery._URL} TEXT," +
                     "${VideoEntery._WATCH_COUNTER} INTEGER," +
-                    "${VideoEntery._PRICE} INTEGER," +
+                    "${VideoEntery._PRICE} FLOAT," +
                     "${VideoEntery._B2B_CLIENT_ID} TEXT," +
                     "${VideoEntery._CREATED_AT} TEXT)"
     
@@ -78,7 +78,7 @@ class VideoDAO(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 video.videoItem.id = getInt(getColumnIndexOrThrow(VideoEntery._ID))
                 video.videoItem.name = getString(getColumnIndexOrThrow(VideoEntery._NAME))
                 video.videoItem.url = getString(getColumnIndexOrThrow(VideoEntery._URL))
-                video.videoItem.price = getInt(getColumnIndexOrThrow(VideoEntery._PRICE))
+                video.videoItem.price = getFloat(getColumnIndexOrThrow(VideoEntery._PRICE))
                 video.videoItem.createdAt = getString(getColumnIndexOrThrow(VideoEntery._CREATED_AT))
                 video.videoItem.b2bClientId = getInt(getColumnIndexOrThrow(VideoEntery._B2B_CLIENT_ID))
                 

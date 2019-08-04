@@ -16,6 +16,7 @@
 package com.example.prilogulka.menu.fragments;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,6 +30,8 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,7 +39,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -61,8 +68,6 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,6 +94,9 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     VideoView videoView;
     Video currentVideo;
     Menu menu;
+    LinearLayout achievementLayout;
+    TextView achievementTV;
+    ObjectAnimator animator;
 
     UserInfo user;
     UserIO USER_IO;
@@ -107,6 +115,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     private static final String CLASS_TAG = "WatchingVideoFragment";
     final String CLASS_TITLE = "Рекламные ролики";
+    final String ACHIEVMENT_FORMAT = "Поздравляем! Вы получили %.2f баллов! Теперь у Вас %.2f ";
 
     /**
      * Initializes the UI and initiates the creation of a face detector.
@@ -198,6 +207,11 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         btnNext = rootView.findViewById(R.id.button_next);
         btnNext.setEnabled(true);
         btnNext.setOnClickListener(this);
+
+        achievementLayout = rootView.findViewById(R.id.achivementLayout);
+        achievementLayout.setY(-500f);
+        //achievementLayout.setVisibility(View.GONE);
+        achievementTV = rootView.findViewById(R.id.achivementTV);
     }
 
     private void initServices() {
@@ -235,6 +249,45 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             e.printStackTrace();
         }
 
+    }
+
+    private void animation(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                float money = (float) USER_IO.getMoney();
+                int lastDigit = (int)money % 10;
+                float price = currentVideo.getVideoItem().getPrice();
+                user = USER_IO.getUserFromServerById(user.getUser().getId());
+                String text = String.format(ACHIEVMENT_FORMAT, price, user.getUser().getCurrent_balance());
+                switch (lastDigit){
+                    case 1:
+                        text += "балл.";
+                        break;
+                    case 2:
+                        text += "балла.";
+                        break;
+                    case 3:
+                        text += "балла.";
+                        break;
+                    case 4:
+                        text += "балла";
+                        break;
+                    default:
+                        text += "баллов.";
+                        break;
+                }
+                achievementTV.setText(text);
+                AnimationSet animationSet = new AnimationSet(false);
+                Animation animation = new TranslateAnimation(0f, 0f, -500f, 500f);
+                animation.setDuration(2000);
+                animationSet.addAnimation(animation);
+                animation = new TranslateAnimation(0f, 0f, 0f, 0f);
+                animation.setDuration(5000);
+                animationSet.addAnimation(animation);
+                achievementLayout.startAnimation(animationSet);
+            }
+        }).run();
     }
 
     @Override
@@ -301,8 +354,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.i(CLASS_TAG, "VIDEO #" + playingVideoIndex + " was over, STARTING new video");
-
         sendStatistic();
+        animation();
         nextVideo();
     }
 
@@ -581,7 +634,6 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             mCameraSource.release();
         }
     }
-
 
     private void showHint(String hintText){
         //View currentView = rootView.findViewById(R.id.videoPlayerLayout);

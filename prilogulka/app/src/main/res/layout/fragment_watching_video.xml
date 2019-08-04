@@ -8,13 +8,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/background_light">
 
-    <VideoView
-        android:id="@+id/videoPlayer"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/achivementLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal|center"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="6dp"
+            app:cardBackgroundColor="@color/colorPrimary">
+
+            <TextView
+                android:id="@+id/achivementTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:paddingBottom="8dp"
+                android:text="Поздравляем! Вы получили 1.77 баллов. Теперь у Вас 20.01 балла."
+                android:textAlignment="center"
+                android:textSize="18sp"
+                tools:visibility="visible"
+                android:textColor="@color/colorPrimaryLight"/>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <VideoView
+        android:id="@+id/videoPlayer"
+        android:layout_width="411dp"
+        android:layout_height="449dp"
+        android:layout_gravity="center_vertical|center_horizontal|center"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:keepScreenOn="true"
@@ -37,4 +73,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

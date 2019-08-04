@@ -34,7 +34,7 @@ class VideoItem {
     @SerializedName("was_watched")
     var wasWatched: Int = 0
     @SerializedName("price")
-    var price: Int = 0
+    var price: Float = 0f
     
     override fun toString(): String {
         return "VideoItem(b2bClientId=$b2bClientId, createdAt='$createdAt', id=$id, name='$name', url='$url', watchCounter=$watchCounter, price=$price)"
