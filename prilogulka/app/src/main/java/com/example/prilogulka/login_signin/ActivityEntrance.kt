@@ -34,8 +34,10 @@ class ActivityEntrance : BaseActivity(), View.OnClickListener {
     }
 
     private fun enterIfUserExists() {
-        if (!spManager!!.isFirstEnter)
+        if (!spManager!!.isFirstEnter) {
             startActivity(Intent(this, MainActivity::class.java))
+            this.finish()
+        }
     }
 
     override fun onClick(v: View?) {
