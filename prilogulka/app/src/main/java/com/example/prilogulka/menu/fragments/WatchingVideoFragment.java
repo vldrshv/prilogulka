@@ -20,14 +20,21 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -96,8 +103,8 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     Menu menu;
     LinearLayout achievementLayout;
     TextView achievementTV;
-    ObjectAnimator animator;
 
+    MessageReceiver receiver;
     UserInfo user;
     UserIO USER_IO;
     ArrayList<Uri> uriList;
@@ -129,6 +136,10 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         USER_IO = new UserIO(getContext());
         user = USER_IO.readUserFromLocal();
 
+        receiver = new MessageReceiver();
+        IntentFilter intFilt = new IntentFilter("DRAWER");
+        getActivity().registerReceiver(receiver, intFilt);
+
         initUIReference();
         initDB();
 
@@ -143,6 +154,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
         return rootView;
     }
+
 
     private void parseVideos(Video video) {
         if (video == null) {
@@ -251,16 +263,16 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     }
 
-    private void animation(){
+    private void animation() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 float money = (float) USER_IO.getMoney();
-                int lastDigit = (int)money % 10;
+                int lastDigit = (int) money % 10;
                 float price = currentVideo.getVideoItem().getPrice();
                 user = USER_IO.getUserFromServerById(user.getUser().getId());
                 String text = String.format(ACHIEVMENT_FORMAT, price, user.getUser().getCurrent_balance());
-                switch (lastDigit){
+                switch (lastDigit) {
                     case 1:
                         text += "балл.";
                         break;
@@ -365,6 +377,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         this.menu = menu;
         menu.getItem(0).setVisible(true);
     }
+
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         //  preparation code here
@@ -399,7 +412,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     /**
      * *********************************************************************************************
-     *                          Camera and Face Tracking
+     * Camera and Face Tracking
      * *********************************************************************************************
      */
     public void checkCameraPermission() {
@@ -525,9 +538,9 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
 
     /**
      * *********************************************************************************************
-     *                                  Camera Source Preview
+     * Camera Source Preview
      * *********************************************************************************************
-     *
+     * <p>
      * Starts or restarts the camera source, if it exists.  If the camera source doesn't exist yet
      * (e.g., because onResume was called before the camera source was created), this will be called
      * again when the camera source is created.
@@ -554,11 +567,12 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             }
         }
     }
+
     /**
      * *********************************************************************************************
-     *                                  Graphic Face Tracker
+     * Graphic Face Tracker
      * *********************************************************************************************
-     *
+     * <p>
      * Factory for creating a face tracker to be associated with a new face.  The multiprocessor
      * uses this factory to create face trackers as needed -- one for each individual.
      */
@@ -568,6 +582,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             return new GraphicFaceTracker();
         }
     }
+
     /**
      * Face tracker for each detected individual. This maintains a face graphic within the app's
      * associated face overlay.
@@ -608,6 +623,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
             videoView.pause();
         }
     }
+
     /**
      * Restarts the camera.
      */
@@ -616,6 +632,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         super.onResume();
         startCameraSource();
     }
+
     /**
      * Stops the camera.
      */
@@ -623,6 +640,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
     public void onPause() {
         super.onPause();
     }
+
     /**
      * Releases the resources associated with the camera source, the associated detector, and the
      * rest of the processing pipeline.
@@ -633,20 +651,46 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         if (mCameraSource != null) {
             mCameraSource.release();
         }
+
+        getActivity().unregisterReceiver(receiver);
     }
 
-    private void showHint(String hintText){
+    private void showHint(String hintText) {
         //View currentView = rootView.findViewById(R.id.videoPlayerLayout);
         final Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), hintText, Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
         TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
         snackBarTextView.setSingleLine(false);
-        snackbar.setAction("Понятно", new View.OnClickListener(){
+        snackbar.setAction("Понятно", new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 snackbar.dismiss();
             }
         });
         snackbar.show();
     }
+
+    public class MessageReceiver extends BroadcastReceiver {
+        final int DRAWER_OPENED = 1;
+
+        public MessageReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int state = intent.getIntExtra("opened", 0);
+            if (state == DRAWER_OPENED) {
+                //videoView.pause();
+                if (mCameraSource != null)
+                    mCameraSource.stop();
+                videoView.pause();
+            } else {
+                if (mCameraSource == null)
+                    createCameraSource();
+                startCameraSource();
+                videoView.start();
+            }
+        }
+    }
+
 }

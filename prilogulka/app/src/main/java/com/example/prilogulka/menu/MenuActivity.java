@@ -84,7 +84,21 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         /*  Рисуем меню */
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+                if (slideOffset == 0) {
+                    Intent intent = new Intent("DRAWER");
+                    intent.putExtra("opened", 0);
+                    sendBroadcast(intent);
+                } else if (slideOffset != 0) {
+                    Intent intent = new Intent("DRAWER");
+                    intent.putExtra("opened", 1);
+                    sendBroadcast(intent);
+                }
+                super.onDrawerSlide(drawerView, slideOffset);
+            }
+        };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
@@ -185,6 +199,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         return true;
 
     }
+
+
 }
 
 
