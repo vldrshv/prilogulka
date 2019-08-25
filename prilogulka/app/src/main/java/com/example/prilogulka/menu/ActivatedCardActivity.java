@@ -62,7 +62,6 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
 
         setValuesToLayout();
     }
-
     public void initUIReference(){
         giftCardView = findViewById(R.id.activatedCard);
         barcodeImage = findViewById(R.id.barcode);
@@ -77,9 +76,8 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
 
         service = retrofit.create(GiftCardService.class);
     }
-
     public void setValuesToLayout(){
-        int cardId = findCardInDataBase();
+        int cardId = getCardId();
         try {
             giftCard = service.getUsersGiftCard(cardId).execute().body();
             Log.i(CLASS_TAG, giftCard.toString());
@@ -96,7 +94,7 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
                             giftCard.getCard().getDueDate());
         }
     }
-    public int findCardInDataBase(){
+    public int getCardId(){
         Intent intent = getIntent();
         Log.i(CLASS_TAG, intent.getIntExtra("cardId", 0) + "");
         int cardId = intent.getIntExtra("cardId", 0);
@@ -140,20 +138,7 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
                 Log.i(CLASS_TAG, "make used : " + giftCard.toString());
                 try {
                     service.makeCardUsed(giftCard, giftCard.getCard().getId()).execute();
-                //Log.i(CLASS_TAG, s);
-
-                    try {
-                        final RequestBody copy = service.makeCardUsed(giftCard, giftCard.getCard().getCardId()).request().body();
-                        final BufferedSink buffer = new Buffer();
-                        if (copy != null)
-                            copy.writeTo(buffer);
-
-                        String s =  ((Buffer) buffer).readUtf8();
-                        Log.i(CLASS_TAG, s);
-                    } catch (final IOException e) {
-
-                    }
-//                    service.makeCardUsed("{\"is_activated\": true}", giftCard.getCard().getCardId()).execute();
+                    btnActivate.setVisibility(View.GONE);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -196,13 +181,8 @@ public class ActivatedCardActivity extends AppCompatActivity implements Button.O
         if (codeText != null) {
 
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            DisplayMetrics dm = new DisplayMetrics();
-            WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            windowManager.getDefaultDisplay().getMetrics(dm);
-            int widthInDP = dm.widthPixels;
-            int heightInDP = dm.heightPixels;
             try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(codeText, BarcodeFormat.QR_CODE, widthInDP / 3 , heightInDP / 3);
+                BitMatrix bitMatrix = multiFormatWriter.encode(codeText, BarcodeFormat.QR_CODE, 200 , 200);
                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
 
                 return barcodeEncoder.createBitmap(bitMatrix);
