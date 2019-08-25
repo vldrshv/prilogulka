@@ -104,12 +104,8 @@
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="false"
                 android:hint="Дата рождения"
-                android:imeActionId="6"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified"
                 android:inputType="text"
                 android:maxLines="1"
-                android:onClick="chooseData"
                 android:singleLine="true"
                 android:textColorLink="#FF88B53F"
                 android:textSize="18sp" />

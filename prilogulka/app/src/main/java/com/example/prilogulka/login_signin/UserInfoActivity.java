@@ -14,7 +14,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.RequiresApi;
+
+import com.example.prilogulka.data.android.interraction.DatePicker;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
@@ -30,7 +33,6 @@ import android.widget.Toast;
 
 import com.example.prilogulka.R;
 import com.example.prilogulka.data.Time;
-import com.example.prilogulka.data.android.interraction.DatePicker;
 import com.example.prilogulka.data.managers.CoefficientManager;
 import com.example.prilogulka.data.managers.GeofenceManager;
 import com.example.prilogulka.data.managers.SharedPreferencesManager;
@@ -47,7 +49,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserInfoActivity extends AppCompatActivity
-        implements LocationListener {
+        implements LocationListener, View.OnClickListener {
 
 
     String CLASS_TAG = "UserInfoActivity";
@@ -63,6 +65,7 @@ public class UserInfoActivity extends AppCompatActivity
     // UI references
     EditText editEmail, editName, editSurname, editBirthday;
     TextInputLayout emailInputLayout;
+    TextInputEditText birthday;
     TextView cityTextView;
     RadioGroup sexGroup;
     CheckBox checkBoxAgreement;
@@ -84,6 +87,8 @@ public class UserInfoActivity extends AppCompatActivity
 
         editEmail = findViewById(R.id.email);
         emailInputLayout = findViewById(R.id.email_text_input_layout);
+        birthday = findViewById(R.id.birthday);
+        birthday.setOnClickListener(this);
 
         editName = findViewById(R.id.name);
         editSurname = findViewById(R.id.surname);
@@ -402,6 +407,15 @@ public class UserInfoActivity extends AppCompatActivity
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         this.finish();
+    }
+
+    @Override
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.birthday:
+                chooseData(v);
+                break;
+        }
     }
 
 }

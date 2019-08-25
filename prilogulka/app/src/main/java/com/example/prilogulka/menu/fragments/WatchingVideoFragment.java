@@ -257,6 +257,7 @@ public final class WatchingVideoFragment extends Fragment implements View.OnClic
         System.out.println(videoAction);
         try {
             videoService.postUserVideoAction(videoAction).execute();
+//            user = USER_IO.getUserFromServerById()
         } catch (IOException e) {
             e.printStackTrace();
         }

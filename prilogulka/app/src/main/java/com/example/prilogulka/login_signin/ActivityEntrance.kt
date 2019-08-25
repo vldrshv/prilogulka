@@ -1,14 +1,12 @@
 package com.example.prilogulka.login_signin
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import com.example.prilogulka.BaseActivity
 import com.example.prilogulka.R
+import com.example.prilogulka.data.UserIO
 import com.example.prilogulka.data.managers.SharedPreferencesManager
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_enterance.*
 
 class ActivityEntrance : BaseActivity(), View.OnClickListener {
@@ -41,6 +39,7 @@ class ActivityEntrance : BaseActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
+        hideKeyboard(this, R.id.activity_enterance)
         when(v!!.id) {
             R.id.buttonEnter -> checkBeforeEnter()
             R.id.buttonRegister -> startActivity(Intent(this, UserInfoActivity::class.java))
@@ -49,11 +48,22 @@ class ActivityEntrance : BaseActivity(), View.OnClickListener {
 
     private fun checkBeforeEnter() {
         if (isEmailValid(email_text_input_layout)) {
-            spManager!!.activeUser = email.text.toString()
-            startActivity(Intent(this, MainActivity::class.java))
-            this.finish()
+            if (userExistsAtServer()) {
+                spManager!!.activeUser = email.text.toString()
+                startActivity(Intent(this, MainActivity::class.java))
+                this.finish()
+            } else {
+                showHint("Вы не зарегистрированы. Нажмите кнопку \"Регистрация\"")
+            }
         }
         else
             showHint("Проверьте правильность ввода \"Email\"")
+    }
+
+    private fun userExistsAtServer(): Boolean {
+        val USER_IO = UserIO(this)
+        val user = USER_IO.getUserFromServerByEmail(email.text.toString())
+
+        return user.user != null
     }
 }

@@ -59,6 +59,8 @@ public class GiftsManagerFragment extends Fragment {
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_gifts_manager, container, false);
 
         USER_IO = new UserIO(getContext());
+        USER_IO.updateLocalUser();
+
 
         spM = new SharedPreferencesManager(getContext());
         email = spM.getActiveUser();

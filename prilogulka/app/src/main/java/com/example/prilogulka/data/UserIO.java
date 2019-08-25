@@ -1,6 +1,7 @@
 package com.example.prilogulka.data;
 
 import android.content.Context;
+import android.os.StrictMode;
 
 import com.example.prilogulka.data.service.UserService;
 import com.example.prilogulka.data.userData.SerializeObject;
@@ -17,6 +18,14 @@ public class UserIO {
 
     public UserIO(Context context) {
         this.context = context;
+
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://92.53.65.46:3000")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -71,5 +80,11 @@ public class UserIO {
     public double getMoney() {
         UserInfo user = readUserFromLocal();
         return user == null ? 0 : user.getUser().getCurrent_balance();
+    }
+
+    public void updateLocalUser() {
+        UserInfo userInfo = readUserFromLocal();
+        userInfo = getUserFromServerById(userInfo.getUser().getId());
+        writeUserToLocal(userInfo);
     }
 }

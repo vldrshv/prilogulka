@@ -526,6 +526,7 @@ public class MainActivity extends AppCompatActivity
      */
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 1;
+    private boolean wasShown = false;
 
     private boolean isGPSUpdated() { return lat != 0 && longt != 0; }
 
@@ -549,6 +550,9 @@ public class MainActivity extends AppCompatActivity
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
+            ActivityCompat.requestPermissions(this, permissions, MY_PERMISSIONS_REQUEST_LOCATION);
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == -1) {
             ActivityCompat.requestPermissions(this, permissions, MY_PERMISSIONS_REQUEST_LOCATION);
         }
 
@@ -579,7 +583,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
 
                     final Snackbar snackbar = Snackbar.make(
-                            getCurrentFocus(),
+                            pinLL,//getCurrentFocus(),
                             "Мы используем геопозицию для определения коэффициентов при просмотре видео. Пожалуйста, разрешите геолокацию в настроках для перерасчета коэффициента.",
                             Snackbar.LENGTH_INDEFINITE);
                     View snackbarView = snackbar.getView();
