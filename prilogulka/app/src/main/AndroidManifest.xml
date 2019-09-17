@@ -18,7 +18,8 @@
             android:name=".login_signin.ActivityEntrance"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,12 +36,14 @@
             android:name=".login_signin.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
             android:name=".login_signin.UserInfoActivity"
             android:label="@string/title_activity_two"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".menu.MenuActivity"
