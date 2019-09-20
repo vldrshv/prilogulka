@@ -3,6 +3,7 @@
     <color name="colorOnSurface">#FFFFFF</color>
     <color name="colorPrimary">#88b53f</color>
     <color name="colorPrimaryDark"> #678f27</color>
+    <color name="colorPrimaryDarkAlpha">#22678f27</color>
     <color name="colorPrimaryLight">#FFFFFF</color>
 
     <color name="colorAccent"> #88B53F</color>

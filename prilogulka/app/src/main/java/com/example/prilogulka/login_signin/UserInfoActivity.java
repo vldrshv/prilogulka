@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 
 import com.example.prilogulka.data.android.interraction.DatePicker;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -27,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +64,7 @@ public class UserInfoActivity extends AppCompatActivity
 
     String date = "";
     String email;
+    Boolean agreementAccepted = false;
 
     // UI references
     EditText editEmail, editName, editSurname, editBirthday;
@@ -68,9 +72,11 @@ public class UserInfoActivity extends AppCompatActivity
     TextInputEditText birthday;
     TextView cityTextView;
     RadioGroup sexGroup;
-    CheckBox checkBoxAgreement;
+    RadioButton male, female;
 
-    Button buttonNext;
+    Button buttonNext;//, agreementAcceptBtn;
+    Chip agreementChip;
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -93,10 +99,18 @@ public class UserInfoActivity extends AppCompatActivity
         editName = findViewById(R.id.name);
         editSurname = findViewById(R.id.surname);
         editBirthday = findViewById(R.id.birthday);
+
         sexGroup = findViewById(R.id.radioGroupSex);
-        checkBoxAgreement = findViewById(R.id.checkBoxAgreement);
+        male = findViewById(R.id.radioButtonMale);
+        female = findViewById(R.id.radioButtonFemale);
+        male.setOnClickListener(this);
+        female.setOnClickListener(this);
 
         cityTextView = findViewById(R.id.cityTextView);
+
+        agreementChip = findViewById(R.id.chipAgreementAgree);
+        agreementChip.setOnClickListener(this);
+        checkChipState();
     }
 
     public void chooseData(View v) {
@@ -107,6 +121,11 @@ public class UserInfoActivity extends AppCompatActivity
         Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://docs.google.com/document/d/1KKo87rqTeV9zyCVtwLNPs0xowXIaDAymqxEQqVmfij0/edit?usp=sharing"));
         startActivity(browserIntent);
+    }
+    public void acceptAgreement(View v) {
+
+        agreementAccepted = !agreementAccepted;
+        Log.i(CLASS_TAG, agreementAccepted + "");
     }
 
     public void finishRegistration(View v) {
@@ -122,6 +141,7 @@ public class UserInfoActivity extends AppCompatActivity
             return;
         }
 
+        /*
         email = editEmail.getText().toString();
         if (isEmailValid()) {
             emailInputLayout.setErrorEnabled(false);
@@ -137,6 +157,7 @@ public class UserInfoActivity extends AppCompatActivity
             emailInputLayout.setErrorEnabled(true);
             emailInputLayout.setError("Можно использовать латинские буквы (a-z), цифры и точку.");
         }
+        */
 
     }
     private boolean isAdult() {
@@ -239,9 +260,9 @@ public class UserInfoActivity extends AppCompatActivity
     }
 
     private boolean hasEmptyField() {
-        Log.i(CLASS_TAG, "" + sexGroup.getCheckedRadioButtonId());
-        return isEmpty(editName) || isEmpty(editSurname) || isEmpty(editBirthday) ||
-                sexGroup.getCheckedRadioButtonId() == -1 || !checkBoxAgreement.isChecked();
+        int sexId = sexGroup.getCheckedRadioButtonId();
+        Log.i(CLASS_TAG, "" + sexId);
+        return isEmpty(editName) || isEmpty(editSurname) || isEmpty(editBirthday) || !agreementAccepted || sexId == -1;
     }
     private boolean isEmpty(EditText editText) {
         return editText.getText().toString().equals("");
@@ -272,7 +293,7 @@ public class UserInfoActivity extends AppCompatActivity
         emailInputLayout.setErrorEnabled(false);
     }
     void showHint(String hintText) {
-        final Snackbar snackbar = Snackbar.make(getCurrentFocus(), hintText, Snackbar.LENGTH_INDEFINITE);
+        final Snackbar snackbar = Snackbar.make(buttonNext, hintText, Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
         TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
         snackBarTextView.setSingleLine(false);
@@ -415,6 +436,33 @@ public class UserInfoActivity extends AppCompatActivity
             case R.id.birthday:
                 chooseData(v);
                 break;
+            case R.id.chipAgreementAgree:
+                changeChipState();
+                checkChipState();
+                break;
+            case R.id.radioButtonMale:
+                male.setTextColor(getResources().getColor(R.color.colorPrimary));
+                female.setTextColor(getResources().getColor(R.color.colorDivider));
+                break;
+            case R.id.radioButtonFemale:
+                female.setTextColor(getResources().getColor(R.color.colorPrimary));
+                male.setTextColor(getResources().getColor(R.color.colorDivider));
+                break;
+        }
+    }
+
+    private void changeChipState() {
+        agreementAccepted = !agreementAccepted;
+    }
+    private void checkChipState() {
+        if (agreementAccepted) {
+            agreementChip.setText("согласен");
+            agreementChip.setChipIconTintResource(R.color.colorPrimary);
+            agreementChip.setTextColor(getResources().getColor(R.color.colorPrimary));
+        } else {
+            agreementChip.setText("согласиться");
+            agreementChip.setChipIconTintResource(R.color.colorDivider);
+            agreementChip.setTextColor(getResources().getColor(R.color.colorDivider));
         }
     }
 
