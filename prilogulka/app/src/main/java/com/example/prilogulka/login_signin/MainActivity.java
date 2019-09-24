@@ -3,8 +3,10 @@ package com.example.prilogulka.login_signin;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,16 +16,22 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+
+import com.example.prilogulka.BaseActivity;
+import com.example.prilogulka.menu.fragments.WatchingVideoFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +50,7 @@ import java.io.IOException;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements Button.OnClickListener, LocationListener {
 
     String CLASS_TAG = "MainActivity";
@@ -51,10 +59,10 @@ public class MainActivity extends AppCompatActivity
     LinearLayout cannotEnterLL, pinLL, keyboardLL, buttonsLL, passwordLL;
     Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0;
     Button btnCannotEnter, btnRegister, btnRepeat, btnResendPin;
-    ImageButton btnDelete;
+    Button btnDelete;
     TextInputLayout emailInput;
     EditText editEmail;
-    EditText editText1, editText2, editText3, editText4, editText5;
+    ImageView im1, im2, im3, im4, im5;
 
     int position = 0;   // позиция editText# (позиция цифры пароля)
     String email = "";  // для отправки сообщения на сервер и получения юзера
@@ -62,8 +70,10 @@ public class MainActivity extends AppCompatActivity
     double location_coeff = 0;
     double district_coef = 0;
     String city = "";
+    String pin = "";
 
     /*  Сервисы общения с сервером и локацией   */
+    private MessageReceiver receiver;
     private UserService service;
     private LocationManager locationManager;
     private float lat = 0f, longt = 0f;
@@ -86,9 +96,17 @@ public class MainActivity extends AppCompatActivity
         initLayoutFields();
         setListeners();
 
-        showHint("Мы обновляем Ваше местоположение, чтобы Вы получили актуальный" +
-                " коэффициент. Еще чуть-чуть и можно будет ввести пин-код.");
         checkLocationPermission(); // чтобы перерасчитать коэф и локацию
+
+        receiver = new MessageReceiver(this);
+        IntentFilter intFilt = new IntentFilter("PIN");
+        registerReceiver(receiver, intFilt);
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
+        showHint("Мы обновляем Ваше местоположение, чтобы Вы получили актуальный" +
+                " коэффициент. Еще чуть-чуть и можно будет ввести пин-код.", R.id.mainActivity_linear_layout);
     }
     @Override
     public void onClick(View v){
@@ -127,7 +145,8 @@ public class MainActivity extends AppCompatActivity
 
         service = retrofit.create(UserService.class);
     }
-    private void initLayoutFields() {
+    @Override
+    public void initLayoutFields() {
         // поле если забыл пароль
         cannotEnterLL = findViewById(R.id.cannotEnter_linear_layout);
         cannotEnterLL.setVisibility(View.GONE);
@@ -140,16 +159,12 @@ public class MainActivity extends AppCompatActivity
         pinLL = findViewById(R.id.pin_linear_layout);
         pinLL.setVisibility(View.INVISIBLE);
 
-        editText1 = findViewById(R.id.editText1);
-        makeEditTextUneditable(editText1);
-        editText2 = findViewById(R.id.editText2);
-        makeEditTextUneditable(editText2);
-        editText3 = findViewById(R.id.editText3);
-        makeEditTextUneditable(editText3);
-        editText4 = findViewById(R.id.editText4);
-        makeEditTextUneditable(editText4);
-        editText5 = findViewById(R.id.editText5);
-        makeEditTextUneditable(editText5);
+        im1 = findViewById(R.id.im1);
+        im2 = findViewById(R.id.im2);
+        im3 = findViewById(R.id.im3);
+        im4 = findViewById(R.id.im4);
+        im5 = findViewById(R.id.im5);
+
         // поле отображения клавиатуры
         keyboardLL = findViewById(R.id.keyboard_linear_layout);
         btn0 = findViewById(R.id.button0);
@@ -171,7 +186,6 @@ public class MainActivity extends AppCompatActivity
         btnRepeat = findViewById(R.id.buttonRepeat);
         btnRepeat.setVisibility(View.GONE);
     }
-
     private void setButtonsCanBePressed(boolean isEnabled) {
         pinLL.setVisibility(isEnabled ? View.VISIBLE : View.INVISIBLE);
         btn0.setEnabled(isEnabled);
@@ -186,7 +200,6 @@ public class MainActivity extends AppCompatActivity
         btn9.setEnabled(isEnabled);
         btnDelete.setVisibility(isEnabled ? View.VISIBLE : View.INVISIBLE);
     }
-
     private void switchLayouts(STATE state) {
         if (state.equals(STATE.STATE_RESEND)) {
             pinLL.setVisibility(View.GONE);
@@ -203,12 +216,6 @@ public class MainActivity extends AppCompatActivity
             buttonsLL.setVisibility(View.VISIBLE);
             cannotEnterLL.setVisibility(View.GONE);
         }
-    }
-    private void makeEditTextUneditable(EditText editText){
-        editText.setClickable(false);
-        editText.setLongClickable(false);
-        editText.setFocusable(false);
-        editText.clearFocus();
     }
     private void setListeners() {
         btn0.setOnClickListener(this);
@@ -227,26 +234,36 @@ public class MainActivity extends AppCompatActivity
         btnRepeat.setOnClickListener(this);
         btnResendPin.setOnClickListener(this);
     }
-
+    private void setColor(boolean disable, ImageView im) {
+        int color = disable ? ContextCompat.getColor(this, R.color.colorDivider)
+                : ContextCompat.getColor(this, R.color.colorPrimaryDark);
+        im.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+    }
     // onClick methods
     private void setText(String text) {
+        if (text.equals("")) {
+            if (position > 0)
+                pin = pin.substring(0, position - 1);
+        } else
+            pin = pin.concat(text);
         switch (position){
             case 1:
-                editText1.setText(text);
+                setColor(text.equals(""), im1);
                 break;
             case 2:
-                editText2.setText(text);
+                setColor(text.equals(""), im2);
                 break;
             case 3:
-                editText3.setText(text);
+                setColor(text.equals(""), im3);
                 break;
             case 4:
-                editText4.setText(text);
+                setColor(text.equals(""), im4);
                 break;
             case 5:
-                editText5.setText(text);
+                setColor(text.equals(""), im5);
                 break;
         }
+        Log.i(CLASS_TAG, "pin = " + pin);
     }
     public void resendPin() {
         if (hasInternetConnection()) {
@@ -266,7 +283,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 showHint("Вам на почту направлено письмо с паролем!");
-                hideKeyboard(this);
+                hideKeyboard(this, R.id.mainActivity_linear_layout);
             }
         } else {
             showHint("Проверьте соединение с интернетом.");
@@ -310,9 +327,12 @@ public class MainActivity extends AppCompatActivity
         SharedPreferencesManager spManager = new SharedPreferencesManager(this);
         spManager.setActiveUser(email);
     }
-    private void uploadEmail() {
+    private void getEmail() {
         SharedPreferencesManager spManager = new SharedPreferencesManager(this);
         email = spManager.getActiveUser();
+    }
+    private void uploadEmail() {
+        getEmail();
         if (email != null && !email.equals("")){
             editEmail.setText(email);
         }
@@ -353,17 +373,7 @@ public class MainActivity extends AppCompatActivity
             StrictMode.setThreadPolicy(policy);
 
             CheckInputTask task = new CheckInputTask();
-            if (task.doInBackground()) {
-                welcomeUser();
-            } else {
-                if (!hasInternetConnection()){
-                    Toast.makeText(this, "Проверьте подключение к интернету",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    clearText();
-                    Toast.makeText(this, "Пароль не верен", Toast.LENGTH_SHORT).show();
-                }
-            }
+            task.execute(pin);
         }
     }
     private float makeCoefficients() {
@@ -381,13 +391,9 @@ public class MainActivity extends AppCompatActivity
 
         return (float) (district_coef * age_coef);
     }
-    private String getPin() {
-        return editText1.getText().toString() + editText2.getText().toString() +
-                editText3.getText().toString() + editText4.getText().toString() +
-                editText5.getText().toString();
-    }
     private String getPinFromServer() {
-        uploadEmail();
+//        uploadEmail();
+        getEmail();
         Log.i(CLASS_TAG, email);
         if (email.equals("")) {
             showHint("Передите во вкладку *Не могу войти*, чтобы напомнить ваш e-mail");
@@ -423,6 +429,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
     private void welcomeUser() {
+
         clearText();
         String name = user.getUser().getName();
         Toast.makeText(this, "Здравствуйте, " + name, Toast.LENGTH_SHORT).show();
@@ -449,53 +456,24 @@ public class MainActivity extends AppCompatActivity
         this.finish();
     }
 
-    private void showHint(String hintText){
-        View currentView = findViewById(R.id.mainActivity_linear_layout);
-        final Snackbar snackbar = Snackbar.make(currentView, hintText, Snackbar.LENGTH_INDEFINITE);
-        View snackbarView = snackbar.getView();
-        TextView snackBarTextView = snackbarView.findViewById(R.id.snackbar_text);
-        snackBarTextView.setSingleLine(false);
-        snackbar.setAction("Понятно", new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                snackbar.dismiss();
-            }
-        });
-        snackbar.show();
-    }
-    public void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = findViewById(R.id.mainActivity_linear_layout);
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-    private boolean hasInternetConnection(){
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobile = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-        return wifi.isConnected() || mobile.isConnected();
-    }
-
     class CheckInputTask extends AsyncTask<String, Void, Boolean> {
 
-        protected Boolean doInBackground(String... urls) {
-            return checkInput();
+        protected Boolean doInBackground(String... args) {
+            Intent intent = new Intent("PIN");
+            intent.putExtra("canBeWelcomed", checkInput(args[0]));
+            sendBroadcast(intent);
+
+            return true;
         }
 
         protected void onPostExecute(Void feed) {
 
         }
 
-        private boolean checkInput() {
-            String localPin = getPin();
+        private boolean checkInput(String localPin) {
             String serverPin = getPinFromServer();
             Log.i(CLASS_TAG, "local = " + localPin + " -> serverPin = " + serverPin);
-            return localPin.equals(serverPin);
+            return pin.equals(serverPin);
         }
     }
 
@@ -509,6 +487,7 @@ public class MainActivity extends AppCompatActivity
         Log.i(CLASS_TAG, "onDestroy()");
         super.onDestroy();
         destroyLocationManager();
+        unregisterReceiver(receiver);
     }
     @Override
     public void onResume() {
@@ -636,6 +615,34 @@ public class MainActivity extends AppCompatActivity
         if (locationManager != null) {
             locationManager.removeUpdates(this);
             locationManager = null;
+        }
+    }
+
+    public boolean hasEmptyField() {
+        return pin.equals("");
+    }
+
+    public class MessageReceiver extends BroadcastReceiver {
+        Activity activity;
+        public MessageReceiver(Activity activity) {
+            this.activity = activity;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean canBeWelcomed = intent.getBooleanExtra("canBeWelcomed", false);
+            if (canBeWelcomed) {
+                welcomeUser();
+            } else {
+                if (!hasInternetConnection()) {
+                    Toast.makeText(activity, "Проверьте подключение к интернету",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    clearText();
+                    Toast.makeText(activity, "Пароль не верен", Toast.LENGTH_SHORT).show();
+                }
+            }
+//             */
         }
     }
 }

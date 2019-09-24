@@ -51,7 +51,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonResendPin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,54 +74,53 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_weight="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_weight=""
             android:gravity="center"
             android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/editText1"
+            <ImageView
+                android:id="@+id/im1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@android:drawable/presence_online"
+                android:tint="@color/colorDivider"
                 android:layout_weight="1"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:textAlignment="center" />
-
-            <EditText
-                android:id="@+id/editText2"
+                />
+            <ImageView
+                android:id="@+id/im2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@android:drawable/presence_online"
+                android:tint="@color/colorDivider"
                 android:layout_weight="1"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:textAlignment="center" />
 
-            <EditText
-                android:id="@+id/editText3"
+                />
+            <ImageView
+                android:id="@+id/im3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@android:drawable/presence_online"
+                android:tint="@color/colorDivider"
                 android:layout_weight="1"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:textAlignment="center" />
 
-            <EditText
-                android:id="@+id/editText4"
+                />
+            <ImageView
+                android:id="@+id/im4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@android:drawable/presence_online"
+                android:tint="@color/colorDivider"
                 android:layout_weight="1"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:textAlignment="center" />
-
-            <EditText
-                android:id="@+id/editText5"
+                />
+            <ImageView
+                android:id="@+id/im5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@android:drawable/presence_online"
+                android:tint="@color/colorDivider"
                 android:layout_weight="1"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:textAlignment="center" />
+                />
         </LinearLayout>
     </LinearLayout>
 
@@ -129,175 +128,195 @@
         android:id="@+id/keyboard_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
         tools:visibility="visible">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <GridLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:columnCount="3"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button1"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="1"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
 
-            <Button
-                android:id="@+id/button1"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="1"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button2"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="2"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
 
-            <Button
-                android:id="@+id/button2"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="2"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button3"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="3"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button4"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="4"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
 
-            <Button
-                android:id="@+id/button3"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="3"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
-        </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button5"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="5"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button6"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="6"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"/>
 
-            <Button
-                android:id="@+id/button4"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="4"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button7"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="7"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"/>
 
-            <Button
-                android:id="@+id/button5"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="5"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button8"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="8"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"/>
 
-            <Button
-                android:id="@+id/button6"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="6"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
-        </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button9"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="9"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button12"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="invis"
+                    android:textAppearance="?attr/textAppearanceButton"
+                    android:visibility="invisible"
+                    android:layout_margin="8dp"
+                    />
 
-            <Button
-                android:id="@+id/button7"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="7"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button0"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textAppearance="?attr/textAppearanceButton"
 
-            <Button
-                android:id="@+id/button8"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="8"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
+                    android:textSize="24sp"
+                    android:typeface="monospace"
+                    android:layout_margin="8dp"
+                    app:cornerRadius="30dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
 
-            <Button
-                android:id="@+id/button9"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="9"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button12"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:visibility="invisible" />
-
-            <Button
-                android:id="@+id/button0"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0"
-                android:textAppearance="?attr/textAppearanceButton"
-                android:textSize="24sp"
-                android:typeface="monospace" />
-
-            <ImageButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/imgButtonDelete"
-                style="@style/Widget.AppCompat.ImageButton"
-                android:layout_width="match_parent"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackground"
-                android:tint="@color/colorPrimary"
-                app:srcCompat="@android:drawable/ic_input_delete" />
+                android:text="DEL"
+                android:textAppearance="?attr/textAppearanceButton"
 
-        </LinearLayout>
+                android:textSize="24sp"
+                android:typeface="monospace"
+                android:layout_margin="8dp"
+                app:cornerRadius="30dp"
+                android:textColor="@color/colorPrimaryDark"
+                />
+
+        </GridLayout>
 
     </LinearLayout>
 
@@ -309,31 +328,34 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonCannotEnter"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Не можете войти?"
-            android:textAppearance="?attr/textAppearanceButton" />
+            android:textAppearance="?attr/textAppearanceButton"
+            android:textColor="@color/colorPrimaryDark"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonRegister"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="      регистрация      "
-            android:textAppearance="?attr/textAppearanceButton" />
+            android:textAppearance="?attr/textAppearanceButton"
+            app:backgroundTint="@color/colorPrimaryDark"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonRepeat"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="    Попробовать снова    "
             android:textAppearance="?attr/textAppearanceButton"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            app:backgroundTint="@color/colorPrimaryDark"/>
 
     </LinearLayout>
 

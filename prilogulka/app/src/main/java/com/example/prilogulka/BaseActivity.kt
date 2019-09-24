@@ -48,8 +48,13 @@ abstract class BaseActivity : AppCompatActivity() {
         textInputLayout.isErrorEnabled = false
     }
 
-    internal fun showHint(hintText: String) { //,} currentFocus: View) {
-        val snackbar = Snackbar.make(currentFocus, hintText, Snackbar.LENGTH_INDEFINITE)
+    fun showHint(hintText: String) {
+        showHint(hintText, currentFocus.id)
+    }
+
+    fun showHint(hintText: String, id: Int) {
+        val focus = findViewById<View>(id)
+        val snackbar = Snackbar.make(focus, hintText, Snackbar.LENGTH_INDEFINITE)
         val snackbarView = snackbar.view
         val snackBarTextView = snackbarView.findViewById<TextView>(R.id.snackbar_text)
         snackBarTextView.setSingleLine(false)
